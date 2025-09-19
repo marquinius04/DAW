@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro - PI</title>
+</head>
+<body>
+  <!-- Cabecera -->
+  <header>
+    <h1>PI - Pisos & Inmuebles</h1>
+    <nav>
+      <ul>
+        <li><a href="index_nologueado.html">Inicio</a></li>
+        <li><a href="busqueda.html">Búsqueda avanzada</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Contenido principal -->
+  <main>
+    <h2>Registro de nuevo usuario</h2>
+    <form action="index_logueado.html" method="post" enctype="multipart/form-data">
+      <label for="usuario">Nombre de usuario:</label>
+      <input type="text" id="usuario" name="usuario" required><br><br>
+
+      <label for="clave">Contraseña:</label>
+      <input type="password" id="clave" name="clave" required><br><br>
+
+      <label for="clave2">Repetir contraseña:</label>
+      <input type="password" id="clave2" name="clave2" required><br><br>
+
+      <label for="email">Correo electrónico:</label>
+      <input type="email" id="email" name="email" required><br><br>
+
+      <label>Sexo:</label>
+      <input type="radio" id="hombre" name="sexo" value="hombre">
+      <label for="hombre">Hombre</label>
+      <input type="radio" id="mujer" name="sexo" value="mujer">
+      <label for="mujer">Mujer</label>
+      <input type="radio" id="otro" name="sexo" value="otro">
+      <label for="otro">Otro</label><br><br>
+
+      <label for="nacimiento">Fecha de nacimiento:</label>
+      <input type="date" id="nacimiento" name="nacimiento"><br><br>
+
+      <label for="ciudad">Ciudad de residencia:</label>
+      <input type="text" id="ciudad" name="ciudad"><br><br>
+
+      <label for="pais">País de residencia:</label>
+      <select id="pais" name="pais">
+        <option value="espana">España</option>
+        <option value="francia">Francia</option>
+        <option value="italia">Italia</option>
+        <option value="alemania">Alemania</option>
+        <option value="portugal">Portugal</option>
+      </select><br><br>
+
+      <label for="foto">Foto de perfil:</label>
+      <input type="file" id="foto" name="foto" accept="image/*"><br><br>
+
+      <button type="submit">Registrarse</button>
+    </form>
+  </main>
+
+  <!-- Pie de página -->
+  <footer>
+    <p>&copy; 2025 PI - Pisos & Inmuebles. Todos los derechos reservados.</p>
+    <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
+  </footer>
+</body>
+</html>

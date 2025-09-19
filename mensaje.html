@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Enviar Mensaje - PI</title>
+</head>
+<body>
+  <header>
+    <h1>PI - Pisos & Inmuebles</h1>
+    <nav>
+      <ul>
+        <li><a href="index_logueado.html">Inicio</a></li>
+        <li><a href="busqueda.html">Búsqueda avanzada</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Enviar mensaje al anunciante</h2>
+    <form action="detalle.html" method="post">
+      <label for="tipo">Tipo de mensaje:</label>
+      <select id="tipo" name="tipo">
+        <option value="info">Más información</option>
+        <option value="cita">Solicitar una cita</option>
+        <option value="oferta">Comunicar una oferta</option>
+      </select><br><br>
+
+      <label for="texto">Mensaje:</label><br>
+      <textarea id="texto" name="texto" rows="5" cols="40"></textarea><br><br>
+
+      <button type="submit">Enviar</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 PI - Pisos & Inmuebles. Todos los derechos reservados.</p>
+    <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
+  </footer>
+</body>
+</html>

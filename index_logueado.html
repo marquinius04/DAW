@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>PI - Pisos & Inmuebles (Usuario logueado)</title>
+</head>
+<body>
+  <!-- Cabecera -->
+  <header>
+    <h1>PI - Pisos & Inmuebles</h1>
+    <nav>
+      <ul>
+        <li><a href="index_logueado.html">Inicio</a></li>
+        <li><a href="perfil.html">Perfil</a></li>
+        <li><a href="publicar.html">Publicar anuncio</a></li>
+        <li><a href="busqueda.html">Búsqueda avanzada</a></li>
+        <li><a href="index_nologueado.html">Salir</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Contenido principal -->
+  <main>
+    <!-- Búsqueda rápida -->
+    <section>
+      <h2>Búsqueda rápida</h2>
+      <form action="resultados.html" method="get">
+        <label for="ciudad">Ciudad:</label>
+        <input type="text" id="ciudad" name="ciudad">
+        <button type="submit">Buscar</button>
+      </form>
+    </section>
+
+    <!-- Últimos anuncios -->
+    <section>
+      <h2>Últimos anuncios</h2>
+      <ul>
+        <li>
+          <a href="detalle.html">
+            <img src="img/casa1.jpg" alt="Foto de vivienda 1" width="100">
+            Piso céntrico en Madrid - 250.000€
+          </a>
+        </li>
+        <li>
+          <a href="detalle.html">
+            <img src="img/casa2.jpg" alt="Foto de vivienda 2" width="100">
+            Apartamento en Valencia - 750€/mes
+          </a>
+        </li>
+        <li>
+          <a href="detalle.html">
+            <img src="img/casa3.jpg" alt="Foto de vivienda 3" width="100">
+            Chalet en Sevilla - 400.000€
+          </a>
+        </li>
+        <li>
+          <a href="detalle.html">
+            <img src="img/casa4.jpg" alt="Foto de vivienda 4" width="100">
+            Estudio en Bilbao - 600€/mes
+          </a>
+        </li>
+        <li>
+          <a href="detalle.html">
+            <img src="img/casa5.jpg" alt="Foto de vivienda 5" width="100">
+            Casa rural en Asturias - 150.000€
+          </a>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Pie de página -->
+  <footer>
+    <p>&copy; 2025 PI - Pisos & Inmuebles. Todos los derechos reservados.</p>
+    <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
+  </footer>
+</body>
+</html>

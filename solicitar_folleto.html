@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Solicitar folleto publicitario - PI</title>
+</head>
+<body>
+  <header>
+    <h1>PI - Pisos & Inmuebles</h1>
+    <nav>
+      <ul>
+        <li><a href="index_logueado.html">Inicio</a></li>
+        <li><a href="perfil.html">Perfil</a></li>
+        <li><a href="index_nologueado.html">Salir</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Solicitar folleto publicitario impreso</h2>
+    
+    <p>Complete el siguiente formulario para solicitar un folleto impreso basado en sus anuncios. A continuación se muestran las tarifas según las características del folleto:</p>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Número de páginas</th>
+          <th>Número de fotos</th>
+          <th>Impresión</th>
+          <th>Resolución (DPI)</th>
+          <th>Precio por unidad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>4</td>
+          <td>1-5</td>
+          <td>Blanco y negro</td>
+          <td>150</td>
+          <td>5€</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>1-5</td>
+          <td>Color</td>
+          <td>150</td>
+          <td>7€</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>6-10</td>
+          <td>Blanco y negro</td>
+          <td>150</td>
+          <td>8€</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>6-10</td>
+          <td>Color</td>
+          <td>150</td>
+          <td>12€</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <p>Coste de procesamiento y envío: 2€ (fijo, independiente del número de páginas o copias).</p>
+
+    <form action="respuesta_folleto.html" method="post">
+      
+      <label for="nombre">Nombre y apellidos (máx. 200 caracteres, obligatorio):</label><br>
+      <input type="text" id="nombre" name="nombre" maxlength="200" required><br><br>
+
+      <label for="email">Correo electrónico (máx. 200 caracteres, obligatorio):</label><br>
+      <input type="email" id="email" name="email" maxlength="200" required><br><br>
+
+      <label for="direccion">Dirección postal (obligatorio):</label><br>
+      <input type="text" id="calle" name="calle" placeholder="Calle" required><br>
+      <input type="text" id="numero" name="numero" placeholder="Número" required><br>
+      <input type="text" id="piso" name="piso" placeholder="Piso/Letra"><br>
+      <input type="text" id="codigo_postal" name="codigo_postal" placeholder="Código Postal" required><br>
+      <input type="text" id="localidad" name="localidad" placeholder="Localidad" required><br>
+      <input type="text" id="provincia" name="provincia" placeholder="Provincia" required><br>
+      <input type="text" id="pais" name="pais" placeholder="País" required><br><br>
+
+      <label for="telefono">Teléfono (opcional):</label><br>
+      <input type="tel" id="telefono" name="telefono"><br><br>
+
+      <label for="color_portada">Color de la portada:</label><br>
+      <input type="color" id="color_portada" name="color_portada" value="#000000"><br><br>
+
+      <label for="num_copias">Número de copias (1-99, por defecto 1):</label><br>
+      <input type="number" id="num_copias" name="num_copias" min="1" max="99" value="1" required><br><br>
+
+      <label for="resolucion">Resolución de las fotos (DPI, 150-900, incrementos de 150, por defecto 150):</label><br>
+      <select id="resolucion" name="resolucion">
+        <option value="150" selected>150</option>
+        <option value="300">300</option>
+        <option value="450">450</option>
+        <option value="600">600</option>
+        <option value="750">750</option>
+        <option value="900">900</option>
+      </select><br><br>
+
+      <label for="anuncio">Anuncio del usuario a imprimir (obligatorio):</label><br>
+      <select id="anuncio" name="anuncio" required>
+        <option value="">--Seleccione un anuncio--</option>
+        <option value="anuncio1">Piso en Madrid, 2 habitaciones</option>
+        <option value="anuncio2">Apartamento en Valencia, 1 habitación</option>
+      </select><br><br>
+
+      <label for="fecha_recepcion">Fecha aproximada de recepción (opcional):</label><br>
+      <input type="date" id="fecha_recepcion" name="fecha_recepcion"><br><br>
+
+      <label>Impresión a color:</label><br>
+      <input type="radio" id="blanco_negro" name="impresion_color" value="blanco_negro" checked>
+      <label for="blanco_negro">Blanco y negro</label><br>
+      <input type="radio" id="color" name="impresion_color" value="color">
+      <label for="color">Color</label><br><br>
+
+      <label>Impresión del precio:</label><br>
+      <input type="radio" id="con_precio" name="impresion_precio" value="con_precio" checked>
+      <label for="con_precio">Con precio</label><br>
+      <input type="radio" id="sin_precio" name="impresion_precio" value="sin_precio">
+      <label for="sin_precio">Sin precio</label><br><br>
+
+      <label for="texto_adicional">Texto adicional (opcional, máximo 4000 caracteres):</label><br>
+      <textarea id="texto_adicional" name="texto_adicional" rows="6" cols="50" maxlength="4000"></textarea><br><br>
+
+      <button type="submit">Solicitar folleto</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 PI - Pisos & Inmuebles. Todos los derechos reservados.</p>
+    <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
+  </footer>
+</body>
+</html>

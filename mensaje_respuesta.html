@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Enviar Mensaje - PI</title>
+  <title>Mensaje enviado - PI</title>
 </head>
 <body>
   <header>
@@ -21,20 +21,14 @@
   </header>
 
   <main>
-    <h2>Enviar mensaje al anunciante</h2>
-    <form action="mensaje_respuesta.html" method="post">
-      <label for="tipo">Tipo de mensaje:</label>
-      <select id="tipo" name="tipo" required>
-        <option value="info">Más información</option>
-        <option value="cita">Solicitar una cita</option>
-        <option value="oferta">Comunicar una oferta</option>
-      </select><br><br>
+    <h2>Mensaje enviado correctamente</h2>
 
-      <label for="texto">Mensaje:</label><br>
-      <textarea id="texto" name="texto" rows="5" cols="40" required></textarea><br><br>
+    <p><strong>Tipo de mensaje:</strong> Solicitar una cita</p>
+    <p><strong>Contenido del mensaje:</strong></p>
+    <p>Hola, me gustaría concertar una cita para ver el piso este fin de semana.</p>
 
-      <button type="submit">Enviar</button>
-    </form>
+    <p>Gracias por tu mensaje, el anunciante se pondrá en contacto contigo pronto.</p>
+    <a href="index_logueado.html">Volver al inicio</a>
   </main>
 
   <footer>

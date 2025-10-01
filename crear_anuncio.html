@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crear anuncio - PI</title>
+</head>
+<body>
+  <header>
+    <h1>PI - Pisos & Inmuebles</h1>
+    <nav>
+      <ul>
+        <li><a href="index_logueado.html">Inicio</a></li>
+        <li><a href="perfil.html">Perfil</a></li>
+        <li><a href="index_nologueado.html">Salir</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Crear un nuevo anuncio</h2>
+    <form action="mis_anuncios.html" method="post">
+      <label for="titulo">Título del anuncio:</label><br>
+      <input type="text" id="titulo" name="titulo" required><br><br>
+
+      <label for="descripcion">Descripción:</label><br>
+      <textarea id="descripcion" name="descripcion" rows="5" cols="40" required></textarea><br><br>
+
+      <label for="precio">Precio (€):</label><br>
+      <input type="number" id="precio" name="precio" min="0" step="1000" required><br><br>
+
+      <label for="ubicacion">Ubicación:</label><br>
+      <input type="text" id="ubicacion" name="ubicacion" required><br><br>
+
+      <label for="fecha">Fecha de publicación:</label><br>
+      <input type="date" id="fecha" name="fecha" required><br><br>
+
+      <input type="submit" value="Publicar anuncio">
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 PI - Pisos & Inmuebles. Todos los derechos reservados.</p>
+    <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Modificar datos - PI</title>
+</head>
+<body>
+  <header>
+    <h1>PI - Pisos & Inmuebles</h1>
+    <nav>
+      <ul>
+        <li><a href="index_logueado.html">Inicio</a></li>
+        <li><a href="perfil.html">Perfil</a></li>
+        <li><a href="index_nologueado.html">Salir</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Modificar mis datos</h2>
+    <form action="perfil.html" method="post">
+      <label for="nombre">Nombre:</label><br>
+      <input type="text" id="nombre" name="nombre" value="Marcos" maxlength="200" required><br><br>
+
+      <label for="apellidos">Apellidos:</label><br>
+      <input type="text" id="apellidos" name="apellidos" value="Díaz Moleón" maxlength="200" required><br><br>
+
+      <label for="email">Correo electrónico:</label><br>
+      <input type="email" id="email" name="email" value="ejemplo@correo.com" maxlength="200" required><br><br>
+
+      <label for="telefono">Teléfono:</label><br>
+      <input type="tel" id="telefono" name="telefono" value="600123456"><br><br>
+
+      <label for="direccion">Dirección:</label><br>
+      <input type="text" id="direccion" name="direccion" value="Calle Falsa 123, Madrid" maxlength="200" required><br><br>
+
+      <button type="submit">Guardar cambios</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 PI - Pisos & Inmuebles. Todos los derechos reservados.</p>
+    <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
+  </footer>
+</body>
+</html>

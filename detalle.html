@@ -3,14 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <title>Detalle de Anuncio - PI</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
     <h1>PI - Pisos & Inmuebles</h1>
     <nav>
-      <ul>
-        <li><a href="index_logueado.html">Inicio</a></li>
-        <li><a href="busqueda.html">Búsqueda avanzada</a></li>
+      <ul class="menu">
+        <li><a href="index_logueado.html"><span class="icono">home</span>Inicio</a></li>
+
+        <!-- PERFIL con submenú -->
+        <li class="submenu">
+          <a href="perfil.html"><span class="icono">person</span>Perfil</a>
+          <ul>
+            <li><a href="crear_anuncio.html"><span class="icono">add_circle</span>Crear anuncio</a></li>
+            <li><a href="mis_mensajes.html"><span class="icono">mail</span>Mis mensajes</a></li>
+            <li><a href="solicitar_folleto.html"><span class="icono">description</span>Solicitar folleto</a></li>
+          </ul>
+        </li>
+
+        <li><a href="busqueda.html"><span class="icono">search</span>Búsqueda avanzada</a></li>
+        <li><a href="index.html"><span class="icono">logout</span>Salir</a></li>
       </ul>
     </nav>
   </header>

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Registro - PI</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <!-- Cabecera -->
@@ -12,7 +13,7 @@
       <ul>
         <li><a href="index.html">Inicio</a></li>
         <li><a href="registro.html">Registro</a></li>
-        <li><a href="busqueda.html">Búsqueda avanzada</a></li>
+        <li><a href="busqueda.html"><span class="icono">search</span>Búsqueda avanzada</a></li>
       </ul>
     </nav>
   </header>
@@ -34,12 +35,11 @@
       <input type="email" id="email" name="email" required><br><br>
 
       <label>Sexo:</label>
-      <input type="radio" id="hombre" name="sexo" value="hombre">
-      <label for="hombre">Hombre</label>
-      <input type="radio" id="mujer" name="sexo" value="mujer">
-      <label for="mujer">Mujer</label>
-      <input type="radio" id="otro" name="sexo" value="otro">
-      <label for="otro">Otro</label><br><br>
+      <select name="Sexo" id="Sexo">
+        <option value="Hombre">Hombre</option>
+        <option value="Mujer">Mujer</option>
+        <option value="Otro">Prefiero no contestar</option>
+      </select>
 
       <label for="nacimiento">Fecha de nacimiento:</label>
       <input type="date" id="nacimiento" name="nacimiento"><br><br>

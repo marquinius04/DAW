@@ -1,0 +1,28 @@
+/*
+    =================================
+    icons.css — Integración de iconos
+    =================================
+*/
+
+/* Importar Material Symbols (ligeros y fáciles de usar) */
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
+
+/* Clase base para iconos Material */
+.icono {
+  font-family: 'Material Symbols Outlined';
+  font-size: 1.2em;
+  vertical-align: middle;
+  margin-right: 0.3em;
+}
+
+/* Icono con color de acento */
+.icono-acento {
+  color: var(--color-acento);
+}
+
+/* Ejemplo de icono Unicode */
+.icono-estrella::before {
+  content: "★"; /* Unicode de estrella */
+  color: gold;
+  margin-right: 0.2em;
+}

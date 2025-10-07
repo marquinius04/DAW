@@ -1,0 +1,68 @@
+/*
+    =================================
+    responsive.css — Diseño adaptable
+    =================================
+*/
+
+/* --- Ajustes generales --- */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Dispositivos pequeños (móviles) --- */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 1.4em;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 0.5em;
+    padding: 0;
+  }
+
+  nav a {
+    display: block;
+    background-color: var(--color-primario);
+    color: white;
+    padding: 0.6em;
+    border-radius: 4px;
+  }
+
+  main {
+    padding: 1em;
+  }
+
+  form {
+    width: 100%;
+    padding: 1em;
+  }
+
+  section {
+    margin-bottom: 1em;
+    padding: 1em;
+  }
+
+  footer {
+    font-size: 0.8em;
+  }
+}
+
+/* --- Dispositivos grandes (pantallas anchas) --- */
+@media (min-width: 1200px) {
+  main {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2em;
+  }
+
+  /* Puedes usar esta clase en páginas con 2 columnas (contenido + barra lateral) */
+  .columna-principal {
+    grid-column: 1;
+  }
+
+  .columna-lateral {
+    grid-column: 2;
+  }
+}

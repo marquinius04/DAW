@@ -1,0 +1,85 @@
+/*
+    ==================================
+    forms.css — Estilos de formularios
+    ==================================
+*/
+
+/* Contenedor general de formularios */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1.5em;
+  background-color: var(--color-fondo);
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Etiquetas */
+label {
+  font-weight: bold;
+  color: var(--color-primario);
+}
+
+/* Campos de texto, select y textarea */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1em;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--color-primario);
+  box-shadow: 0 0 4px var(--color-secundario);
+  outline: none;
+}
+
+/* Botones */
+button,
+input[type="submit"] {
+  background-color: var(--color-primario);
+  color: white;
+  border: none;
+  padding: 0.7em 1.2em;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  align-self: flex-start;
+  transition: background-color 0.2s;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background-color: var(--color-acento);
+}
+
+/* Fieldsets opcionales */
+fieldset {
+  border: 2px solid var(--color-primario);
+  padding: 1em;
+  border-radius: 8px;
+}
+
+legend {
+  font-weight: bold;
+  color: var(--color-primario);
+}
+
+/* Textarea más visible */
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}

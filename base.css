@@ -1,0 +1,63 @@
+/*
+    ===================================
+    base.css — Estilos base y variables
+    ===================================
+*/
+
+:root {
+  /* Colores principales */
+  --color-primario: #004aad;
+  --color-secundario: #e5efff;
+  --color-acento: #ff8c00;
+  --color-texto: #222;
+  --color-fondo: #ffffff;
+
+  /* Tipografía y tamaños */
+  --fuente-principal: "Segoe UI", Roboto, Arial, sans-serif;
+  --tamano-base: 16px;
+  --ancho-maximo: 1200px;
+}
+
+/* Reset mínimo */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilos globales */
+body {
+  font-family: var(--fuente-principal);
+  font-size: var(--tamano-base);
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  line-height: 1.6;
+}
+
+/* Encabezados */
+h1, h2, h3 {
+  color: var(--color-primario);
+  margin-bottom: 0.5em;
+}
+
+/* Enlaces */
+a {
+  color: var(--color-primario);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+  color: var(--color-acento);
+}
+
+/* Listas */
+ul {
+  list-style: none;
+}
+
+/* Contenedor principal */
+main {
+  max-width: var(--ancho-maximo);
+  margin: 0 auto;
+  padding: 1em;
+}

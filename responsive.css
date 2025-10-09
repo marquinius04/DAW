@@ -51,9 +51,9 @@ img {
 
 /* --- Dispositivos grandes (pantallas anchas) --- */
 @media (min-width: 1200px) {
-  main {
+  .grid-container {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 2fr 1fr; 
     gap: 2em;
   }
 

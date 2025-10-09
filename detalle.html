@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Detalle de Anuncio - PI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
   <header>
     <h1>PI - Pisos & Inmuebles</h1>
     <nav>
@@ -28,27 +30,28 @@
     </nav>
   </header>
 
-  <main>
-    <h2>Piso céntrico en Madrid</h2>
-    <img src="img/casa1.jpg" alt="Foto principal" width="400">
-    <p><strong>Tipo de anuncio:</strong> Venta</p>
-    <p><strong>Tipo de vivienda:</strong> Piso</p>
-    <p><strong>Precio:</strong> 250.000€</p>
-    <p><strong>Ciudad:</strong> Madrid</p>
-    <p><strong>País:</strong> España</p>
-    <p><strong>Fecha:</strong> 15/09/2025</p>
-    <p><strong>Características:</strong> 90 m², 3 habitaciones, 2 baños, 2ª planta, construido en 2015</p>
-    <p><strong>Descripción:</strong> Piso luminoso en el centro de Madrid, bien comunicado.</p>
+  <main id="main-content">
+    <div class="grid-container"> <div> <h2>Piso céntrico en Madrid</h2>
+      <img src="img/casa1.jpg" alt="Foto principal" width="400">
+      <p><strong>Tipo de anuncio:</strong> Venta</p>
+      <p><strong>Tipo de vivienda:</strong> Piso</p>
+      <p><strong>Precio:</strong> 250.000€</p>
+      <p><strong>Ciudad:</strong> Madrid</p>
+      <p><strong>País:</strong> España</p>
+      <p><strong>Fecha:</strong> 15/09/2025</p>
+      <p><strong>Características:</strong> 90 m², 3 habitaciones, 2 baños, 2ª planta, construido en 2015</p>
+      <p><strong>Descripción:</strong> Piso luminoso en el centro de Madrid, bien comunicado.</p>
+    </div>
 
-    <!-- Miniaturas -->
-    <section>
-      <h3>Más fotos</h3>
-      <img src="img/casa1_1.jpg" alt="Foto extra 1" width="100">
-      <img src="img/casa1_2.jpg" alt="Foto extra 2" width="100">
-    </section>
+      <div> <section>
+          <h3>Más fotos</h3>
+          <img src="img/casa1_1.jpg" alt="Foto extra 1" width="100">
+          <img src="img/casa1_2.jpg" alt="Foto extra 2" width="100">
+        </section>
 
-    <!-- Enlace a mensaje -->
-    <p><a href="mensaje.html">Enviar mensaje al anunciante</a></p>
+        <p><a href="mensaje.html">Enviar mensaje al anunciante</a></p>
+      </div>
+    </div>
   </main>
 
   <footer>

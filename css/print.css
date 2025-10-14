@@ -1,0 +1,30 @@
+/*
+    ==================================
+    print.css — Versión para impresión
+    ==================================
+*/
+
+/* Fondo blanco, texto negro */
+body {
+  background: white;
+  color: black;
+  font-family: "Times New Roman", serif;
+}
+
+/* Ocultar elementos de navegación y pie */
+header, nav, footer {
+  display: none;
+}
+
+/* Simplificar diseño */
+main, section {
+  box-shadow: none;
+  border: none;
+  background: white;
+}
+
+/* Ajustar enlaces */
+a::after {
+  content: " (" attr(href) ")";
+  font-size: 0.9em;
+}

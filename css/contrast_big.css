@@ -1,0 +1,34 @@
+/*
+    ================================================
+    contrast_big.css — Alto contraste + Texto grande
+    ================================================
+*/
+
+@import url("styles.css");
+
+body {
+  background-color: #000;
+  color: #000;
+  font-size: 1.5em;
+  line-height: 1.8;
+}
+
+header, footer {
+  background-color: #000;
+  border-bottom: 3px solid #fff;
+}
+
+a {
+  color: #00ffff;
+}
+a:hover {
+  background-color: #ffff00;
+  color: #000;
+}
+
+button, input, select, textarea {
+  background-color: #fff;
+  color: #000;
+  border: 2px solid #000;
+  font-size: 1.2em;
+}

@@ -1,0 +1,24 @@
+/*
+    ======================
+    big.css — Texto grande
+    ======================
+*/
+
+@import url("styles.css");
+
+body {
+  font-size: 1.5em;
+  line-height: 1.8;
+}
+
+h1 {
+  font-size: 2.5em;
+}
+
+h2 {
+  font-size: 2em;
+}
+
+nav a, button, input, select, textarea {
+  font-size: 1.2em;
+}

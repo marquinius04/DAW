@@ -1,0 +1,35 @@
+/*
+    ========================
+    night.css — Modo oscuro
+    ========================
+*/
+
+@import url("styles.css");
+
+body {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+header, footer {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+nav a {
+  color: #fff;
+}
+nav a:hover {
+  color: #ffd54f;
+}
+
+section, main {
+  background-color: #1c1c1c;
+  border-color: #333;
+}
+
+button, input, select, textarea {
+  background-color: #222;
+  color: #f0f0f0;
+  border: 1px solid #444;
+}

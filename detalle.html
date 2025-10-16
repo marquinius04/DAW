@@ -40,30 +40,45 @@
   </header>
 
   <main id="main-content">
-    <div class="grid-container"> <div> <h2>Piso céntrico en Madrid</h2>
-      <img src="img/casa1.jpg" alt="Foto principal" width="400">
-      <p><strong>Tipo de anuncio:</strong> Venta</p>
-      <p><strong>Tipo de vivienda:</strong> Piso</p>
-      <p><strong>Precio:</strong> 250.000€</p>
-      <p><strong>Ciudad:</strong> Madrid</p>
-      <p><strong>País:</strong> España</p>
-      <p><strong>Fecha:</strong> 15/09/2025</p>
-      <p><strong>Características:</strong> 90 m², 3 habitaciones, 2 baños, 2ª planta, construido en 2015</p>
-      <p><strong>Descripción:</strong> Piso luminoso en el centro de Madrid, bien comunicado.</p>
-    </div>
+    <div class="grid-container detalle-anuncio">
+      <div class="columna-principal">
+        <h2>Piso céntrico en Madrid</h2>
+        <img class="imagen-principal" src="img/casa1.jpg" alt="Foto principal del inmueble">
+        
+        <h3>Descripción</h3>
+        <p>Piso luminoso en el centro de Madrid, excelentemente comunicado y cerca de todos los servicios. Ideal para familias o como inversión.</p>
+        
+        <h3>Características</h3>
+        <div class="anuncio-detalles">
+          <p><strong>Tipo de anuncio:</strong> Venta</p>
+          <p><strong>Tipo de vivienda:</strong> Piso</p>
+          <p><strong>Precio:</strong> 250.000€</p>
+          <p><strong>Ciudad:</strong> Madrid</p>
+          <p><strong>País:</strong> España</p>
+          <p><strong>Fecha:</strong> 15/09/2025</p>
+          <p><strong>Superficie:</strong> 90 m²</p>
+          <p><strong>Habitaciones:</strong> 3</p>
+          <p><strong>Baños:</strong> 2</p>
+          <p><strong>Planta:</strong> 2ª</p>
+          <p><strong>Año de construcción:</strong> 2015</p>
+        </div>
+      </div>
 
-      <div> <section>
+      <div class="columna-lateral">
+        <section class="caja-lateral">
           <h3>Más fotos</h3>
-          <img src="img/casa1_1.jpg" alt="Foto extra 1" width="100">
-          <img src="img/casa1_2.jpg" alt="Foto extra 2" width="100">
+          <div class="galeria-extra">
+            <img src="img/casa1_1.jpg" alt="Vista del salón">
+            <img src="img/casa1_2.jpg" alt="Vista de la cocina">
+          </div>
         </section>
-
-        <p><a href="mensaje.html">Enviar mensaje al anunciante</a></p>
+        <a href="mensaje.html" class="btn-contacto"><span class="icono">mail</span>Enviar mensaje al anunciante</a>
       </div>
     </div>
   </main>
 
   <footer>
+    <p><a href="accesibilidad.html">Declaración de accesibilidad</a></p>
     <p>&copy; 2025 PI - Pisos & Inmuebles. Todos los derechos reservados.</p>
     <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
   </footer>

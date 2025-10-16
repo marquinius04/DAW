@@ -117,7 +117,6 @@ footer {
   color: white;
 }
 
-/* Opcional: un pequeño efecto visual para el ▼ */
 .menu .submenu > a {
   position: relative;
 }
@@ -141,4 +140,303 @@ footer {
 
 .skip-link:focus {
   top: 0; 
+}
+
+/*
+    ======================================
+    Estilos para la lista de anuncios
+    ======================================
+*/
+
+/* Contenedor de la lista de anuncios (la etiqueta <ul>) */
+section ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+  gap: 1.5em; 
+  padding: 0; 
+  list-style: none; 
+}
+
+/* Tarjeta individual de cada anuncio (la etiqueta <article>) */
+section ul li article {
+  border: 1px solid #e0e0e0; 
+  border-radius: 8px; 
+  padding: 1em; 
+  background-color: #ffffff; 
+  text-align: center; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); 
+  transition: transform 0.2s, box-shadow 0.2s; 
+}
+
+/* Efecto al pasar el ratón por encima de una tarjeta */
+section ul li article:hover {
+  transform: translateY(-5px); 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12); 
+}
+
+/* Estilo para las imágenes dentro de la tarjeta */
+section ul li article img {
+  border-radius: 6px; 
+  width: 100%; 
+  height: 150px; 
+  object-fit: cover; 
+}
+
+/* Estilos para el enlace que envuelve la tarjeta */
+section ul li a {
+  text-decoration: none; 
+  color: inherit; 
+}
+
+/* Título del anuncio */
+section ul li h3 {
+  margin-top: 0.75em;
+  font-size: 1.1em;
+  color: var(--color-primario);
+}
+
+/* Precio del anuncio */
+section ul li p {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #333;
+  margin-top: 0.5em;
+}
+
+/*
+    ======================================
+    Estilos para la página de resultados
+    ======================================
+*/
+
+/* Contenedor de la lista de resultados (el <ul> dentro de <main>) */
+main > div > ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+  gap: 1.5em;
+  padding: 0;
+  list-style: none;
+}
+
+/* Tarjeta individual de cada resultado (el <li>) */
+main > div > ul > li {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden; 
+}
+
+main > div > ul > li:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Enlace que contiene todo el resultado */
+main > div > ul > li a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Imagen del resultado */
+main > div > ul > li img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block; 
+}
+
+/* Div que contiene el texto del resultado */
+.resultado-info {
+  padding: 1em;
+  line-height: 1.5;
+}
+
+/* Div que contiene el texto del resultado */
+.resultado-info {
+  padding: 1em;
+  text-align: left; 
+}
+
+/* Título del anuncio */
+.resultado-titulo {
+  color: var(--color-primario); 
+  font-size: 1.15em;
+  font-weight: bold;
+  margin: 0 0 0.25em 0; 
+}
+
+/* Precio del anuncio */
+.resultado-precio {
+  font-size: 1.25em;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 0.75em 0; 
+}
+
+/* Resto de detalles (fecha, ciudad) */
+.resultado-detalles {
+  font-size: 0.9em;
+  color: #555; 
+  line-height: 1.4;
+  margin: 0;
+}
+
+/*
+    ======================================
+    Estilos para la página de detalle
+    ======================================
+*/
+
+/* Contenedor principal de la página de detalle */
+.detalle-anuncio {
+  align-items: flex-start; 
+}
+
+/* Imagen principal del anuncio */
+.imagen-principal {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 1.5em;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Títulos de sección (Descripción, Características) */
+.detalle-anuncio h3 {
+  border-bottom: 2px solid var(--color-secundario);
+  padding-bottom: 0.3em;
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+  font-size: 1.3em;
+}
+
+/* Cuadrícula con los detalles del anuncio */
+.anuncio-detalles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.8em;
+  background-color: #f8f9fa;
+  padding: 1.5em;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.anuncio-detalles p {
+  margin: 0;
+  font-size: 1em;
+}
+
+/* Caja lateral para "Más fotos" */
+.columna-lateral .caja-lateral {
+  background-color: #ffffff;
+  padding: 1.5em;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5em;
+  border: 1px solid #e0e0e0;
+}
+
+/* Galería de fotos extra */
+.galeria-extra {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8em;
+}
+
+.galeria-extra img {
+  width: 100%;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.galeria-extra img:hover {
+  transform: scale(1.05);
+}
+
+/* Botón para enviar mensaje */
+.btn-contacto {
+  display: block;
+  width: 100%;
+  background-color: var(--color-acento);
+  color: white !important; 
+  text-align: center;
+  padding: 0.8em;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-contacto:hover {
+  background-color: #e67e00; 
+}
+
+/*
+    ======================================
+    Estilos para tablas (Mis mensajes, etc.)
+    ======================================
+*/
+
+/* Contenedor de la tabla */
+main table {
+  width: 100%; 
+  border-collapse: collapse; 
+  margin-top: 1.5em; 
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden; 
+}
+
+/* Cabecera de la tabla (th) */
+main thead tr {
+  background-color: var(--color-primario); 
+  color: white; 
+  text-align: left; 
+}
+
+main th {
+  padding: 12px 15px;
+  font-weight: bold;
+}
+
+/* Celdas de la tabla (td) */
+main td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #dddddd;
+}
+
+/* Estilo para las filas impares (efecto cebra) */
+main tbody tr:nth-of-type(even) {
+  background-color: #f8f9fa; 
+}
+
+/* Efecto al pasar el ratón por encima de una fila */
+main tbody tr:hover {
+  background-color: var(--color-secundario); 
+  cursor: pointer;
+}
+
+/* Estilo para la última fila para que no tenga borde inferior */
+main tbody tr:last-of-type {
+  border-bottom: 2px solid var(--color-primario);
+}
+
+/*
+    ======================================
+    Estilos para enlaces en el pie de página
+    ======================================
+*/
+
+footer a {
+  color: white;
+  text-decoration: underline; 
+}
+
+footer a:hover {
+  color: #ffc107; /* Un color amarillo/dorado para el hover */
 }

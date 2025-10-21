@@ -15,7 +15,7 @@
   <!-- hoja para impresión (se aplica automáticamente cuando se imprime) -->
   <link rel="stylesheet" type="text/css" href="css/print.css" media="print">
 </head>
-<body>
+<body id="folletoPage">
   <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
   <header>
     <h1>PI - Pisos & Inmuebles</h1>
@@ -91,19 +91,19 @@
     <form action="respuesta_folleto.html" method="post">
       
       <label for="nombre">Nombre y apellidos (máx. 200 caracteres, obligatorio):</label><br>
-      <input type="text" id="nombre" name="nombre" maxlength="200" required><br><br>
+      <input type="text" id="nombre" name="nombre"><br><br>
 
       <label for="email">Correo electrónico (máx. 200 caracteres, obligatorio):</label><br>
-      <input type="email" id="email" name="email" maxlength="200" required><br><br>
+      <input type="email" id="email" name="email"><br><br>
 
       <label>Dirección postal (obligatorio):</label><br>
-      <input type="text" id="calle" name="calle" placeholder="Calle" required><br>
-      <input type="text" id="numero" name="numero" placeholder="Número" required><br>
+      <input type="text" id="calle" name="calle" placeholder="Calle" ><br>
+      <input type="text" id="numero" name="numero" placeholder="Número" ><br>
       <input type="text" id="piso" name="piso" placeholder="Piso/Letra"><br>
-      <input type="text" id="codigo_postal" name="codigo_postal" placeholder="Código Postal" required><br>
-      <input type="text" id="localidad" name="localidad" placeholder="Localidad" required><br>
-      <input type="text" id="provincia" name="provincia" placeholder="Provincia" required><br>
-      <input type="text" id="pais" name="pais" placeholder="País" required><br><br>
+      <input type="text" id="codigo_postal" name="codigo_postal" placeholder="Código Postal" ><br>
+      <input type="text" id="localidad" name="localidad" placeholder="Localidad" ><br>
+      <input type="text" id="provincia" name="provincia" placeholder="Provincia" ><br>
+      <input type="text" id="pais" name="pais" placeholder="País" ><br><br>
 
       <label for="telefono">Teléfono (opcional):</label><br>
       <input type="tel" id="telefono" name="telefono"><br><br>
@@ -112,7 +112,7 @@
       <input type="color" id="color_portada" name="color_portada" value="#000000"><br><br>
 
       <label for="num_copias">Número de copias (1-99, por defecto 1):</label><br>
-      <input type="number" id="num_copias" name="num_copias" min="1" max="99" value="1" required><br><br>
+      <input type="number" id="num_copias" name="num_copias" min="1" max="99" value="1" ><br><br>
 
       <label for="resolucion">Resolución de las fotos (DPI, 150-900, incrementos de 150, por defecto 150):</label><br>
       <select id="resolucion" name="resolucion">
@@ -125,7 +125,7 @@
       </select><br><br>
 
       <label for="anuncio">Anuncio del usuario a imprimir (obligatorio):</label><br>
-      <select id="anuncio" name="anuncio" required>
+      <select id="anuncio" name="anuncio" >
         <option value="">--Seleccione un anuncio--</option>
         <option value="anuncio1">Piso en Madrid, 2 habitaciones</option>
         <option value="anuncio2">Apartamento en Valencia, 1 habitación</option>
@@ -147,7 +147,7 @@
       <label for="sin_precio">Sin precio</label><br><br>
 
       <label for="texto_adicional">Texto adicional (opcional, máximo 4000 caracteres):</label><br>
-      <textarea id="texto_adicional" name="texto_adicional" rows="6" cols="50" maxlength="4000"></textarea><br><br>
+      <textarea id="texto_adicional" name="texto_adicional" rows="6" cols="50"></textarea><br><br>
 
       <button type="submit">Solicitar folleto</button>
     </form>
@@ -159,4 +159,5 @@
     <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
   </footer>
 </body>
+<script src="js/validaciones.js"></script>
 </html>

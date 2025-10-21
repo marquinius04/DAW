@@ -16,7 +16,7 @@
   <!-- hoja para impresión (se aplica automáticamente cuando se imprime) -->
   <link rel="stylesheet" type="text/css" href="css/print.css" media="print">
 </head>
-<body>
+<body id="loginPage">
   <!-- Cabecera -->
   <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
   <header>
@@ -38,10 +38,10 @@
       <h2>Acceso de usuario</h2>
       <form action="index_logueado.html" method="get">
         <label for="usuario">Usuario:</label>
-        <input type="text" id="usuario" name="usuario" required>
+        <input type="text" id="usuario" name="usuario" >
 
         <label for="clave">Contraseña:</label>
-        <input type="password" id="clave" name="clave" required>
+        <input type="text" id="clave" name="clave" >
 
         <button type="submit">Entrar</button>
       </form>
@@ -117,4 +117,5 @@
     <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
   </footer>
 </body>
+<script src="js/validaciones.js"></script>
 </html>

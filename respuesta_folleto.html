@@ -16,57 +16,42 @@
   <link rel="stylesheet" type="text/css" href="css/print.css" media="print">
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
   <header>
     <h1>PI - Pisos & Inmuebles</h1>
     <nav>
       <ul class="menu">
-        <li><a href="index_logueado.html"><span class="icono">home</span>Inicio</a></li>
-
-        <!-- PERFIL con submenú -->
-        <li class="submenu">
-          <a href="perfil.html"><span class="icono">person</span>Perfil</a>
-          <ul>
-            <li><a href="crear_anuncio.html"><span class="icono">add_circle</span>Crear anuncio</a></li>
-            <li><a href="mis_mensajes.html"><span class="icono">mail</span>Mis mensajes</a></li>
-            <li><a href="solicitar_folleto.html"><span class="icono">description</span>Solicitar folleto</a></li>
-          </ul>
-        </li>
-
-        <li><a href="busqueda.html"><span class="icono">search</span>Búsqueda avanzada</a></li>
-        <li><a href="index.html"><span class="icono">logout</span>Salir</a></li>
+        <li><a href="index_logueado.html">Inicio</a></li>
+        <li><a href="busqueda.html">Búsqueda avanzada</a></li>
+        <li><a href="index.html">Salir</a></li>
       </ul>
     </nav>
   </header>
 
-  <main id="main-content">
-    <h2>Solicitud de folleto registrada correctamente</h2>
-    <p>Su solicitud ha sido registrada. A continuación se muestran los datos introducidos:</p>
+  <main>
+    <h2>Solicitud enviada correctamente</h2>
+    <p>Gracias por su solicitud. A continuación se muestra el resumen del pedido:</p>
 
-    <ul>
-      <li><strong>Nombre y apellidos:</strong> Marcos Díaz</li>
-      <li><strong>Correo electrónico:</strong> ejemplo@correo.com</li>
-      <li><strong>Dirección postal:</strong> Calle Falsa 123, Piso 2, Puerta B, 28000 Madrid, Madrid, España</li>
-      <li><strong>Teléfono:</strong> 600123456</li>
-      <li><strong>Color de la portada:</strong> Negro</li>
-      <li><strong>Número de copias:</strong> 1</li>
-      <li><strong>Resolución de las fotos:</strong> 150 DPI</li>
-      <li><strong>Anuncio seleccionado:</strong> Piso en Madrid, 2 habitaciones</li>
-      <li><strong>Fecha aproximada de recepción:</strong> 2025-10-05</li>
-      <li><strong>Impresión a color:</strong> Blanco y negro</li>
-      <li><strong>Impresión del precio:</strong> Con precio</li>
-      <li><strong>Texto adicional:</strong> Me gustaría incluir información sobre el horario de visitas.</li>
-    </ul>
+    <section id="resumen"></section>
 
-    <p><strong>Coste total del folleto:</strong> 10€</p>
-
-    <a href="perfil.html">Volver al perfil</a>
+    <p><a href="index_logueado.html">Volver al inicio</a></p>
   </main>
 
   <footer>
-    <p><a href="accesibilidad.html">Declaración de accesibilidad</a></p>
     <p>&copy; 2025 PI - Pisos & Inmuebles. Todos los derechos reservados.</p>
     <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
   </footer>
+
+  <script>
+    // Mostrar el resumen almacenado en sessionStorage
+    document.addEventListener("DOMContentLoaded", () => {
+      const resumen = sessionStorage.getItem("resumenFolleto");
+      const contenedor = document.getElementById("resumen");
+      if (resumen) {
+        contenedor.innerHTML = resumen;
+      } else {
+        contenedor.innerHTML = "<p>No hay datos disponibles. Por favor, complete el formulario nuevamente.</p>";
+      }
+    });
+  </script>
 </body>
 </html>

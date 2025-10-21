@@ -15,7 +15,7 @@
   <!-- hoja para impresión (se aplica automáticamente cuando se imprime) -->
   <link rel="stylesheet" type="text/css" href="css/print.css" media="print">
 </head>
-<body>
+<body id="registroPage">
   <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
   <!-- Cabecera -->
   <header>
@@ -34,29 +34,42 @@
     <h2>Registro de nuevo usuario</h2>
     <form action="index_logueado.html" method="post" enctype="multipart/form-data">
       <label for="usuario">Nombre de usuario:</label>
-      <input type="text" id="usuario" name="usuario" required><br><br>
+      <input type="text" id="usuario" name="usuario" >
+      <span class="error"></span>
+      <br><br>
 
       <label for="clave">Contraseña:</label>
-      <input type="password" id="clave" name="clave" required><br><br>
+      <input type="text" id="clave" name="clave" >
+      <span class="error"></span>
+      <br><br>
 
       <label for="clave2">Repetir contraseña:</label>
-      <input type="password" id="clave2" name="clave2" required><br><br>
+      <input type="text" id="clave2" name="clave2" >
+      <span class="error"></span>
+      <br><br>
 
       <label for="email">Correo electrónico:</label>
-      <input type="email" id="email" name="email" required><br><br>
+      <input type="text" id="email" name="email" >
+      <span class="error"></span>
+      <br><br>
 
       <label>Sexo:</label>
-      <select name="Sexo" id="Sexo">
+      <select name="sexo" id="sexo">
         <option value="Hombre">Hombre</option>
         <option value="Mujer">Mujer</option>
         <option value="Otro">Prefiero no contestar</option>
+      <span class="error"></span>
       </select>
 
       <label for="nacimiento">Fecha de nacimiento:</label>
-      <input type="date" id="nacimiento" name="nacimiento"><br><br>
+      <input type="date" id="nacimiento" name="nacimiento">
+      <span class="error"></span>
+      <br><br>
 
       <label for="ciudad">Ciudad de residencia:</label>
-      <input type="text" id="ciudad" name="ciudad"><br><br>
+      <input type="text" id="ciudad" name="ciudad">
+      <span class="error"></span>
+      <br><br>
 
       <label for="pais">País de residencia:</label>
       <select id="pais" name="pais">
@@ -72,9 +85,12 @@
         <option value="india">India</option>
         <option value="brasil">Brasil</option>
       </select><br><br>
+      <span class="error"></span>
 
       <label for="foto">Foto de perfil:</label>
-      <input type="file" id="foto" name="foto" accept="image/*"><br><br>
+      <input type="file" id="foto" name="foto" accept="image/*">
+      <span class="error"></span>
+      <br><br>
 
       <button type="submit">Registrarse</button>
     </form>
@@ -87,4 +103,5 @@
     <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
   </footer>
 </body>
+<script src="js/validaciones.js"></script>
 </html>

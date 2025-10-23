@@ -440,3 +440,40 @@ footer a {
 footer a:hover {
   color: #ffc107; /* Un color amarillo/dorado para el hover */
 }
+
+
+
+/* Estilo para los campos de formulario que tienen un error */
+.campo-error {
+  border: 2px solid #D93025;
+  background-color: #FDF4F4;
+}
+
+/* Estilo para los mensajes de error */
+.error {
+  color: #D93025;
+  font-size: 0.9em;
+  font-weight: bold;
+  display: block;
+  margin-top: 4px;
+  min-height: 1.2em; /* Evita que el layout "salte" */
+}
+
+/* Estilos para la tabla generada (basado en Figura 1) */
+#tablaCostesGenerada {
+  border-collapse: collapse;
+  margin-top: 15px;
+  width: 100%;
+  max-width: 800px;
+}
+
+#tablaCostesGenerada th,
+#tablaCostesGenerada td {
+  border: 1px solid #333;
+  padding: 8px;
+  text-align: center;
+}
+
+#tablaCostesGenerada thead th {
+  background-color: #E0E0E0;
+}

@@ -6,13 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="css/styles.css" title="Estilo principal">
 
-  <!-- estilos alternativos seleccionables por el usuario -->
   <link rel="alternate stylesheet" type="text/css" href="css/night.css" title="Modo noche">
   <link rel="alternate stylesheet" type="text/css" href="css/contrast.css" title="Alto contraste">
   <link rel="alternate stylesheet" type="text/css" href="css/big.css" title="Texto grande">
   <link rel="alternate stylesheet" type="text/css" href="css/contrast_big.css" title="Contraste + Texto grande">
 
-  <!-- hoja para impresión (se aplica automáticamente cuando se imprime) -->
   <link rel="stylesheet" type="text/css" href="css/print.css" media="print">
 </head>
 <body id="folletoPage">
@@ -23,7 +21,6 @@
       <ul class="menu">
         <li><a href="index_logueado.html"><span class="icono">home</span>Inicio</a></li>
 
-        <!-- PERFIL con submenú -->
         <li class="submenu">
           <a href="perfil.html"><span class="icono">person</span>Perfil</a>
           <ul>
@@ -88,22 +85,33 @@
     
     <p>Coste de procesamiento y envío: 2€ (fijo, independiente del número de páginas o copias).</p>
 
+    <button type"button" id="toggleTablaCostes">Mostrar tabla de costes</button>
+    <div id="contenedorTablaCostes" style="overflow-x: auto;">
+      </div>
+    <hr>
     <form action="respuesta_folleto.html" method="post">
       
       <label for="nombre">Nombre y apellidos (máx. 200 caracteres, obligatorio):</label><br>
-      <input type="text" id="nombre" name="nombre"><br><br>
+      <input type="text" id="nombre" name="nombre"><br>
+      <span id="nombreError" class="error"></span><br>
 
       <label for="email">Correo electrónico (máx. 200 caracteres, obligatorio):</label><br>
-      <input type="email" id="email" name="email"><br><br>
+      <input type="text" id="email" name="email"><br> <span id="emailError" class="error"></span><br>
 
       <label>Dirección postal (obligatorio):</label><br>
       <input type="text" id="calle" name="calle" placeholder="Calle" ><br>
+      <span id="calleError" class="error"></span>
       <input type="text" id="numero" name="numero" placeholder="Número" ><br>
+      <span id="numeroError" class="error"></span>
       <input type="text" id="piso" name="piso" placeholder="Piso/Letra"><br>
       <input type="text" id="codigo_postal" name="codigo_postal" placeholder="Código Postal" ><br>
+      <span id="codigo_postalError" class="error"></span>
       <input type="text" id="localidad" name="localidad" placeholder="Localidad" ><br>
+      <span id="localidadError" class="error"></span>
       <input type="text" id="provincia" name="provincia" placeholder="Provincia" ><br>
-      <input type="text" id="pais" name="pais" placeholder="País" ><br><br>
+      <span id="provinciaError" class="error"></span>
+      <input type_="text" id="pais" name="pais" placeholder="País" ><br>
+      <span id="paisError" class="error"></span><br>
 
       <label for="telefono">Teléfono (opcional):</label><br>
       <input type="tel" id="telefono" name="telefono"><br><br>
@@ -112,7 +120,7 @@
       <input type="color" id="color_portada" name="color_portada" value="#000000"><br><br>
 
       <label for="num_copias">Número de copias (1-99, por defecto 1):</label><br>
-      <input type="number" id="num_copias" name="num_copias" min="1" max="99" value="1" ><br><br>
+      <input type="text" id="num_copias" name="num_copias" value="1" ><br> <span id="numCopiasError" class="error"></span><br>
 
       <label for="resolucion">Resolución de las fotos (DPI, 150-900, incrementos de 150, por defecto 150):</label><br>
       <select id="resolucion" name="resolucion">
@@ -121,7 +129,7 @@
         <option value="450">450</option>
         <option value="600">600</option>
         <option value="750">750</option>
-        <option value="900">900</option>
+        <option value="900">900</doption>
       </select><br><br>
 
       <label for="anuncio">Anuncio del usuario a imprimir (obligatorio):</label><br>
@@ -129,12 +137,11 @@
         <option value="">--Seleccione un anuncio--</option>
         <option value="anuncio1">Piso en Madrid, 2 habitaciones</option>
         <option value="anuncio2">Apartamento en Valencia, 1 habitación</option>
-      </select><br><br>
+      </select><br>
+      <span id="anuncioError" class="error"></span><br>
 
       <label for="fecha_recepcion">Fecha aproximada de recepción (opcional):</label><br>
-      <input type="date" id="fecha_recepcion" name="fecha_recepcion"><br><br>
-
-      <label>Impresión a color:</label><br>
+      <input type="text" id="fecha_recepcion" name="fecha_recepcion" placeholder="AAAA-MM-DD"><br><br> <label>Impresión a color:</label><br>
       <input type="radio" id="blanco_negro" name="impresion_color" value="blanco_negro" checked>
       <label for="blanco_negro">Blanco y negro</label><br>
       <input type="radio" id="color" name="impresion_color" value="color">

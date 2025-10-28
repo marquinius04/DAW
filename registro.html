@@ -6,18 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="css/styles.css" title="Estilo principal">
 
-  <!-- estilos alternativos seleccionables por el usuario -->
   <link rel="alternate stylesheet" type="text/css" href="css/night.css" title="Modo noche">
   <link rel="alternate stylesheet" type="text/css" href="css/contrast.css" title="Alto contraste">
   <link rel="alternate stylesheet" type="text/css" href="css/big.css" title="Texto grande">
   <link rel="alternate stylesheet" type="text/css" href="css/contrast_big.css" title="Contraste + Texto grande">
 
-  <!-- hoja para impresión (se aplica automáticamente cuando se imprime) -->
   <link rel="stylesheet" type="text/css" href="css/print.css" media="print">
 </head>
 <body id="registroPage">
   <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
-  <!-- Cabecera -->
   <header>
     <h1>PI - Pisos & Inmuebles</h1>
     <nav>
@@ -29,50 +26,61 @@
     </nav>
   </header>
 
-  <!-- Contenido principal -->
   <main id="main-content">
     <h2>Registro de nuevo usuario</h2>
     <form action="index_logueado.html" method="post" enctype="multipart/form-data">
-      <label for="usuario">Nombre de usuario:</label>
+      <label for="usuario">(*) Nombre de usuario:</label>
       <input type="text" id="usuario" name="usuario" >
-      <span class="error"></span>
-      <br><br>
+      <ul id="usuarioInfo" class="info">
+        <li>· Sólo puede contener letras del alfabeto inglés y números</li>
+        <li>· No puede comenzar por un número</li>
+        <li>· Longitud 3-15 caracteres</li>
+      </ul>
+      <span id="usuarioError" class="error"></span> 
 
-      <label for="clave">Contraseña:</label>
+      <label for="clave">(*) Contraseña:</label>
       <input type="text" id="clave" name="clave" >
-      <span class="error"></span>
-      <br><br>
+      <ul id="claveInfo" class="info">
+        <li>· Sólo puede contener letras del alfabeto inglés, números, "-" y "_"</li>
+        <li>· Al menos una mayúscula, una minúscula y un número</li>
+        <li>· Longitud 6-15</li>
+      </ul>
+      <span id="claveError" class="error"></span> 
 
-      <label for="clave2">Repetir contraseña:</label>
+      <label for="clave2">(*) Repetir contraseña:</label>
       <input type="text" id="clave2" name="clave2" >
-      <span class="error"></span>
-      <br><br>
+      <span id="clave2Error" class="error"></span> 
 
-      <label for="email">Correo electrónico:</label>
+      <label for="email">(*) Correo electrónico:</label>
       <input type="text" id="email" name="email" >
-      <span class="error"></span>
-      <br><br>
+      <span id="emailError" class="error"></span> 
 
-      <label>Sexo:</label>
+      <label>(*) Sexo:</label>
       <select name="sexo" id="sexo">
+        <option value="">-- Seleccione una opción --</option>
         <option value="Hombre">Hombre</option>
         <option value="Mujer">Mujer</option>
         <option value="Otro">Prefiero no contestar</option>
-      <span class="error"></span>
       </select>
+      <span id="sexoError" class="error"></span> 
 
-      <label for="nacimiento">Fecha de nacimiento:</label>
-      <input type="date" id="nacimiento" name="nacimiento">
-      <span class="error"></span>
-      <br><br>
+      <label for="nacimiento">(*) Fecha de nacimiento:</label>
+      <div class="containerNacimiento">
+        <input type="text" id="diaNacimiento" name="diaNacimiento" class="fechaNacimiento" placeholder="DD">
+        /
+        <input type="text" id="mesNacimiento" name="mesNacimiento" class="fechaNacimiento" placeholder="MM">
+        /
+        <input type="text" id="anyoNacimiento" name="anyoNacimiento" class="fechaNacimiento" placeholder="AAAA">
+      </div>
+      <span id="nacimientoError" class="error"></span> 
 
       <label for="ciudad">Ciudad de residencia:</label>
       <input type="text" id="ciudad" name="ciudad">
-      <span class="error"></span>
-      <br><br>
+      <span id="ciudadError" class="error"></span> 
 
       <label for="pais">País de residencia:</label>
       <select id="pais" name="pais">
+        <option value="">-- Seleccione una opción --</option>
         <option value="espana">España</option>
         <option value="francia">Francia</option>
         <option value="italia">Italia</option>
@@ -84,19 +92,17 @@
         <option value="japon">Japón</option>
         <option value="india">India</option>
         <option value="brasil">Brasil</option>
-      </select><br><br>
-      <span class="error"></span>
+      </select>
+      <span id="paisError" class="error"></span> 
 
       <label for="foto">Foto de perfil:</label>
       <input type="file" id="foto" name="foto" accept="image/*">
-      <span class="error"></span>
-      <br><br>
+      <span id="fotoError" class="error"></span> 
 
       <button type="submit">Registrarse</button>
     </form>
   </main>
 
-  <!-- Pie de página -->
   <footer>
     <p><a href="accesibilidad.html">Declaración de accesibilidad</a></p>
     <p>&copy; 2025 PI - Pisos & Inmuebles. Todos los derechos reservados.</p>

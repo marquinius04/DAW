@@ -85,44 +85,59 @@
     
     <p>Coste de procesamiento y envío: 2€ (fijo, independiente del número de páginas o copias).</p>
 
-    <button type"button" id="toggleTablaCostes">Mostrar tabla de costes</button>
+    <button type="button" id="toggleTablaCostes">Mostrar tabla de costes</button>
     <div id="contenedorTablaCostes" style="overflow-x: auto;">
       </div>
     <hr>
     <form action="respuesta_folleto.html" method="post">
       
-      <label for="nombre">Nombre y apellidos (máx. 200 caracteres, obligatorio):</label><br>
-      <input type="text" id="nombre" name="nombre"><br>
-      <span id="nombreError" class="error"></span><br>
+      <label for="nombre">(*) Nombre y apellidos (máx. 200 caracteres):</label>
+      <input type="text" id="nombre" name="nombre">
+      <span id="nombreError" class="error"></span>
 
-      <label for="email">Correo electrónico (máx. 200 caracteres, obligatorio):</label><br>
-      <input type="text" id="email" name="email"><br> <span id="emailError" class="error"></span><br>
+      <label for="email">(*) Correo electrónico (máx. 200 caracteres):</label>
+      <input type="text" id="email" name="email">
+      <span id="emailError" class="error"></span>
 
-      <label>Dirección postal (obligatorio):</label><br>
-      <input type="text" id="calle" name="calle" placeholder="Calle" ><br>
+      <label>(*) Dirección postal:</label>
+      <input type="text" id="calle" name="calle" placeholder="Calle" >
       <span id="calleError" class="error"></span>
-      <input type="text" id="numero" name="numero" placeholder="Número" ><br>
+      <input type="text" id="numero" name="numero" placeholder="Número" >
       <span id="numeroError" class="error"></span>
-      <input type="text" id="piso" name="piso" placeholder="Piso/Letra"><br>
-      <input type="text" id="codigo_postal" name="codigo_postal" placeholder="Código Postal" ><br>
+      <input type="text" id="piso" name="piso" placeholder="Piso/Letra">
+      <input type="text" id="codigo_postal" name="codigo_postal" placeholder="Código Postal" >
       <span id="codigo_postalError" class="error"></span>
-      <input type="text" id="localidad" name="localidad" placeholder="Localidad" ><br>
+      <input type="text" id="localidad" name="localidad" placeholder="Localidad" >
       <span id="localidadError" class="error"></span>
-      <input type="text" id="provincia" name="provincia" placeholder="Provincia" ><br>
+      <input type="text" id="provincia" name="provincia" placeholder="Provincia" >
       <span id="provinciaError" class="error"></span>
-      <input type_="text" id="pais" name="pais" placeholder="País" ><br>
-      <span id="paisError" class="error"></span><br>
+      
+      <label for="pais">País:</label>
+      <select id="pais" name="pais">
+        <option value="espana">España</option>
+        <option value="francia">Francia</option>
+        <option value="italia">Italia</option>
+        <option value="alemania">Alemania</option>
+        <option value="portugal">Portugal</option>
+        <option value="estadosunidos">Estados Unidos</option>
+        <option value="canada">Canadá</option>
+        <option value="china">China</option>
+        <option value="japon">Japón</option>
+        <option value="india">India</option>
+        <option value="brasil">Brasil</option>
+      </select>
 
-      <label for="telefono">Teléfono (opcional):</label><br>
-      <input type="tel" id="telefono" name="telefono"><br><br>
+      <label for="telefono">Teléfono:</label>
+      <input type="text" id="telefono" name="telefono">
 
-      <label for="color_portada">Color de la portada:</label><br>
-      <input type="color" id="color_portada" name="color_portada" value="#000000"><br><br>
+      <label for="color_portada">Color de la portada:</label>
+      <input type="color" id="color_portada" name="color_portada" value="#000000">
 
-      <label for="num_copias">Número de copias (1-99, por defecto 1):</label><br>
-      <input type="text" id="num_copias" name="num_copias" value="1" ><br> <span id="numCopiasError" class="error"></span><br>
+      <label for="num_copias">Número de copias (1-99, por defecto 1):</label>
+      <input type="text" id="num_copias" name="num_copias" value="1" >
+      <span id="numCopiasError" class="error"></span>
 
-      <label for="resolucion">Resolución de las fotos (DPI, 150-900, incrementos de 150, por defecto 150):</label><br>
+      <label for="resolucion">Resolución de las fotos (DPI, 150-900, incrementos de 150, por defecto 150):</label>
       <select id="resolucion" name="resolucion">
         <option value="150" selected>150</option>
         <option value="300">300</option>
@@ -130,31 +145,33 @@
         <option value="600">600</option>
         <option value="750">750</option>
         <option value="900">900</doption>
-      </select><br><br>
+      </select>
 
-      <label for="anuncio">Anuncio del usuario a imprimir (obligatorio):</label><br>
+      <label for="anuncio">Anuncio del usuario a imprimir (obligatorio):</label>
       <select id="anuncio" name="anuncio" >
         <option value="">--Seleccione un anuncio--</option>
         <option value="anuncio1">Piso en Madrid, 2 habitaciones</option>
         <option value="anuncio2">Apartamento en Valencia, 1 habitación</option>
-      </select><br>
-      <span id="anuncioError" class="error"></span><br>
+      </select>
+      <span id="anuncioError" class="error"></span>
 
-      <label for="fecha_recepcion">Fecha aproximada de recepción (opcional):</label><br>
-      <input type="text" id="fecha_recepcion" name="fecha_recepcion" placeholder="AAAA-MM-DD"><br><br> <label>Impresión a color:</label><br>
-      <input type="radio" id="blanco_negro" name="impresion_color" value="blanco_negro" checked>
-      <label for="blanco_negro">Blanco y negro</label><br>
-      <input type="radio" id="color" name="impresion_color" value="color">
-      <label for="color">Color</label><br><br>
+      <label for="fecha_recepcion">Fecha aproximada de recepción:</label>
+      <div class="containerNacimiento">
+        <input type="text" id="diaRecepcion" name="diaRecepcion" class="fechaNacimiento" placeholder="DD">
+        /
+        <input type="text" id="mesRecepcion" name="mesRecepcion" class="fechaNacimiento" placeholder="MM">
+        /
+        <input type="text" id="anyoRecepcion" name="anyoRecepcion" class="fechaNacimiento" placeholder="AAAA">
+      </div>
 
-      <label>Impresión del precio:</label><br>
+      <label>Impresión del precio:</label>
       <input type="radio" id="con_precio" name="impresion_precio" value="con_precio" checked>
-      <label for="con_precio">Con precio</label><br>
+      <label for="con_precio">Con precio</label>
       <input type="radio" id="sin_precio" name="impresion_precio" value="sin_precio">
-      <label for="sin_precio">Sin precio</label><br><br>
+      <label for="sin_precio">Sin precio</label>
 
-      <label for="texto_adicional">Texto adicional (opcional, máximo 4000 caracteres):</label><br>
-      <textarea id="texto_adicional" name="texto_adicional" rows="6" cols="50"></textarea><br><br>
+      <label for="texto_adicional">Texto adicional (opcional, máximo 4000 caracteres):</label>
+      <textarea id="texto_adicional" name="texto_adicional" rows="6" cols="50"></textarea>
 
       <button type="submit">Solicitar folleto</button>
     </form>

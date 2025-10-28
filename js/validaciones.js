@@ -325,270 +325,178 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // ==================================
-  // LÓGICA PÁGINA SOLICITAR FOLLETO
+  // LÓGICA PÁGINA SOLICITAR FOLLETO (REFACTORIZADA)
   // ==================================
   if (document.body.id === "folletoPage") {
-    /**
-     * Calcula el coste de un folleto según las tarifas y el sistema de bloques.
-     * @param {number} numPaginas 
-     * @param {number} numFotos 
-     * @param {boolean} esColor 
-     * @param {boolean} esAltaRes 
-     */
-    function calcularCosteFolleto(numPaginas, numFotos, esColor, esAltaRes) {
-        // Tarifas de la imagen
-        const COSTE_FIJO = 10.0;
-        const PRECIO_PAG_B1 = 2.0; 
-        const PRECIO_PAG_B2 = 1.8; 
-        const PRECIO_PAG_B3 = 1.6; 
-        const COSTE_COLOR_FOTO = 0.5;
-        const COSTE_RES_FOTO = 0.2;
-
-        
-        // 1. Cálculo de páginas 
-        let costePaginas = 0.0;
-        if (numPaginas <= 4) { // Bloque 1: < 5 págs (1-4)
-            costePaginas = numPaginas * PRECIO_PAG_B1;
-        } else if (numPaginas <= 10) { // Bloque 2: 5-10 págs
-            // Coste de las primeras 4 págs + coste de las págs restantes
-            costePaginas = (4 * PRECIO_PAG_B1) + ((numPaginas - 4) * PRECIO_PAG_B2);
-        } else { // Bloque 3: > 10 págs
-            // Coste bloque 1 (4 págs) + coste bloque 2 (6 págs) + coste de las págs restantes
-            costePaginas = (4 * PRECIO_PAG_B1) + (6 * PRECIO_PAG_B2) + ((numPaginas - 10) * PRECIO_PAG_B3);
-        }
-
-        // 2. Cálculo de fotos (Color y resolución)
-        let costeColor = 0.0;
-        let costeResolucion = 0.0;
-
-        if (esColor) {
-            costeColor = numFotos * COSTE_COLOR_FOTO;
-        }
-        if (esAltaRes) {
-            costeResolucion = numFotos * COSTE_RES_FOTO;
-        }
-
-        // 3. Suma total
-        const total = COSTE_FIJO + costePaginas + costeColor + costeResolucion;
-        
-        // Devolver el valor formateado como "XX,XX €"
-        return total.toFixed(2).replace('.', ',') + " €";
-    }
-
+    
+    // Constantes de tarifas
+    const COSTES = {
+      FIJO: 10.0,
+      PAG: [2.0, 1.8, 1.6], // B1: <5, B2: 5-10, B3: >10
+      COLOR_FOTO: 0.5,
+      RES_FOTO: 0.2
+    };
+    
+    // Datos de entrada
     const datosEntradaTabla = [
-        { p: 1, f: 3 }, { p: 2, f: 6 }, { p: 3, f: 9 }, { p: 4, f: 12 }, { p: 5, f: 15 },
-        { p: 6, f: 18 }, { p: 7, f: 21 }, { p: 8, f: 24 }, { p: 9, f: 27 }, { p: 10, f: 30 },
-        { p: 11, f: 33 }, { p: 12, f: 36 }, { p: 13, f: 39 }, { p: 14, f: 42 }, { p: 15, f: 45 }
+      { p: 1, f: 3 }, { p: 2, f: 6 }, { p: 3, f: 9 }, { p: 4, f: 12 }, { p: 5, f: 15 },
+      { p: 6, f: 18 }, { p: 7, f: 21 }, { p: 8, f: 24 }, { p: 9, f: 27 }, { p: 10, f: 30 },
+      { p: 11, f: 33 }, { p: 12, f: 36 }, { p: 13, f: 39 }, { p: 14, f: 42 }, { p: 15, f: 45 }
     ];
 
-    // ==============================================================
-    // FIN DE LA SECCIÓN DE CÁLCULO
-    // ==============================================================
+    /**
+     * Calcula el coste de un folleto según las tarifas y el sistema de bloques. (Más concisa)
+     */
+    function calcularCosteFolleto(numPaginas, numFotos, esColor, esAltaRes) {
+      let costePaginas = 0;
+      if (numPaginas <= 4) {
+        costePaginas = numPaginas * COSTES.PAG[0];
+      } else if (numPaginas <= 10) {
+        costePaginas = (4 * COSTES.PAG[0]) + ((numPaginas - 4) * COSTES.PAG[1]);
+      } else {
+        costePaginas = (4 * COSTES.PAG[0]) + (6 * COSTES.PAG[1]) + ((numPaginas - 10) * COSTES.PAG[2]);
+      }
 
+      const costeColor = esColor ? numFotos * COSTES.COLOR_FOTO : 0;
+      const costeResolucion = esAltaRes ? numFotos * COSTES.RES_FOTO : 0;
+      
+      const total = COSTES.FIJO + costePaginas + costeColor + costeResolucion;
+      return total.toFixed(2).replace('.', ',') + " €";
+    }
 
+    // --- Lógica de la tabla y botón de alternancia ---
     const contenedorTabla = document.getElementById("contenedorTablaCostes");
     const botonToggle = document.getElementById("toggleTablaCostes");
 
     if (contenedorTabla && botonToggle) {
-        // 1. Crear la tabla
-        const tabla = document.createElement("table");
-        tabla.id = "tablaCostesGenerada";
-        tabla.style.display = "none"; // Oculta por defecto
+      const crearElemento = (tag, content, props = {}) => Object.assign(document.createElement(tag), { textContent: content, ...props });
 
-        // 2. Crear cabecera 
-        const thead = document.createElement("thead");
-        const trHead1 = document.createElement("tr");
-        
-        const thPag = document.createElement("th");
-        thPag.textContent = "Número de páginas";
-        thPag.rowSpan = 2;
-        
-        const thFotos = document.createElement("th");
-        thFotos.textContent = "Número de fotos";
-        thFotos.rowSpan = 2;
+      const tabla = crearElemento("table", "", { id: "tablaCostesGenerada", style: { display: "none" } });
+      const thead = crearElemento("thead");
+      const tbody = crearElemento("tbody");
 
-        const thBN = document.createElement("th");
-        thBN.textContent = "Blanco y negro";
-        thBN.colSpan = 2;
-        
-        const thColor = document.createElement("th");
-        thColor.textContent = "Color";
-        thColor.colSpan = 2;
+      // Cabecera simplificada
+      const trHead1 = crearElemento("tr");
+      trHead1.append(
+        crearElemento("th", "Número de páginas", { rowSpan: 2 }),
+        crearElemento("th", "Número de fotos", { rowSpan: 2 }),
+        crearElemento("th", "Blanco y negro", { colSpan: 2 }),
+        crearElemento("th", "Color", { colSpan: 2 })
+      );
 
-        trHead1.appendChild(thPag);
-        trHead1.appendChild(thFotos);
-        trHead1.appendChild(thBN);
-        trHead1.appendChild(thColor);
+      const trHead2 = crearElemento("tr");
+      ["150-300 dpi", "450-900 dpi", "150-300 dpi", "450-900 dpi"].forEach(txt => trHead2.appendChild(crearElemento("th", txt)));
+      
+      thead.append(trHead1, trHead2);
+      tabla.appendChild(thead);
 
-        const trHead2 = document.createElement("tr");
-        const thBN1 = document.createElement("th");
-        thBN1.textContent = "150-300 dpi";
-        const thBN2 = document.createElement("th");
-        thBN2.textContent = "450-900 dpi";
-        const thC1 = document.createElement("th");
-        thC1.textContent = "150-300 dpi";
-        const thC2 = document.createElement("th");
-        thC2.textContent = "450-900 dpi";
-        
-        trHead2.appendChild(thBN1);
-        trHead2.appendChild(thBN2);
-        trHead2.appendChild(thC1);
-        trHead2.appendChild(thC2);
-        
-        thead.appendChild(trHead1);
-        thead.appendChild(trHead2);
-        tabla.appendChild(thead);
+      // Cuerpo
+      datosEntradaTabla.forEach(({ p, f }) => {
+        const tr = crearElemento("tr");
+        tr.append(crearElemento("td", p), crearElemento("td", f));
+        tr.append(
+          crearElemento("td", calcularCosteFolleto(p, f, false, false)),
+          crearElemento("td", calcularCosteFolleto(p, f, false, true)),
+          crearElemento("td", calcularCosteFolleto(p, f, true, false)),
+          crearElemento("td", calcularCosteFolleto(p, f, true, true))
+        );
+        tbody.appendChild(tr);
+      });
+      tabla.appendChild(tbody);
+      contenedorTabla.appendChild(tabla);
 
-        // 3. Crear cuerpo 
-        const tbody = document.createElement("tbody");
-        
-        // Función auxiliar interna para crear <td> con texto
-        const crearTd = (texto) => {
-            const td = document.createElement("td");
-            td.textContent = texto;
-            return td;
-        };
-
-        // Iterar sobre los datos de ENTRADA
-        for (const filaData of datosEntradaTabla) {
-            const tr = document.createElement("tr");
-            
-            const paginas = filaData.p;
-            const fotos = filaData.f;
-
-            // Añadir las dos primeras columnas (datos de entrada)
-            tr.appendChild(crearTd(paginas));
-            tr.appendChild(crearTd(fotos));
-
-            // Calcular y añadir las 4 columnas de costes 
-            tr.appendChild(crearTd(calcularCosteFolleto(paginas, fotos, false, false)));
-            tr.appendChild(crearTd(calcularCosteFolleto(paginas, fotos, false, true)));
-            tr.appendChild(crearTd(calcularCosteFolleto(paginas, fotos, true, false)));
-            tr.appendChild(crearTd(calcularCosteFolleto(paginas, fotos, true, true)));
-            
-            tbody.appendChild(tr);
-        }
-        tabla.appendChild(tbody);
-
-        // 4. Añadir la tabla al DOM
-        contenedorTabla.appendChild(tabla);
-
-        // 5. Configurar el botón para mostrar/ocultar
-        botonToggle.addEventListener("click", () => {
-            if (tabla.style.display === "none") {
-            tabla.style.display = "table";
-            botonToggle.textContent = "Ocultar tabla de costes";
-            } else {
-            tabla.style.display = "none";
-            botonToggle.textContent = "Mostrar tabla de costes";
-            }
-        });
+      botonToggle.addEventListener("click", () => {
+        const isHidden = tabla.style.display === "none";
+        tabla.style.display = isHidden ? "table" : "none";
+        botonToggle.textContent = isHidden ? "Ocultar tabla de costes" : "Mostrar tabla de costes";
+      });
     }
 
-    const formFolleto = document.querySelector("form"); 
+    // --- Lógica de envío del formulario ---
+    const formFolleto = document.querySelector("form");
     if (formFolleto) {
-        formFolleto.addEventListener("submit", (event) => {
-            let valido = true;
-            limpiarErrores(formFolleto);
+      formFolleto.addEventListener("submit", (event) => {
+        limpiarErrores(formFolleto);
+        let valido = true;
 
-            // --- Campos base ---
-            const nombre = document.getElementById("nombre").value.trim();
-            const email = document.getElementById("email").value.trim();
-            const calle = document.getElementById("calle").value.trim();
-            const numero = document.getElementById("numero").value.trim();
-            const codigoPostal = document.getElementById("codigo_postal").value.trim();
-            const localidad = document.getElementById("localidad").value.trim();
-            const provincia = document.getElementById("provincia").value.trim();
-            const pais = document.getElementById("pais").value.trim();
-            const numCopias = document.getElementById("num_copias").value;
-            const resolucion = document.getElementById("resolucion").value;
-            const anuncio = document.getElementById("anuncio").value;
+        // Lista de campos obligatorios para validación de vacío
+        const camposObligatorios = [
+          { id: "nombre", msg: "El nombre es obligatorio." },
+          { id: "calle", msg: "Campo obligatorio." },
+          { id: "numero", msg: "Campo obligatorio." },
+          { id: "localidad", msg: "Campo obligatorio." },
+          { id: "provincia", msg: "Campo obligatorio." },
+          { id: "pais", msg: "Campo obligatorio." },
+          { id: "anuncio", msg: "Debe seleccionar un anuncio." },
+          { id: "codigo_postal", msg: "Campo obligatorio.", valFn: validarCodigoPostal },
+          { id: "email", msg: "Campo obligatorio.", valFn: validarEmail }
+        ];
 
-            // --- VALIDACIONES ---
-            if (nombre === "") {
-                valido = false;
-                mostrarError("nombre", "El nombre es obligatorio.");
+        // VALIDACIONES DE VACÍO Y FORMATO (agrupadas)
+        camposObligatorios.forEach(campo => {
+          const valor = document.getElementById(campo.id).value.trim();
+          if (valor === "") {
+            valido = false;
+            mostrarError(campo.id, campo.msg);
+          } else if (campo.valFn) {
+            const [v, m] = campo.valFn(valor);
+            if (!v) {
+              valido = false;
+              mostrarError(campo.id, m);
             }
-            
-            const [emailValido, emailMsg] = validarEmail(email);
-            if (!emailValido) {
-                valido = false;
-                mostrarError("email", emailMsg);
-            }
-
-            if (calle === "") {
-                valido = false;
-                mostrarError("calle", "Campo obligatorio.");
-            }
-            if (numero === "") {
-                valido = false;
-                mostrarError("numero", "Campo obligatorio.");
-            }
-            if (localidad === "") {
-                valido = false;
-                mostrarError("localidad", "Campo obligatorio.");
-            }
-            if (provincia === "") {
-                valido = false;
-                mostrarError("provincia", "Campo obligatorio.");
-            }
-            if (pais === "") {
-                valido = false;
-                mostrarError("pais", "Campo obligatorio.");
-            }
-            if (anuncio === "") {
-                valido = false;
-                mostrarError("anuncio", "Debe seleccionar un anuncio.");
-            }
-            
-            const [cpValido, cpMsg] = validarCodigoPostal(codigoPostal);
-            if (codigoPostal === "") {
-                valido = false;
-                mostrarError("codigo_postal", "Campo obligatorio.");
-            } else if (!cpValido) {
+          }
+        });
+        
+        // La validación de CP debe manejar también el caso de vacío
+        if (document.getElementById("codigo_postal").value.trim() !== "" && valido) {
+            const [cpValido, cpMsg] = validarCodigoPostal(document.getElementById("codigo_postal").value.trim());
+            if (!cpValido) {
                 valido = false;
                 mostrarError("codigo_postal", cpMsg);
             }
+        }
 
-            const copiasInt = parseInt(numCopias);
-            if (isNaN(copiasInt) || copiasInt < 1 || copiasInt > 99) {
-                valido = false;
-                mostrarError("num_copias", "Debe ser un número entre 1 y 99.");
-            }
+        // Validación de copias
+        const numCopias = document.getElementById("num_copias").value;
+        const copiasInt = parseInt(numCopias);
+        if (isNaN(copiasInt) || copiasInt < 1 || copiasInt > 99) {
+          valido = false;
+          mostrarError("num_copias", "Debe ser un número entre 1 y 99.");
+        }
 
-            if (!valido) {
-                event.preventDefault();
-            } else {
-                const impresionColor = formFolleto.querySelector("input[name='impresion_color']:checked").value;
-                const resInt = parseInt(resolucion);
-                let precioUnidad = 0;
+        if (!valido) {
+          event.preventDefault();
+        } else {
+          // CÁLCULO Y ALMACENAMIENTO (conciso)
+          const getInput = (id) => document.getElementById(id).value.trim();
+          const impresionColor = formFolleto.querySelector("input[name='impresion_color']:checked").value;
+          const resInt = parseInt(getInput("resolucion"));
+          const costeFijo = 2;
+          
+          // Operador ternario para calcular precioUnidad
+          const precioUnidad = (resInt === 150) ? 
+            (impresionColor === "blanco_negro" ? 5 : 7) : 
+            (impresionColor === "blanco_negro" ? 8 : 12);
 
-                // Tarifas del formulario en solicitar_folleto.html
-                if (resInt === 150 && impresionColor === "blanco_negro") precioUnidad = 5;
-                if (resInt === 150 && impresionColor === "color") precioUnidad = 7;
-                if (resInt > 150 && impresionColor === "blanco_negro") precioUnidad = 8;
-                if (resInt > 150 && impresionColor === "color") precioUnidad = 12;
+          const total = (precioUnidad * copiasInt) + costeFijo;
+          
+          // Resumen más corto
+          const resumenHTML = `
+          <ul>
+            <li><strong>Nombre:</strong> ${getInput("nombre")}</li>
+            <li><strong>Email:</strong> ${getInput("email")}</li>
+            <li><strong>Dirección:</strong> ${getInput("calle")}, ${getInput("numero")}, ${getInput("codigo_postal")}, ${getInput("localidad")}, ${getInput("provincia")}, ${getInput("pais")}</li>
+            <li><strong>Número de copias:</strong> ${copiasInt}</li>
+            <li><strong>Resolución:</strong> ${resInt} DPI</li>
+            <li><strong>Tipo de impresión:</strong> ${impresionColor === "color" ? "Color" : "Blanco y negro"}</li>
+            <li><strong>Precio por unidad:</strong> ${precioUnidad} €</li>
+            <li><strong>Coste fijo:</strong> ${costeFijo} €</li>
+            <li><strong>Total:</strong> ${total} €</li>
+          </ul>`;
 
-                const costeFijo = 2;
-                const total = (precioUnidad * copiasInt) + costeFijo;
-                
-                // Guardar en sessionStorage para la página de respuesta
-                const resumenHTML = `
-                <ul>
-                    <li><strong>Nombre:</strong> ${nombre}</li>
-                    <li><strong>Email:</strong> ${email}</li>
-                    <li><strong>Dirección:</strong> ${calle}, ${numero}, ${codigoPostal}, ${localidad}, ${provincia}, ${pais}</li>
-                    <li><strong>Número de copias:</strong> ${copiasInt}</li>
-                    <li><strong>Resolución:</strong> ${resInt} DPI</li>
-                    <li><strong>Tipo de impresión:</strong> ${impresionColor === "color" ? "Color" : "Blanco y negro"}</li>
-                    <li><strong>Precio por unidad:</strong> ${precioUnidad} €</li>
-                    <li><strong>Coste fijo:</strong> ${costeFijo} €</li>
-                    <li><strong>Total:</strong> ${total} €</li>
-                </ul>`;
-
-                sessionStorage.setItem("resumenFolleto", resumenHTML);
-            }
-        });
+          sessionStorage.setItem("resumenFolleto", resumenHTML);
+        }
+      });
     }
   }
 

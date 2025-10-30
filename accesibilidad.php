@@ -1,32 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Accesibilidad - PI</title>
+<?php
+// Fichero: accesibilidad.php
+$titulo_pagina = "Declaración de Accesibilidad - PI";
+require_once 'include/head.php'; 
+?>
 
-  <!-- Estilos principales y alternativos -->
-  <link rel="stylesheet" type="text/css" href="css/styles.css" title="Estilo principal">
-  <link rel="alternate stylesheet" type="text/css" href="css/night.css" title="Modo noche">
-  <link rel="alternate stylesheet" type="text/css" href="css/contrast.css" title="Alto contraste">
-  <link rel="alternate stylesheet" type="text/css" href="css/big.css" title="Texto grande">
-  <link rel="alternate stylesheet" type="text/css" href="css/contrast_big.css" title="Contraste + Texto grande">
-  <link rel="stylesheet" type="text/css" href="css/print.css" media="print">
-</head>
-<body>
-  <!-- Cabecera -->
-  <header>
-    <h1>PI - Pisos & Inmuebles</h1>
-    <nav>
-      <ul class="menu">
-        <li><a href="index_logueado.html"><span class="icono">home</span>Inicio</a></li>
-        <li><a href="busqueda.html"><span class="icono">search</span>Búsqueda avanzada</a></li>
-        <li><a href="index_nologueado.html"><span class="icono">logout</span>Salir</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <!-- Contenido principal -->
-  <main>
     <section>
       <h2>Declaración de Accesibilidad</h2>
       <p>El sitio web <strong>PI - Pisos & Inmuebles</strong> ha sido desarrollado siguiendo principios de accesibilidad web
@@ -68,13 +45,7 @@
       <p>Si detecta algún problema de accesibilidad o desea realizar sugerencias, puede ponerse en contacto con los autores del sitio:</p>
       <p><strong>Marcos Díaz Moleón</strong> y <strong>Gustavo Joel Paladines Dávila</strong>.</p>
     </section>
-  </main>
-
-  <!-- Pie de página -->
-  <footer>
-    <p><a href="accesibilidad.html">Declaración de accesibilidad</a></p>
-    <p>&copy; 2025 PI - Pisos & Inmuebles. Todos los derechos reservados.</p>
-    <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
-  </footer>
-</body>
-</html>
+    
+    <?php
+require_once 'include/footer.php'; // Se encarga del footer y el enlace actualizado
+?>

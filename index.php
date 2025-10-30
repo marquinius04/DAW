@@ -2,7 +2,7 @@
 // 1. Definir variables para head.php
 $titulo_pagina = "Acceso y Anuncios Recientes";
 $body_id = "loginPage"; // Mantenemos el ID de la página para JS si lo necesita
-
+$menu_tipo = 'publico';
 // 2. Incluir la cabecera y el inicio del cuerpo
 require_once 'include/head.php'; 
 ?>

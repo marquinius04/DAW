@@ -1,8 +1,7 @@
 <?php
-// PHP abre una variable para definir el título de la página.
-// Si no se define en la página principal, usa un valor por defecto.
 $titulo_pagina = $titulo_pagina ?? "PI - Pisos & Inmuebles"; 
-$body_id = $body_id ?? ""; // Variable para definir el ID del body (loginPage, registroPage, etc.)
+$body_id = $body_id ?? "";
+$menu_tipo = $menu_tipo ?? 'privado';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -21,16 +20,32 @@ $body_id = $body_id ?? ""; // Variable para definir el ID del body (loginPage, r
   <link rel="stylesheet" type="text/css" href="css/print.css" media="print">
 </head>
 <body id="<?php echo $body_id; ?>"> 
-  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
-  <header>
-    <h1>PI - Pisos & Inmuebles</h1>
-    <nav>
-      <ul>
-        <li><a href="index.php"><span class="icono">home</span>Inicio</a></li>
-        <li><a href="registro.php"><span class="icono">person_add</span>Registro</a></li>
-        <li><a href="busqueda.php"><span class="icono">search</span>Búsqueda avanzada</a></li>
-      </ul>
-    </nav>
-  </header>
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    <header>
+        <h1>PI - Pisos & Inmuebles</h1>
+        <nav>
+            <?php if ($menu_tipo === 'publico'): ?>
+            <ul>
+                <li><a href="index.php"><span class="icono">home</span>Inicio</a></li>
+                <li><a href="registro.php"><span class="icono">person_add</span>Registro</a></li>
+                <li><a href="busqueda.php"><span class="icono">search</span>Búsqueda avanzada</a></li>
+            </ul>
+            <?php else: ?>
+            <ul class="menu">
+                <li><a href="index_logueado.php"><span class="icono">home</span>Inicio</a></li>
+                <li class="submenu">
+                <a href="perfil.php"><span class="icono">person</span>Perfil</a>
+                <ul>
+                    <li><a href="crear_anuncio.php"><span class="icono">add_circle</span>Crear anuncio</a></li>
+                    <li><a href="mis_mensajes.php"><span class="icono">mail</span>Mis mensajes</a></li>
+                    <li><a href="folleto.php"><span class="icono">description</span>Solicitar folleto</a></li>
+                </ul>
+                </li>
+                <li><a href="busqueda.php"><span class="icono">search</span>Búsqueda avanzada</a></li>
+                <li><a href="index.php"><span class="icono">logout</span>Salir</a></li>
+            </ul>
+            <?php endif; ?>
+        </nav>
+    </header>
   
-  <main id="main-content">
+<main id="main-content">

@@ -1,34 +1,24 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Registro - PI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/styles.css" title="Estilo principal">
+<?php
+// Fichero: registro.php
 
-  <link rel="alternate stylesheet" type="text/css" href="css/night.css" title="Modo noche">
-  <link rel="alternate stylesheet" type="text/css" href="css/contrast.css" title="Alto contraste">
-  <link rel="alternate stylesheet" type="text/css" href="css/big.css" title="Texto grande">
-  <link rel="alternate stylesheet" type="text/css" href="css/contrast_big.css" title="Contraste + Texto grande">
+// Define variables para la plantilla
+$titulo_pagina = "Registro de Nuevo Usuario - PI";
+$body_id = "registroPage";
+$menu_tipo = 'publico'; 
+require_once 'include/head.php'; 
+?>
 
-  <link rel="stylesheet" type="text/css" href="css/print.css" media="print">
-</head>
-<body id="registroPage">
-  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
-  <header>
-    <h1>PI - Pisos & Inmuebles</h1>
-    <nav>
-      <ul>
-        <li><a href="index.html"><span class="icono">home</span>Inicio</a></li>
-        <li><a href="registro.html"><span class="icono">person_add</span>Registro</a></li>
-        <li><a href="busqueda.html"><span class="icono">search</span>Búsqueda avanzada</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <main id="main-content">
+    <?php
+    if (isset($_GET['error'])) {
+        $error = htmlspecialchars($_GET['error']);
+        echo "<p style='color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px;'>
+                ⛔ Error de Registro: {$error}
+              </p>";
+    }
+    ?>
     <h2>Registro de nuevo usuario</h2>
-    <form action="index_logueado.html" method="post" enctype="multipart/form-data">
+    <form action="respuesta_registro.php" method="post" enctype="multipart/form-data">
+        
       <label for="usuario">(*) Nombre de usuario:</label>
       <input type="text" id="usuario" name="usuario" >
       <ul id="usuarioInfo" class="info">
@@ -39,8 +29,7 @@
       <span id="usuarioError" class="error"></span> 
 
       <label for="clave">(*) Contraseña:</label>
-      <input type="text" id="clave" name="clave" >
-      <ul id="claveInfo" class="info">
+      <input type="password" id="clave" name="clave" > <ul id="claveInfo" class="info">
         <li>· Sólo puede contener letras del alfabeto inglés, números, "-" y "_"</li>
         <li>· Al menos una mayúscula, una minúscula y un número</li>
         <li>· Longitud 6-15</li>
@@ -48,8 +37,7 @@
       <span id="claveError" class="error"></span> 
 
       <label for="clave2">(*) Repetir contraseña:</label>
-      <input type="text" id="clave2" name="clave2" >
-      <span id="clave2Error" class="error"></span> 
+      <input type="password" id="clave2" name="clave2" > <span id="clave2Error" class="error"></span> 
 
       <label for="email">(*) Correo electrónico:</label>
       <input type="text" id="email" name="email" >
@@ -81,18 +69,7 @@
       <label for="pais">País de residencia:</label>
       <select id="pais" name="pais">
         <option value="">-- Seleccione una opción --</option>
-        <option value="espana">España</option>
-        <option value="francia">Francia</option>
-        <option value="italia">Italia</option>
-        <option value="alemania">Alemania</option>
-        <option value="portugal">Portugal</option>
-        <option value="estadosunidos">Estados Unidos</option>
-        <option value="canada">Canadá</option>
-        <option value="china">China</option>
-        <option value="japon">Japón</option>
-        <option value="india">India</option>
-        <option value="brasil">Brasil</option>
-      </select>
+        </select>
       <span id="paisError" class="error"></span> 
 
       <label for="foto">Foto de perfil:</label>
@@ -101,13 +78,10 @@
 
       <button type="submit">Registrarse</button>
     </form>
-  </main>
+  
+<?php
+// Eliminamos la llamada al script de JS de validación:
+// <script src="js/validaciones.js"></script>
 
-  <footer>
-    <p><a href="accesibilidad.html">Declaración de accesibilidad</a></p>
-    <p>&copy; 2025 PI - Pisos & Inmuebles. Todos los derechos reservados.</p>
-    <p>Autores: Marcos Díaz Moleón y Gustavo Joel Paladines Dávila</p>
-  </footer>
-</body>
-<script src="js/validaciones.js"></script>
-</html>
+require_once 'include/footer.php';
+?>

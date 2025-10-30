@@ -1,20 +1,16 @@
 <?php
-// Fichero: aviso.php
-
-// 1. Incluir datos y plantillas
 require_once 'data/anuncios.php'; 
 
-// 2. Obtener y validar el ID del anuncio
+// Obtener ID del anuncio
 $anuncio_id = (int)($_GET['id'] ?? 0); 
 $anuncio = null;
 
 if ($anuncio_id > 0) {
-    // Lógica Par/Impar para seleccionar datos
+    // Lógica par/impar para seleccionar datos
     $clave_anuncio = ($anuncio_id % 2 === 0) ? 'par' : 'impar';
     $anuncio = $anuncios_ficticios[$clave_anuncio] ?? null;
 }
 
-// 3. Preparar variables para la plantilla
 if ($anuncio) {
     $titulo_pagina = $anuncio['titulo'] . " - PI";
 } else {
@@ -56,7 +52,7 @@ require_once 'include/head.php';
                 <h3>Más fotos</h3>
                 <div class="galeria-extra">
                     <?php 
-                    // Muestra las fotos a partir de la segunda (índice 1)
+                    // Mostrar fotos secundarias si existen
                     $fotos_secundarias = array_slice($anuncio['fotos'], 1);
                     foreach ($fotos_secundarias as $foto_url): 
                     ?>
@@ -73,7 +69,7 @@ require_once 'include/head.php';
 <?php else: ?>
     
     <h2>Anuncio no encontrado</h2>
-    <p>Lo sentimos, no pudimos encontrar el anuncio con el ID proporcionado (ID: <?php echo $anuncio_id; ?>).</p>
+    <p>Lo sentimos, no pudimos encontrar el anuncio que buscabas.</p>
     
 <?php endif; ?>
 

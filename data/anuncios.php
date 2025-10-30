@@ -5,7 +5,7 @@
 $anuncios_ficticios = [
     // Anuncio para ID IMPAR (ej: 1, 3, 5)
     'impar' => [
-        'titulo' => 'Chalet de Lujo con Piscina',
+        'titulo' => 'Chalet de lujo con piscina',
         'precio' => '750.000 €',
         'ciudad' => 'Marbella, España',
         'fecha' => '20/10/2025',
@@ -25,7 +25,7 @@ $anuncios_ficticios = [
     
     // Anuncio para ID PAR (ej: 2, 4, 6)
     'par' => [
-        'titulo' => 'Estudio Funcional y Económico',
+        'titulo' => 'Estudio funcional y económico',
         'precio' => '450 €/mes',
         'ciudad' => 'Bilbao, España',
         'fecha' => '15/09/2025',

@@ -1,11 +1,13 @@
 <?php
-// Fichero: folleto.php
-
-// Define las variables para la plantilla
 $titulo_pagina = "Solicitar folleto publicitario - PI";
 $body_id = "folletoPage"; 
-// NOTA: Asegúrate que esta ruta es correcta ('include' o 'includes')
 require_once 'include/head.php'; 
+if (isset($_GET['error'])) {
+    $error = htmlspecialchars($_GET['error']);
+    echo "<p style='color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px;'>
+            ⛔ Error de solicitud: {$error}
+          </p>";
+}
 ?>
 
     <h2>Solicitar folleto publicitario impreso</h2>
@@ -32,22 +34,20 @@ require_once 'include/head.php';
     
     <p>Coste de procesamiento y envío: 2€ (fijo, independiente del número de páginas o copias).</p>
 
-    <button type="button" id="toggleTablaCostes">Mostrar tabla de costes</button>
-    
-    <div id="contenedorTablaCostes" style="overflow-x: auto;">
-    
     <?php
     // --- INICIO: Bloque PHP para generar la tabla de costes ---
     
-    // 1. Definir constantes de tarifas (igual que en JS)
-    define('COSTES_FOLLETO', [
-        'FIJO' => 10.0,
-        'PAG' => [2.0, 1.8, 1.6],
-        'COLOR_FOTO' => 0.5,
-        'RES_FOTO' => 0.2
-    ]);
+    // 1. Definir constantes de tarifas
+    if (!defined('COSTES_FOLLETO')) {
+        define('COSTES_FOLLETO', [
+            'FIJO' => 10.0,
+            'PAG' => [2.0, 1.8, 1.6], 
+            'COLOR_FOTO' => 0.5,
+            'RES_FOTO' => 0.2
+        ]);
+    }
     
-    // 2. Datos de entrada (igual que en JS)
+    // 2. Datos de entrada
     $datosEntradaTabla = [
         ['p' => 1, 'f' => 3], ['p' => 2, 'f' => 6], ['p' => 3, 'f' => 9], ['p' => 4, 'f' => 12],
         ['p' => 5, 'f' => 15], ['p' => 6, 'f' => 18], ['p' => 7, 'f' => 21], ['p' => 8, 'f' => 24],
@@ -55,7 +55,7 @@ require_once 'include/head.php';
         ['p' => 13, 'f' => 39], ['p' => 14, 'f' => 42], ['p' => 15, 'f' => 45]
     ];
     
-    // 3. Función de cálculo (versión PHP)
+    // 3. Función de cálculo 
     if (!function_exists('calcularCosteFolletoPHP')) {
         function calcularCosteFolletoPHP($numPaginas, $numFotos, $esColor, $esAltaRes) {
             $costePaginas = 0;
@@ -71,33 +71,33 @@ require_once 'include/head.php';
             $costeResolucion = $esAltaRes ? $numFotos * COSTES_FOLLETO['RES_FOTO'] : 0;
             
             $total = COSTES_FOLLETO['FIJO'] + $costePaginas + $costeColor + $costeResolucion;
+            
             return number_format($total, 2, ',', '.') . " €";
         }
     }
     
-    // 4. Imprimir la tabla HTML
-    // CAMBIOS CLAVE:
-    // 1. ID cambiado a "tablaCostesGenerada" (para que JS la encuentre)
-    // 2. STYLE añadido "display: none;" (para que esté oculta al inicio)
-    echo "<table id='tablaCostesGenerada' style='display: none; border-collapse: collapse; margin-top: 15px; width: 100%; max-width: 800px; border: 1px solid #333; text-align: center;'>";
+    // 4. Imprimir la tabla HTML 
+    echo "<h3>Tabla de costes </h3>";
+    echo "<div style='overflow-x: auto;'>";
+    echo "<table id='tablaCostesGenerada' style='border-collapse: collapse; margin-top: 15px; width: 100%; max-width: 800px; border: 1px solid #333; text-align: center;'>";
     
-    // Cabecera (Thead)
+    // Cabecera de tabla calculada
     echo "<thead>";
     echo "<tr style='background-color: #E0E0E0;'>";
-    echo "<th rowspan='2' style='border: 1px solid #333; padding: 8px;'>Número de páginas</th>";
-    echo "<th rowspan='2' style='border: 1px solid #333; padding: 8px;'>Número de fotos</th>";
-    echo "<th colspan='2' style='border: 1px solid #333; padding: 8px;'>Blanco y negro</th>";
-    echo "<th colspan='2' style='border: 1px solid #333; padding: 8px;'>Color</th>";
+    echo "<th rowspan='2' style='border: 1px solid #333; background-color: #004aad; padding: 8px;'>Número de páginas</th>";
+    echo "<th rowspan='2' style='border: 1px solid #333; background-color: #004aad;padding: 8px;'>Número de fotos</th>";
+    echo "<th colspan='2' style='border: 1px solid #333; background-color: #004aad; padding: 8px;'>Blanco y negro</th>";
+    echo "<th colspan='2' style='border: 1px solid #333; background-color: #004aad; padding: 8px;'>Color</th>";
     echo "</tr>";
     echo "<tr style='background-color: #E0E0E0;'>";
-    echo "<th style='border: 1px solid #333; padding: 8px;'>150-300 dpi</th>";
-    echo "<th style='border: 1px solid #333; padding: 8px;'>450-900 dpi</th>";
-    echo "<th style='border: 1px solid #333; padding: 8px;'>150-300 dpi</th>";
-    echo "<th style='border: 1px solid #333; padding: 8px;'>450-900 dpi</th>";
+    echo "<th style='border: 1px solid #333; background-color: #004aad; padding: 8px;'>150-300 dpi</th>";
+    echo "<th style='border: 1px solid #333; background-color: #004aad; padding: 8px;'>450-900 dpi</th>";
+    echo "<th style='border: 1px solid #333; background-color: #004aad; padding: 8px;'>150-300 dpi</th>";
+    echo "<th style='border: 1px solid #333; background-color: #004aad; padding: 8px;'>450-900 dpi</th>";
     echo "</tr>";
     echo "</thead>";
     
-    // Cuerpo (Tbody)
+    // Cuerpo 
     echo "<tbody>";
     foreach ($datosEntradaTabla as $fila) {
         $p = $fila['p'];
@@ -112,11 +112,11 @@ require_once 'include/head.php';
         echo "</tr>";
     }
     echo "</tbody>";
-    echo "</table>";
+    echo "</table><br>";
+    echo "</div>"; 
     
-    // --- FIN: Bloque PHP ---
     ?>
-    </div> <hr>
+    <hr>
     
     <form action="respuesta_folleto.php" method="post"> 
       
@@ -163,14 +163,14 @@ require_once 'include/head.php';
         <option value="900">900</option>
       </select>
       
-      <br><br>
+     
       <label>(*) Tipo de Impresión:</label>
       <input type="radio" id="impresion_bn" name="impresion_color" value="blanco_negro" checked>
       <label for="impresion_bn">Blanco y Negro</label>
       <input type="radio" id="impresion_color_sel" name="impresion_color" value="color">
       <label for="impresion_color_sel">Color</label>
       <span id="impresionColorError" class="error"></span>
-      <br><br>
+      
       <label for="anuncio">Anuncio del usuario a imprimir (obligatorio):</label>
       <select id="anuncio" name="anuncio">
         <option value="">--Seleccione un anuncio--</option>
@@ -201,7 +201,6 @@ require_once 'include/head.php';
     </form>
   
 <?php
-// COMENTAMOS O ELIMINAMOS EL SCRIPT JS DE VALIDACIÓN
 // require_once 'js/validaciones.js'; 
 require_once 'include/footer.php';
 ?>

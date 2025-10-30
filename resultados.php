@@ -20,7 +20,7 @@ $ciudad_buscada = htmlspecialchars($_GET['ciudad'] ?? 'N/A');
             // Si viniera de un formulario avanzado con más campos, puedes mostrarlos aquí:
             foreach ($_GET as $key => $value) {
                 if ($key !== 'ciudad' && trim($value) !== '') {
-                    echo "<li>" . ucfirst($key) . ": " . htmlspecialchars($value) . "</li>";
+                    echo "<li>" . ucfirst($key) . ":<strong> " . htmlspecialchars($value) . "</strong></li>";
                 }
             }
             ?>

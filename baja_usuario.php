@@ -1,5 +1,4 @@
 <?php
-// Fichero: baja_usuario.php
 $titulo_pagina = "Darse de baja - PI";
 require_once 'include/head.php'; 
 ?>

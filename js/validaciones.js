@@ -329,82 +329,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==================================
   if (document.body.id === "folletoPage") {
     
-    // Constantes de tarifas
-    const COSTES = {
-      FIJO: 10.0,
-      PAG: [2.0, 1.8, 1.6], // B1: <5, B2: 5-10, B3: >10
-      COLOR_FOTO: 0.5,
-      RES_FOTO: 0.2
-    };
-    
-    // Datos de entrada
-    const datosEntradaTabla = [
-      { p: 1, f: 3 }, { p: 2, f: 6 }, { p: 3, f: 9 }, { p: 4, f: 12 }, { p: 5, f: 15 },
-      { p: 6, f: 18 }, { p: 7, f: 21 }, { p: 8, f: 24 }, { p: 9, f: 27 }, { p: 10, f: 30 },
-      { p: 11, f: 33 }, { p: 12, f: 36 }, { p: 13, f: 39 }, { p: 14, f: 42 }, { p: 15, f: 45 }
-    ];
-
-    /**
-     * Calcula el coste de un folleto según las tarifas y el sistema de bloques. (Más concisa)
-     */
-    function calcularCosteFolleto(numPaginas, numFotos, esColor, esAltaRes) {
-      let costePaginas = 0;
-      if (numPaginas <= 4) {
-        costePaginas = numPaginas * COSTES.PAG[0];
-      } else if (numPaginas <= 10) {
-        costePaginas = (4 * COSTES.PAG[0]) + ((numPaginas - 4) * COSTES.PAG[1]);
-      } else {
-        costePaginas = (4 * COSTES.PAG[0]) + (6 * COSTES.PAG[1]) + ((numPaginas - 10) * COSTES.PAG[2]);
-      }
-
-      const costeColor = esColor ? numFotos * COSTES.COLOR_FOTO : 0;
-      const costeResolucion = esAltaRes ? numFotos * COSTES.RES_FOTO : 0;
-      
-      const total = COSTES.FIJO + costePaginas + costeColor + costeResolucion;
-      return total.toFixed(2).replace('.', ',') + " €";
-    }
-
-    // --- Lógica de la tabla y botón de alternancia ---
-    const contenedorTabla = document.getElementById("contenedorTablaCostes");
+    // --- Lógica de la tabla y botón de alternancia (SIMPLIFICADA) ---
+    // Buscamos el botón y la tabla que PHP ha creado en folleto.php
     const botonToggle = document.getElementById("toggleTablaCostes");
+    const tabla = document.getElementById("tablaCostesGenerada"); // Este es el ID de la tabla de PHP
 
-    if (contenedorTabla && botonToggle) {
-      const crearElemento = (tag, content, props = {}) => Object.assign(document.createElement(tag), { textContent: content, ...props });
-
-      const tabla = crearElemento("table", "", { id: "tablaCostesGenerada", style: { display: "none" } });
-      const thead = crearElemento("thead");
-      const tbody = crearElemento("tbody");
-
-      // Cabecera simplificada
-      const trHead1 = crearElemento("tr");
-      trHead1.append(
-        crearElemento("th", "Número de páginas", { rowSpan: 2 }),
-        crearElemento("th", "Número de fotos", { rowSpan: 2 }),
-        crearElemento("th", "Blanco y negro", { colSpan: 2 }),
-        crearElemento("th", "Color", { colSpan: 2 })
-      );
-
-      const trHead2 = crearElemento("tr");
-      ["150-300 dpi", "450-900 dpi", "150-300 dpi", "450-900 dpi"].forEach(txt => trHead2.appendChild(crearElemento("th", txt)));
+    if (tabla && botonToggle) {
       
-      thead.append(trHead1, trHead2);
-      tabla.appendChild(thead);
-
-      // Cuerpo
-      datosEntradaTabla.forEach(({ p, f }) => {
-        const tr = crearElemento("tr");
-        tr.append(crearElemento("td", p), crearElemento("td", f));
-        tr.append(
-          crearElemento("td", calcularCosteFolleto(p, f, false, false)),
-          crearElemento("td", calcularCosteFolleto(p, f, false, true)),
-          crearElemento("td", calcularCosteFolleto(p, f, true, false)),
-          crearElemento("td", calcularCosteFolleto(p, f, true, true))
-        );
-        tbody.appendChild(tr);
-      });
-      tabla.appendChild(tbody);
-      contenedorTabla.appendChild(tabla);
-
+      // Ya no necesitamos el código que CREA la tabla (const COSTES, crearElemento, etc.)
+      // Solo necesitamos el evento CLICK para mostrar/ocultar la tabla que ya existe
+      
       botonToggle.addEventListener("click", () => {
         const isHidden = tabla.style.display === "none";
         tabla.style.display = isHidden ? "table" : "none";
@@ -412,7 +346,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // --- Lógica de envío del formulario ---
+    // --- Lógica de envío del formulario (ESTA PARTE SE MANTIENE IGUAL) ---
+    // Esta es la validación JS del formulario que ya tenías y que funciona.
     const formFolleto = document.querySelector("form");
     if (formFolleto) {
       formFolleto.addEventListener("submit", (event) => {

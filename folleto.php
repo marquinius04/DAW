@@ -33,8 +33,90 @@ require_once 'include/head.php';
     <p>Coste de procesamiento y envío: 2€ (fijo, independiente del número de páginas o copias).</p>
 
     <button type="button" id="toggleTablaCostes">Mostrar tabla de costes</button>
-    <div id="contenedorTablaCostes" style="overflow-x: auto;"></div>
-    <hr>
+    
+    <div id="contenedorTablaCostes" style="overflow-x: auto;">
+    
+    <?php
+    // --- INICIO: Bloque PHP para generar la tabla de costes ---
+    
+    // 1. Definir constantes de tarifas (igual que en JS)
+    define('COSTES_FOLLETO', [
+        'FIJO' => 10.0,
+        'PAG' => [2.0, 1.8, 1.6],
+        'COLOR_FOTO' => 0.5,
+        'RES_FOTO' => 0.2
+    ]);
+    
+    // 2. Datos de entrada (igual que en JS)
+    $datosEntradaTabla = [
+        ['p' => 1, 'f' => 3], ['p' => 2, 'f' => 6], ['p' => 3, 'f' => 9], ['p' => 4, 'f' => 12],
+        ['p' => 5, 'f' => 15], ['p' => 6, 'f' => 18], ['p' => 7, 'f' => 21], ['p' => 8, 'f' => 24],
+        ['p' => 9, 'f' => 27], ['p' => 10, 'f' => 30], ['p' => 11, 'f' => 33], ['p' => 12, 'f' => 36],
+        ['p' => 13, 'f' => 39], ['p' => 14, 'f' => 42], ['p' => 15, 'f' => 45]
+    ];
+    
+    // 3. Función de cálculo (versión PHP)
+    if (!function_exists('calcularCosteFolletoPHP')) {
+        function calcularCosteFolletoPHP($numPaginas, $numFotos, $esColor, $esAltaRes) {
+            $costePaginas = 0;
+            if ($numPaginas <= 4) {
+                $costePaginas = $numPaginas * COSTES_FOLLETO['PAG'][0];
+            } elseif ($numPaginas <= 10) {
+                $costePaginas = (4 * COSTES_FOLLETO['PAG'][0]) + (($numPaginas - 4) * COSTES_FOLLETO['PAG'][1]);
+            } else {
+                $costePaginas = (4 * COSTES_FOLLETO['PAG'][0]) + (6 * COSTES_FOLLETO['PAG'][1]) + (($numPaginas - 10) * COSTES_FOLLETO['PAG'][2]);
+            }
+        
+            $costeColor = $esColor ? $numFotos * COSTES_FOLLETO['COLOR_FOTO'] : 0;
+            $costeResolucion = $esAltaRes ? $numFotos * COSTES_FOLLETO['RES_FOTO'] : 0;
+            
+            $total = COSTES_FOLLETO['FIJO'] + $costePaginas + $costeColor + $costeResolucion;
+            return number_format($total, 2, ',', '.') . " €";
+        }
+    }
+    
+    // 4. Imprimir la tabla HTML
+    // CAMBIOS CLAVE:
+    // 1. ID cambiado a "tablaCostesGenerada" (para que JS la encuentre)
+    // 2. STYLE añadido "display: none;" (para que esté oculta al inicio)
+    echo "<table id='tablaCostesGenerada' style='display: none; border-collapse: collapse; margin-top: 15px; width: 100%; max-width: 800px; border: 1px solid #333; text-align: center;'>";
+    
+    // Cabecera (Thead)
+    echo "<thead>";
+    echo "<tr style='background-color: #E0E0E0;'>";
+    echo "<th rowspan='2' style='border: 1px solid #333; padding: 8px;'>Número de páginas</th>";
+    echo "<th rowspan='2' style='border: 1px solid #333; padding: 8px;'>Número de fotos</th>";
+    echo "<th colspan='2' style='border: 1px solid #333; padding: 8px;'>Blanco y negro</th>";
+    echo "<th colspan='2' style='border: 1px solid #333; padding: 8px;'>Color</th>";
+    echo "</tr>";
+    echo "<tr style='background-color: #E0E0E0;'>";
+    echo "<th style='border: 1px solid #333; padding: 8px;'>150-300 dpi</th>";
+    echo "<th style='border: 1px solid #333; padding: 8px;'>450-900 dpi</th>";
+    echo "<th style='border: 1px solid #333; padding: 8px;'>150-300 dpi</th>";
+    echo "<th style='border: 1px solid #333; padding: 8px;'>450-900 dpi</th>";
+    echo "</tr>";
+    echo "</thead>";
+    
+    // Cuerpo (Tbody)
+    echo "<tbody>";
+    foreach ($datosEntradaTabla as $fila) {
+        $p = $fila['p'];
+        $f = $fila['f'];
+        echo "<tr>";
+        echo "<td style='border: 1px solid #333; padding: 8px;'>{$p}</td>";
+        echo "<td style='border: 1px solid #333; padding: 8px;'>{$f}</td>";
+        echo "<td style='border: 1px solid #333; padding: 8px;'>" . calcularCosteFolletoPHP($p, $f, false, false) . "</td>";
+        echo "<td style='border: 1px solid #333; padding: 8px;'>" . calcularCosteFolletoPHP($p, $f, false, true) . "</td>";
+        echo "<td style='border: 1px solid #333; padding: 8px;'>" . calcularCosteFolletoPHP($p, $f, true, false) . "</td>";
+        echo "<td style='border: 1px solid #333; padding: 8px;'>" . calcularCosteFolletoPHP($p, $f, true, true) . "</td>";
+        echo "</tr>";
+    }
+    echo "</tbody>";
+    echo "</table>";
+    
+    // --- FIN: Bloque PHP ---
+    ?>
+    </div> <hr>
     
     <form action="respuesta_folleto.php" method="post"> 
       

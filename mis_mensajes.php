@@ -1,7 +1,6 @@
 <?php
-// Fichero: mis_mensajes.php
 $titulo_pagina = "Mis mensajes - PI";
-require_once 'include/head.php'; // Incluye la estructura y el menú logueado
+require_once 'include/head.php'; 
 ?>
 
     <h2>Mis mensajes</h2>

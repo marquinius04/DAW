@@ -1,70 +1,73 @@
 <?php
-// Fichero: respuesta_mensaje.php
-
-// 1. Redirecciones de validación (deben ir antes del HTML)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // Recoger y sanear datos
-    $tipo_mensaje = trim($_POST['tipo_mensaje'] ?? ''); // Requisito: Tipo de mensaje válido
-    $mensaje_texto = trim($_POST['mensaje_texto'] ?? ''); // Requisito: Texto no vacío
-    
-    // Recoger, sanear y aplicar trim() al email
+    $tipo_mensaje = trim($_POST['tipo_mensaje'] ?? ''); 
+    $mensaje_texto = trim($_POST['mensaje_texto'] ?? ''); 
     $email_remitente = trim($_POST['email_remitente'] ?? '');
     $anuncio_id = htmlspecialchars($_POST['anuncio_id'] ?? 'N/A');
 
     $error_mensaje = "";
 
-    // 2. Validación PHP (Requisitos de la práctica + AÑADIDO EL EMAIL)
-    
-    // VALIDACIÓN 1: EMAIL (Vacío)
+    // Validación 
     if (empty($email_remitente)) {
         $error_mensaje = "Debe introducir su correo electrónico.";
-    } 
-    // VALIDACIÓN 2: EMAIL (Formato básico)
-    elseif (!filter_var($email_remitente, FILTER_VALIDATE_EMAIL)) {
+    } elseif (!filter_var($email_remitente, FILTER_VALIDATE_EMAIL)) {
         $error_mensaje = "El formato del correo electrónico no es válido.";
-    }
-    // VALIDACIÓN 3: TIPO DE MENSAJE
-    elseif (!in_array($tipo_mensaje, ['info', 'cita', 'oferta'])) {
+    } elseif (!in_array($tipo_mensaje, ['info', 'cita', 'oferta'])) {
         $error_mensaje = "Debe seleccionar un tipo de mensaje válido.";
-    } 
-    // VALIDACIÓN 4: TEXTO DEL MENSAJE
-    elseif (empty($mensaje_texto)) {
+    } elseif (empty($mensaje_texto)) {
         $error_mensaje = "El cuerpo del mensaje no puede estar vacío.";
     }
 
     // Si hay un error, redirigir al formulario de mensaje con error en la URL
     if ($error_mensaje !== "") {
         $error_url = urlencode($error_mensaje);
-        // Devolvemos el anuncio_id para mantener el contexto
         $id_param = isset($_POST['anuncio_id']) ? "&anuncio_id=" . urlencode($_POST['anuncio_id']) : "";
         header("Location: mensaje.php?error={$error_url}{$id_param}");
         exit();
     }
     
-    // --- Lógica de Éxito: Si pasa la validación ---
-    
-    $titulo_pagina = "Mensaje Enviado";
-    // NOTA: Asumo que 'include/head.php' y 'include/footer.php' son las rutas correctas en tu proyecto
+    $titulo_pagina = "Mensaje enviado";
     require_once 'include/head.php'; 
     ?>
     
     <main>
-        <h2>✅ Mensaje Enviado Correctamente</h2>
+        <h2><span class="icono">check_circle</span> Mensaje enviado correctamente</h2>
         <p>Tu mensaje ha sido enviado al anunciante. A continuación, el resumen de lo que enviaste:</p>
         
-        <section style="border: 1px solid #28a745; padding: 15px; background-color: #d4edda;">
-            <h3>Resumen del Envío:</h3>
-            <ul>
-                <li>Anuncio de Referencia (ID): <?php echo $anuncio_id; ?></li>
-                <li>Tu Email: <?php echo htmlspecialchars($email_remitente); ?></li>
-                <li>Tipo de Mensaje: <?php echo htmlspecialchars($tipo_mensaje); ?></li>
-                <li>Contenido del Mensaje: <p style="white-space: pre-wrap; margin-top: 5px; background-color: white; padding: 5px; border: 1px dashed #ccc;"><?php echo htmlspecialchars($mensaje_texto); ?></p></li>
-            </ul>
+        <section class="caja-lateral" style="background-color: #f0f7ff; border: 1px solid var(--color-primario); text-align: center; padding-bottom: 20px;">
+            
+            <h3>Resumen del envío:</h3>
+            
+            <p style="margin-bottom: 0.75em;">ID del anuncio: <strong><?php echo $anuncio_id; ?></strong></p>
+            
+            <p style="margin-bottom: 0.75em;">Tu email: <strong><?php echo htmlspecialchars($email_remitente); ?></strong></p>
+            
+            <p style="margin-bottom: 1.5em;">Tipo de mensaje: <strong><?php echo htmlspecialchars($tipo_mensaje); ?></strong></p>
+            
+            <p style="margin-bottom: 0.5em;">Contenido del mensaje:</p>
+            
+            <div style="white-space: pre-wrap; 
+                        background-color: #f8f9fa; 
+                        border: 1px solid #ddd; 
+                        padding: 12px; 
+                        border-radius: 4px; 
+                        font-weight: bold;   /* Tu petición de negrita */
+                        text-align: left;    /* El texto del mensaje empieza a la izquierda */
+                        display: block;      /* Lo tratamos como un bloque */
+                        margin: 0 auto;    /* Lo centramos con márgenes automáticos */
+                        min-width: 300px;
+                        max-width: 90%;">
+                <?php echo htmlspecialchars($mensaje_texto); ?>
+            </div>
+
         </section>
 
         <p>Gracias por tu mensaje, el anunciante se pondrá en contacto contigo pronto.</p>
-        <a href="index_logueado.php">Volver al inicio</a>
+        
+        <a href="index_logueado.php" style="display: inline-block; background-color: var(--color-primario); color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-top: 15px; font-weight: bold;">
+            <span class="icono">home</span> Volver al inicio
+        </a>
     </main>
     
     <?php

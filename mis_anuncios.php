@@ -1,11 +1,8 @@
 <?php
-// Fichero: mis_anuncios.php
-
-// 1. Incluir datos y plantillas
 require_once 'include/head.php'; 
 require_once 'data/anuncios.php'; 
 
-$titulo_pagina = "Mis Anuncios - PI";
+$titulo_pagina = "Mis anuncios - PI";
 
 // Creamos un array que contenga los dos anuncios ficticios como si fueran del usuario
 $anuncios_del_usuario = [
@@ -13,7 +10,7 @@ $anuncios_del_usuario = [
     array_merge(['id' => 1, 'pais' => 'España'], $anuncios_ficticios['impar']),
     // El estudio (anuncio par)
     array_merge(['id' => 2, 'pais' => 'España'], $anuncios_ficticios['par']),
-    // Podemos añadir más para tener un listado más largo, manteniendo la estructura de tus datos ficticios.
+    // Otro anuncio de prueba (anuncio impar)
     array_merge(['id' => 3, 'pais' => 'España'], $anuncios_ficticios['impar']),
 ];
 ?>

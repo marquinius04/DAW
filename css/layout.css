@@ -491,3 +491,35 @@ footer a:hover {
   width: 60px;
   height: auto;
 }
+
+/*
+    ==================================
+    Estilos para las listas de 'info' (Restricciones)
+    ==================================
+*/
+
+/* Contenedor de la lista (el <ul>) */
+ul.info {
+  list-style: none; /* Quita los '•' por defecto */
+  padding: 10px 12px;  /* Añade espacio interior */
+  margin: 4px 0 0 0; /* Pequeño margen superior */
+  
+  /* Usamos el color azul secundario de tu web para el fondo */
+  background-color: var(--color-secundario); 
+  
+  border-radius: 5px;  /* Esquinas redondeadas */
+  font-size: 0.9em;  /* Texto un poco más pequeño */
+  color: #333; /* Un gris oscuro, más suave que el negro puro */
+  border: 1px solid #cce0ff; /* Un borde sutil a juego */
+}
+
+/* Cada item de la lista (el <li>) */
+ul.info li {
+  margin-bottom: 5px; /* Espacio entre cada regla */
+  line-height: 1.4;
+}
+
+/* Quitar el margen del último item */
+ul.info li:last-child {
+  margin-bottom: 0;
+}

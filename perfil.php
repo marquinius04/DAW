@@ -1,7 +1,4 @@
 <?php
-// Fichero: perfil.php
-
-// Define variables para la plantilla
 $titulo_pagina = "Perfil de usuario registrado - PI";
 require_once 'include/head.php'; 
 ?>

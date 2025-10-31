@@ -1,8 +1,6 @@
 <?php
-// Fichero: mensaje.php
-
 $titulo_pagina = "Enviar Mensaje - PI";
-$anuncio_id = htmlspecialchars($_GET['anuncio_id'] ?? 'N/A'); // Captura el ID del anuncio de la URL
+$anuncio_id = htmlspecialchars($_GET['anuncio_id'] ?? 'N/A');
 require_once 'include/head.php'; 
 ?>
 
@@ -10,12 +8,12 @@ require_once 'include/head.php';
     if (isset($_GET['error'])) {
         $error = htmlspecialchars($_GET['error']);
         echo "<p style='color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px;'>
-                ⛔ Error de Mensaje: {$error}
+                ⛔ Error de mensaje: {$error}
               </p>";
     }
     ?>
 
-    <h2>Enviar mensaje al anunciante (Anuncio ID: <?php echo $anuncio_id; ?>)</h2>
+    <h2>Enviar mensaje al anunciante</h2>
     
     <form action="mensaje_respuesta.php" method="post">
       
@@ -26,13 +24,13 @@ require_once 'include/head.php';
         <option value="info">Más información</option>
         <option value="cita">Solicitar una cita</option>
         <option value="oferta">Comunicar una oferta</option>
-      </select><br><br>
+      </select>
 
-      <label for="email_remitente">Tu Correo Electrónico:</label><br>
-      <input type="email" id="email_remitente" name="email_remitente" value=""><br><br>
+      <label for="email_remitente">Tu correo electrónico:</label>
+      <input type="email" id="email_remitente" name="email_remitente" value="">
       
-      <label for="texto">Mensaje:</label><br>
-      <textarea id="texto" name="mensaje_texto" rows="5" cols="40"></textarea><br><br> <button type="submit">Enviar</button>
+      <label for="texto">Mensaje:</label>
+      <textarea id="texto" name="mensaje_texto" rows="5" cols="40"></textarea> <button type="submit">Enviar</button>
     </form>
 
 <?php

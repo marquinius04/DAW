@@ -1,8 +1,6 @@
 <?php
-// Define las variables para la plantilla
 $titulo_pagina = "PI - Menú Principal (Logueado)";
 $menu_tipo = 'privado';
-// Nota: No hay ID específico en el body original, pero puedes dejarlo vacío o añadir uno si lo necesitas.
 require_once 'include/head.php'; 
 ?>
 

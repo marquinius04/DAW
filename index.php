@@ -1,10 +1,15 @@
 <?php
-// 1. Definir variables para head.php
 $titulo_pagina = "Acceso y Anuncios Recientes";
-$body_id = "loginPage"; // Mantenemos el ID de la página para JS si lo necesita
+$body_id = "loginPage"; 
 $menu_tipo = 'publico';
-// 2. Incluir la cabecera y el inicio del cuerpo
 require_once 'include/head.php'; 
+if (isset($_GET['error'])) {
+    // Saneamos el error para mostrarlo de forma segura
+    $error = htmlspecialchars($_GET['error']);
+    echo "<p style='color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px;'>
+            ⛔ Error de acceso: {$error}
+          </p>";
+}
 ?>
 
 <section>
@@ -53,6 +58,5 @@ require_once 'include/head.php';
     </section>
 
 <?php
-// 4. Incluir el pie de página y el cierre de etiquetas
 require_once 'include/footer.php';
 ?>

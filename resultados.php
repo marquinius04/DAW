@@ -1,11 +1,6 @@
 <?php
-// Fichero: resultados.php
-
-// 1. Define variables para la plantilla
 $titulo_pagina = "Resultados de búsqueda - PI";
 require_once 'include/head.php';
-
-// 2. Recepción de datos REALES (desde el formulario de búsqueda, método GET)
 $ciudad_buscada = htmlspecialchars($_GET['ciudad'] ?? 'N/A');
 ?>
 
@@ -17,7 +12,6 @@ $ciudad_buscada = htmlspecialchars($_GET['ciudad'] ?? 'N/A');
             <li>Ciudad buscada: <strong><?php echo $ciudad_buscada; ?></strong></li>
             
             <?php 
-            // Si viniera de un formulario avanzado con más campos, puedes mostrarlos aquí:
             foreach ($_GET as $key => $value) {
                 if ($key !== 'ciudad' && trim($value) !== '') {
                     echo "<li>" . ucfirst($key) . ":<strong> " . htmlspecialchars($value) . "</strong></li>";

@@ -1,7 +1,9 @@
 <?php
 $titulo_pagina = "Darse de baja - PI";
 
+// Incluye la cabecera y el gestor de sesión
 require_once 'include/head.php'; 
+// Controla que solo usuarios logueados puedan acceder a la página
 controlar_acceso_privado(); 
 ?>
 

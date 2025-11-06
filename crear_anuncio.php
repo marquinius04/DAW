@@ -1,12 +1,14 @@
 <?php
 $titulo_pagina = "Crear anuncio - PI";
+// Incluye la cabecera y la lógica del gestor de sesión
 require_once 'include/head.php'; 
+// Controla que solo usuarios logueados puedan acceder a esta página
 controlar_acceso_privado(); 
 ?>
 
     <h2>Crear un nuevo anuncio</h2>
     
-    <form action="index_logueado.php" method="post" enctype="multipart/form-data">
+    <form action="procesar_anuncio.php" method="post" enctype="multipart/form-data">
         
         <label for="titulo">Título del anuncio:</label>
         <input type="text" id="titulo" name="titulo">

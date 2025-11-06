@@ -1,17 +1,15 @@
 <?php
-// 1. Incluir el gestor de sesión ANTES de cualquier HTML.
-// Esto inicia la sesión, gestiona flashdata y el auto-login por cookie.
-
-// Usamos __DIR__ para que siempre busque 'sesion.php' en su misma carpeta 
+// Incluye la lógica de sesión antes de que cargue el html
 require_once __DIR__ . '/sesion.php';
 
-// Variables por defecto
+// --- Variables de configuración de la página ---
 $titulo_pagina = $titulo_pagina ?? "PI - Pisos & Inmuebles"; 
 $body_id = $body_id ?? "";
+// Define si se muestra el menú público (no logueado) o privado (logueado)
 $menu_tipo = $menu_tipo ?? 'privado';
 
-// 2. Lógica de estilos CSS 
-// Carga el estilo guardado en la sesión, o el principal si no hay sesión.
+// --- Lógica de estilos css ---
+// Carga el estilo definido por el usuario en la sesión, o el predeterminado
 $estilo_seleccionado = $_SESSION['estilo_css'] ?? 'css/styles.css';
 $estilo_principal = 'css/styles.css';
 
@@ -24,14 +22,14 @@ $estilo_principal = 'css/styles.css';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <?php
-    // 3. Carga de los estilos
-    // Si el estilo de sesión NO es el principal, lo cargamos como "principal"
-    // y el de "styles.css" como alternativo.
+    // --- Gestión dinámica del estilo principal ---
+    // Carga el estilo seleccionado como principal
+    // Si el usuario elige un estilo alternativo, el estilo por defecto se carga como alternativo
     if ($estilo_seleccionado !== $estilo_principal) {
         echo '<link rel="stylesheet" type="text/css" href="' . htmlspecialchars($estilo_seleccionado) . '" title="Estilo principal">' . "\n";
         echo '  <link rel="alternate stylesheet" type="text/css" href="' . htmlspecialchars($estilo_principal) . '" title="Estilo por defecto">' . "\n";
     } else {
-        // Si es el principal, lo cargamos normal
+        // Carga el estilo por defecto
         echo '<link rel="stylesheet" type="text/css" href="' . htmlspecialchars($estilo_principal) . '" title="Estilo principal">' . "\n";
     }
   ?>
@@ -48,7 +46,10 @@ $estilo_principal = 'css/styles.css';
     <header>
         <h1>PI - Pisos & Inmuebles</h1>
         <nav>
-            <?php if ($menu_tipo === 'publico'): ?>
+            <?php 
+            // Carga el nav según el tipo de menú (público/privado)
+            if ($menu_tipo === 'publico'): 
+            ?>
             <ul>
                 <li><a href="index.php"><span class="icono">home</span>Inicio</a></li>
                 <li><a href="registro.php"><span class="icono">person_add</span>Registro</a></li>
@@ -75,7 +76,7 @@ $estilo_principal = 'css/styles.css';
 <main id="main-content">
 
 <?php 
-// Mostramos el mensaje de error "flash" si existe
+// Muestra el mensaje de error de sesión si está disponible
 if (isset($flash_error) && $flash_error !== null): 
 ?>
     <p style='color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px;'>

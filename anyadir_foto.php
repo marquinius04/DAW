@@ -1,22 +1,24 @@
 <?php
-// [MODIFICADO]
-// head.php ya incluye anuncios.php a través de sesion.php
 $titulo_pagina = "Añadir foto a anuncio - PI";
+// Incluye la cabecera y la lógica del gestor de sesión
 require_once 'include/head.php';
+// Controla que solo usuarios logueados puedan acceder a la página
 controlar_acceso_privado();
 
-// 1. lógica condicional: capturar id y determinar el modo del formulario
+// --- Lógica de modo de formulario ---
+// Obtiene id del anuncio, si es 0 es fijo, si no, es para seleccionar
 $anuncio_id_fijo = (int)($_GET['anuncio_id'] ?? 0);
+// Determina si el anuncio es fijo (viene de aviso.php) o necesita ser seleccionado (viene del menú)
 $modo_seleccion = ($anuncio_id_fijo > 0) ? 'fijo' : 'seleccion';
 
-// 2. preparar datos para la lista desplegable 
+// Estos datos simulan los anuncios activos del usuario
 $anuncios_usuario_lista = [
     1 => 'Piso céntrico en Madrid',
     2 => 'Apartamento en Valencia',
     3 => 'Chalet en Sevilla',
 ];
 
-// si el id es fijo, buscamos su nombre para mostrarlo
+// Si el id es fijo, busca su nombre para mostrarlo
 $nombre_anuncio_fijo = $anuncios_usuario_lista[$anuncio_id_fijo] ?? "Anuncio no encontrado";
 ?>
 

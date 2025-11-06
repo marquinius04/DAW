@@ -1,12 +1,13 @@
 <?php
-// 1. Incluir el gestor de sesión
+// Incluye el gestor de sesión
 require_once 'include/sesion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // 2. Controlar acceso
+    // Controla que solo usuarios logueados puedan acceder a la página
     controlar_acceso_privado();
     
+    // Recoge y sanea los campos obligatorios de dirección y datos principales
     $nombre = trim($_POST['nombre'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $calle = trim($_POST['calle'] ?? '');
@@ -16,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $provincia = trim($_POST['provincia'] ?? '');
     $anuncio = trim($_POST['anuncio'] ?? '');
     
-    // Recoger el resto de datos
+    // Recoge los datos de cálculo
     $num_copias = (int)($_POST['num_copias'] ?? 1);
     $resolucion = (int)($_POST['resolucion'] ?? 150);
     $impresion_precio = htmlspecialchars($_POST['impresion_precio'] ?? 'con_precio'); 
@@ -24,9 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $error_mensaje = "";
 
-    // Validación de campos obligatorios (*)
+    // --- Validación de campos obligatorios (*) ---
     if (empty($nombre)) $error_mensaje = "El nombre y apellidos son obligatorios.";
     elseif (empty($email)) $error_mensaje = "El correo electrónico es obligatorio.";
+    // Valida el formato del correo electrónico
     elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $error_mensaje = "El formato del correo electrónico no es válido.";
     elseif (empty($calle)) $error_mensaje = "La calle es obligatoria.";
     elseif (empty($numero)) $error_mensaje = "El número de la dirección es obligatorio.";
@@ -37,17 +39,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Redirección si hay error
     if ($error_mensaje !== "") {
-        // [MODIFICADO] Usamos flashdata 
+        // Usa flashdata para almacenar el error
         $_SESSION['flash_error'] = $error_mensaje;
+        // Devuelve los datos del formulario (POST) para repoblar
         $datos_previos = http_build_query($_POST);
         header("Location: folleto.php?{$datos_previos}");
         exit();
     }
     
+    // Incluye la plantilla después de las redirecciones
     $titulo_pagina = "Confirmación de solicitud de folleto - PI";
     require_once 'include/head.php'; 
     
-    // Datos ficticios
+    // --- Lógica de cálculo y datos ficticios ---
+    // Valores ficticios para el resumen
     $PAGINAS_FICTICIAS = 15; 
     $FOTOS_FICTICIAS = 45;   
     
@@ -55,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $costeFijo = 2;
     $precioUnidad = 0;
     $es_color = ($impresion_color === "color"); 
+    // Lógica del precio unitario basada en resolución y color
     if ($resolucion === 150) $precioUnidad = $es_color ? 7 : 5;
     else $precioUnidad = $es_color ? 12 : 8;
     $total = ($precioUnidad * $num_copias) + $costeFijo;
@@ -95,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     <?php
 } else {
+    // Si se accede directamente sin post, redirige al formulario
     header("Location: folleto.php");
     exit();
 }

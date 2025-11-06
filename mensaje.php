@@ -1,13 +1,16 @@
 <?php
 $titulo_pagina = "Enviar Mensaje - PI";
+// Obtiene el id del anuncio de la url para mantener el contexto
 $anuncio_id = htmlspecialchars($_GET['anuncio_id'] ?? 'N/A');
+// Incluye la cabecera y el gestor de sesión
 require_once 'include/head.php'; 
+// Controla que solo usuarios logueados puedan acceder a la página
 controlar_acceso_privado(); 
 ?>
 
     <h2>Enviar mensaje al anunciante</h2>
     
-    <form action="mensaje_respuesta.php" method="post">
+    <form action="respuesta_mensaje.php" method="post">
       
       <input type="hidden" name="anuncio_id" value="<?php echo $anuncio_id; ?>">
       

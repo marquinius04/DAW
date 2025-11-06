@@ -1,6 +1,7 @@
 <?php
 $titulo_pagina = "404 - Página no encontrada";
-require_once 'include/head.php'; 
+// Incluye la cabecera y el gestor de sesión
+require_once 'include/head.php';
 ?>
 
     <h2>Página no encontrada (404)</h2>

@@ -1,15 +1,15 @@
 <?php
 $titulo_pagina = "Registro de Nuevo Usuario - PI";
-$body_id = "registroPage";
+$body_id = "registroPage"; 
 $menu_tipo = 'publico'; 
 
-// 1. Incluimos head.php (que ya incluye sesion.php)
+// Incluye la cabecera y el gestor de sesión
 require_once 'include/head.php'; 
 
-// 2. Si el usuario ya está logueado, le impedimos registrarse
+// Si el usuario ya está logueado, le impedimos registrarse
 controlar_acceso_publico();
 
-// Datos para repoblar el formulario (se mantienen igual)
+// Datos para repoblar el formulario (vienen de la url después de un error de validación)
 $val_usuario = htmlspecialchars($_GET['usuario'] ?? '');
 $val_email = htmlspecialchars($_GET['email'] ?? '');
 $val_sexo = htmlspecialchars($_GET['sexo'] ?? '');
@@ -89,7 +89,6 @@ $val_pais = htmlspecialchars($_GET['pais'] ?? '');
     </form>
   
 <?php
-// <script src="js/validaciones.js"></script>
-
+// require_once 'js/validaciones.js'; 
 require_once 'include/footer.php';
 ?>

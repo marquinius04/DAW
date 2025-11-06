@@ -1,5 +1,5 @@
 <?php
-// Mostrar el panel de últimos anuncios visitados en todas las páginas
+// Almacena los últimos anuncios visitados en $ultimos_anuncios
 $ultimos_anuncios = get_ultimos_anuncios();
 
 if (!empty($ultimos_anuncios)):
@@ -10,7 +10,7 @@ if (!empty($ultimos_anuncios)):
         <ul style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1em; list-style: none; padding: 0;">
             
             <?php 
-            // Damos la vuelta al array para mostrar del más reciente al más antiguo
+            // Recorre el array para mostrar los anuncios del más reciente al más antiguo
             foreach (array_reverse($ultimos_anuncios) as $anuncio): 
             ?>
                 <li style="border: 1px solid #ddd; border-radius: 6px; padding: 10px; background: #fff;">
@@ -32,7 +32,6 @@ if (!empty($ultimos_anuncios)):
     </section>
 <?php 
 endif; 
-// Fin de la sección de anuncios visitados
 ?>
 
 </main> <footer>

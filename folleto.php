@@ -1,8 +1,10 @@
 <?php
 $titulo_pagina = "Solicitar folleto publicitario - PI";
 $body_id = "folletoPage"; 
+// Incluye la cabecera y el gestor de sesión
 require_once 'include/head.php'; 
-controlar_acceso_privado();
+// Controla que solo usuarios logueados puedan acceder a la página
+controlar_acceso_privado(); 
 
 ?>
 
@@ -34,9 +36,9 @@ controlar_acceso_privado();
     <p>Coste de procesamiento y envío: 2€ (fijo, independiente del número de páginas o copias).</p>
 
     <?php
-    // --- INICIO: Bloque PHP para generar la tabla de costes ---
+    // --- Bloque php para generar la tabla de costes ---
     
-    // 1. Definir constantes de tarifas
+    // Define constantes de tarifas
     if (!defined('COSTES_FOLLETO')) {
         define('COSTES_FOLLETO', [
             'FIJO' => 10.0,
@@ -46,7 +48,7 @@ controlar_acceso_privado();
         ]);
     }
     
-    // 2. Datos de entrada
+    // Datos de entrada para la tabla de ejemplo
     $datosEntradaTabla = [
         ['p' => 1, 'f' => 3], ['p' => 2, 'f' => 6], ['p' => 3, 'f' => 9], ['p' => 4, 'f' => 12],
         ['p' => 5, 'f' => 15], ['p' => 6, 'f' => 18], ['p' => 7, 'f' => 21], ['p' => 8, 'f' => 24],
@@ -54,7 +56,7 @@ controlar_acceso_privado();
         ['p' => 13, 'f' => 39], ['p' => 14, 'f' => 42], ['p' => 15, 'f' => 45]
     ];
     
-    // 3. Función de cálculo 
+    // Función de cálculo del coste del folleto por bloques
     if (!function_exists('calcularCosteFolletoPHP')) {
         function calcularCosteFolletoPHP($numPaginas, $numFotos, $esColor, $esAltaRes) {
             $costePaginas = 0;
@@ -75,7 +77,7 @@ controlar_acceso_privado();
         }
     }
     
-    // 4. Imprimir la tabla HTML 
+    // Imprime la tabla html de costes calculados
     echo "<h3>Tabla de costes </h3>";
     echo "<div style='overflow-x: auto;'>";
     echo "<table id='tablaCostesGenerada' style='border-collapse: collapse; margin-top: 15px; width: 100%; max-width: 800px; border: 1px solid #333; text-align: center;'>";
@@ -96,7 +98,7 @@ controlar_acceso_privado();
     echo "</tr>";
     echo "</thead>";
     
-    // Cuerpo 
+    // Cuerpo de la tabla
     echo "<tbody>";
     foreach ($datosEntradaTabla as $fila) {
         $p = $fila['p'];
@@ -117,6 +119,7 @@ controlar_acceso_privado();
     ?>
     <hr>
     
+    <!-- Formulario para solicitar folleto -->
     <form action="respuesta_folleto.php" method="post"> 
       
       <label for="nombre">(*) Nombre y apellidos (máx. 200 caracteres):</label>
@@ -162,8 +165,7 @@ controlar_acceso_privado();
         <option value="900">900</option>
       </select>
       
-     
-      <label>(*) Tipo de Impresión:</label>
+     <label>(*) Tipo de Impresión:</label>
       <input type="radio" id="impresion_bn" name="impresion_color" value="blanco_negro" checked>
       <label for="impresion_bn">Blanco y Negro</label>
       <input type="radio" id="impresion_color_sel" name="impresion_color" value="color">
@@ -200,6 +202,6 @@ controlar_acceso_privado();
     </form>
   
 <?php
-// require_once 'js/validaciones.js'; 
+// require_once 'js/validaciones.js';
 require_once 'include/footer.php';
 ?>

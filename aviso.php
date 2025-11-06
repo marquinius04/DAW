@@ -1,34 +1,33 @@
 <?php
-// 1. Incluimos head.php al principio
-// Esto carga 'sesion.php', que a su vez carga 'data/anuncios.php'.
-// Ahora la variable $anuncios_ficticios existirá para el resto del script.
+// Incluye head.php
+// Este archivo carga 'sesion.php', que a su vez incluye 'data/anuncios.php'
 require_once 'include/head.php'; 
 
-// 2. Obtener ID del anuncio
+// Obtiene el identificador del anuncio desde la url
 $anuncio_id = (int)($_GET['id'] ?? 0); 
 $anuncio = null;
 
 if ($anuncio_id > 0) {
-    // Lógica par/impar para seleccionar datos
+    // Aplica la lógica par/impar para seleccionar los datos
     $clave_anuncio = ($anuncio_id % 2 === 0) ? 'par' : 'impar';
-    // $anuncios_ficticios AHORA SÍ existe
+    // Asigna los datos del anuncio o null si la clave no existe
     $anuncio = $anuncios_ficticios[$clave_anuncio] ?? null;
 }
 
-// 3. Definir título de página
+// Controla el acceso ya que está en la parte privada
+controlar_acceso_privado();
+
+// Si el anuncio es válido, lo añade al historial de visitados
+if ($anuncio) {
+    // La función add_anuncio_visitado() está definida en sesion.php
+    add_anuncio_visitado($anuncio_id, $anuncio);
+}
+
+// Define el título de página dinámicamente
 if ($anuncio) {
     $titulo_pagina = $anuncio['titulo'] . " - PI";
 } else {
     $titulo_pagina = "Anuncio no encontrado - PI";
-}
-
-// Esta página ahora es PRIVADA. La función viene de 'sesion.php'.
-controlar_acceso_privado();
-
-// Si el anuncio es válido, lo añadimos a la sección de "visitados"
-if ($anuncio) {
-    // La función add_anuncio_visitado() está definida en sesion.php
-    add_anuncio_visitado($anuncio_id, $anuncio);
 }
 ?>
 
@@ -64,7 +63,7 @@ if ($anuncio) {
                 <h3>Más fotos</h3>
                 <div class="galeria-extra">
                     <?php 
-                    // Mostrar fotos secundarias si existen
+                    // Muestra las fotos secundarias si existen
                     $fotos_secundarias = array_slice($anuncio['fotos'], 1);
                     foreach ($fotos_secundarias as $foto_url): 
                     ?>

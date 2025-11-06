@@ -1,5 +1,6 @@
 <?php
 $titulo_pagina = "Declaración de Accesibilidad - PI";
+// Incluye la cabecera y el gestor de sesión
 require_once 'include/head.php'; 
 ?>
 
@@ -46,5 +47,5 @@ require_once 'include/head.php';
     </section>
     
     <?php
-require_once 'include/footer.php'; // Se encarga del footer y el enlace actualizado
+require_once 'include/footer.php'; 
 ?>

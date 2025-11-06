@@ -1,7 +1,9 @@
 <?php
 $titulo_pagina = "Mis anuncios - PI";
+// Incluye la cabecera y la lógica del gestor de sesión
 require_once 'include/head.php'; 
-controlar_acceso_privado(); //
+// Controla que solo usuarios logueados puedan acceder a esta página
+controlar_acceso_privado(); 
 
 // Creamos un array que contenga los dos anuncios ficticios como si fueran del usuario
 $anuncios_del_usuario = [
@@ -60,11 +62,12 @@ $anuncios_del_usuario = [
 
         <?php else: ?>
             <tr>
-                <td colspan="5">No tienes anuncios publicados actualmente.</td>
+                <td colspan="5">No tienes anuncios publicados actualmente</td>
             </tr>
         <?php endif; ?>
       </tbody>
     </table>
+    <button><a href="anyadir_foto.php"><span class="icono">photo</span>Añadir foto a anuncio</a></button>
 
 <?php
 require_once 'include/footer.php';

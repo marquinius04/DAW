@@ -1,10 +1,13 @@
 <?php
+// Incluye el gestor de sesión
 require_once 'include/sesion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
+    // Controla que solo usuarios logueados puedan acceder a esta página
     controlar_acceso_privado();
 
+    // Recoge y sanea todos los datos del formulario
     $tipo_mensaje = trim($_POST['tipo_mensaje'] ?? ''); 
     $mensaje_texto = trim($_POST['mensaje_texto'] ?? ''); 
     $email_remitente = trim($_POST['email_remitente'] ?? '');
@@ -12,26 +15,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $error_mensaje = "";
 
-    // Validación 
+    // --- Validación php ---
+    // Comprueba que el email no esté vacío
     if (empty($email_remitente)) {
-        $error_mensaje = "Debe introducir su correo electrónico.";
-    } elseif (!filter_var($email_remitente, FILTER_VALIDATE_EMAIL)) {
-        $error_mensaje = "El formato del correo electrónico no es válido.";
-    } elseif (!in_array($tipo_mensaje, ['info', 'cita', 'oferta'])) {
-        $error_mensaje = "Debe seleccionar un tipo de mensaje válido.";
-    } elseif (empty($mensaje_texto)) {
-        $error_mensaje = "El cuerpo del mensaje no puede estar vacío.";
+        $error_mensaje = "Debe introducir su correo electrónico";
+    } 
+    // Comprueba el formato básico del email
+    elseif (!filter_var($email_remitente, FILTER_VALIDATE_EMAIL)) {
+        $error_mensaje = "El formato del correo electrónico no es válido";
+    } 
+    // Comprueba que se haya seleccionado un tipo de mensaje válido
+    elseif (!in_array($tipo_mensaje, ['info', 'cita', 'oferta'])) {
+        $error_mensaje = "Debe seleccionar un tipo de mensaje válido";
+    } 
+    // Comprueba que el cuerpo del mensaje no esté vacío
+    elseif (empty($mensaje_texto)) {
+        $error_mensaje = "El cuerpo del mensaje no puede estar vacío";
     }
 
-    // Si hay un error, redirigir al formulario de mensaje con error en la URL
+    // Si hay un error, redirige al formulario de mensaje
     if ($error_mensaje !== "") {
-        // Usamos flashdata 
+        // Muestra el error al redirigir
         $_SESSION['flash_error'] = $error_mensaje;
+        // Devuelve el id del anuncio para mantener el contexto
         $id_param = isset($_POST['anuncio_id']) ? "anuncio_id=" . urlencode($_POST['anuncio_id']) : "";
         header("Location: mensaje.php?{$id_param}");
         exit();
     }
     
+    // --- Lógica de éxito: mostrar resumen ---
+    
+    // Incluye la plantilla después de las redirecciones de error
     $titulo_pagina = "Mensaje enviado";
     require_once 'include/head.php'; 
     ?>
@@ -79,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once 'include/footer.php';
     exit();
 } else {
-    // Si se accede directamente sin POST, redirigir al formulario
+    // Si se accede directamente sin post, redirige al formulario
     header("Location: mensaje.php");
     exit();
 }

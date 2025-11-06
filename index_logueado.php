@@ -2,10 +2,10 @@
 $titulo_pagina = "PI - Menú Principal (Logueado)";
 $menu_tipo = 'privado';
 
-// 1. Incluimos head.php (que ya incluye sesion.php)
+// Incluye la cabecera y el gestor de sesión
 require_once 'include/head.php'; 
 
-// 2. Controlamos que el usuario esté logueado para ver esta página 
+// Controla que el usuario esté logueado para ver esta página
 controlar_acceso_privado();
 ?>
 

@@ -1,9 +1,8 @@
 <?php
-// Fichero: datos/anuncios.php
-// Almacena dos anuncios ficticios.
+// Almacena dos anuncios ficticios, uno para las ID impares y otro para las ID pares
 
 $anuncios_ficticios = [
-    // Anuncio para ID IMPAR (ej: 1, 3, 5)
+    // Datos del anuncio para IDs impares (por ejemplo, ID = 1, 3, 5)
     'impar' => [
         'titulo' => 'Chalet de lujo con piscina',
         'precio' => '750.000 €',
@@ -23,7 +22,7 @@ $anuncios_ficticios = [
         ]
     ],
     
-    // Anuncio para ID PAR (ej: 2, 4, 6)
+    // Datos del anuncio para IDs pares (por ejemplo, ID = 2, 4, 6)
     'par' => [
         'titulo' => 'Estudio funcional y económico',
         'precio' => '450 €/mes',

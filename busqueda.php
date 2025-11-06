@@ -1,10 +1,12 @@
 <?php
 $titulo_pagina = "Búsqueda avanzada - PI";
+// Incluye la cabecera y el gestor de sesión
 require_once 'include/head.php'; 
 ?>
 
     <h2>Búsqueda avanzada</h2>
-    <form action="resultados.php" method="get"> <label for="tipo_anuncio">Tipo de anuncio:</label>
+    <form action="resultados.php" method="get"> 
+      <label for="tipo_anuncio">Tipo de anuncio:</label>
       <select id="tipo_anuncio" name="tipo_anuncio">
         <option value="Venta">Venta</option>
         <option value="Alquiler">Alquiler</option>

@@ -1,6 +1,8 @@
 <?php
 $titulo_pagina = "Resultados de búsqueda - PI";
+// Incluye la cabecera y la lógica del gestor de sesión
 require_once 'include/head.php';
+// Recoge la ciudad buscada de la url
 $ciudad_buscada = htmlspecialchars($_GET['ciudad'] ?? 'N/A');
 ?>
 
@@ -12,7 +14,9 @@ $ciudad_buscada = htmlspecialchars($_GET['ciudad'] ?? 'N/A');
             <li>Ciudad buscada: <strong><?php echo $ciudad_buscada; ?></strong></li>
             
             <?php 
+            // Itera sobre todos los parámetros enviados por el formulario de búsqueda
             foreach ($_GET as $key => $value) {
+                // Muestra solo los parámetros que no son 'ciudad' y no están vacíos
                 if ($key !== 'ciudad' && trim($value) !== '') {
                     echo "<li>" . ucfirst($key) . ":<strong> " . htmlspecialchars($value) . "</strong></li>";
                 }

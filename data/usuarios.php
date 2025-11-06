@@ -1,8 +1,5 @@
 <?php
-// Fichero: datos/usuarios.php
-// Almacena los usuarios permitidos (Usuario => Contraseña)
-// Usamos hash para las contraseñas para mayor seguridad, aunque la práctica no lo exige explícitamente.
-// Para simplificar, usaremos texto plano, ya que las comprobaciones de la práctica son básicas.
+// Almacena los usuarios y contraseñas permitidos en la página
 
 $usuarios_permitidos = [
     'a' => 'a',

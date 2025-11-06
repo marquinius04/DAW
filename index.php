@@ -3,16 +3,17 @@ $titulo_pagina = "Acceso y Anuncios Recientes";
 $body_id = "loginPage"; 
 $menu_tipo = 'publico';
 
-// 1. Incluimos head.php 
+// Incluye la cabecera y el gestor de sesión
 require_once 'include/head.php'; 
 
-// 2. Si el usuario ya está logueado (por sesión o cookie), redirigir a la zona privada
+// Si el usuario ya está logueado, se le redirige a la zona privada
 controlar_acceso_publico();
 
 ?>
 
 <?php 
-// Mostrar bienvenida si el usuario está siendo recordado 
+// --- Lógica de "recordarme" ---
+// Muestra el panel de bienvenida si existen las cookies de "recordarme"
 if (isset($_COOKIE['recordar_usuario']) && isset($_COOKIE['ultima_visita_real'])): 
     $usuario_recordado = htmlspecialchars($_COOKIE['recordar_usuario']);
     $ultima_visita = htmlspecialchars($_COOKIE['ultima_visita_real']);

@@ -1,5 +1,13 @@
 <?php
+// [MODIFICADO]
+// 1. Incluir el gestor de sesión
+require_once 'include/sesion.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // [MODIFICADO]
+    // 2. Controlar acceso
+    controlar_acceso_privado();
     
     $nombre = trim($_POST['nombre'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -31,9 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Redirección si hay error
     if ($error_mensaje !== "") {
-        $error_url = urlencode($error_mensaje);
+        // [MODIFICADO] Usamos flashdata 
+        $_SESSION['flash_error'] = $error_mensaje;
         $datos_previos = http_build_query($_POST);
-        header("Location: folleto.php?error={$error_url}&{$datos_previos}");
+        header("Location: folleto.php?{$datos_previos}");
         exit();
     }
     

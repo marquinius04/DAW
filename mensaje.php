@@ -1,17 +1,10 @@
 <?php
 $titulo_pagina = "Enviar Mensaje - PI";
 $anuncio_id = htmlspecialchars($_GET['anuncio_id'] ?? 'N/A');
+// [MODIFICADO]
 require_once 'include/head.php'; 
+controlar_acceso_privado(); // 
 ?>
-
-    <?php
-    if (isset($_GET['error'])) {
-        $error = htmlspecialchars($_GET['error']);
-        echo "<p style='color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px;'>
-                ⛔ Error de mensaje: {$error}
-              </p>";
-    }
-    ?>
 
     <h2>Enviar mensaje al anunciante</h2>
     

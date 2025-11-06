@@ -1,6 +1,8 @@
 <?php
 $titulo_pagina = "Crear anuncio - PI";
+// [MODIFICADO]
 require_once 'include/head.php'; 
+controlar_acceso_privado(); // 
 ?>
 
     <h2>Crear un nuevo anuncio</h2>

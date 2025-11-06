@@ -1,6 +1,10 @@
 <?php
+require_once 'include/sesion.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
+    controlar_acceso_privado();
+
     $tipo_mensaje = trim($_POST['tipo_mensaje'] ?? ''); 
     $mensaje_texto = trim($_POST['mensaje_texto'] ?? ''); 
     $email_remitente = trim($_POST['email_remitente'] ?? '');
@@ -21,9 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Si hay un error, redirigir al formulario de mensaje con error en la URL
     if ($error_mensaje !== "") {
-        $error_url = urlencode($error_mensaje);
-        $id_param = isset($_POST['anuncio_id']) ? "&anuncio_id=" . urlencode($_POST['anuncio_id']) : "";
-        header("Location: mensaje.php?error={$error_url}{$id_param}");
+        // [MODIFICADO] Usamos flashdata 
+        $_SESSION['flash_error'] = $error_mensaje;
+        $id_param = isset($_POST['anuncio_id']) ? "anuncio_id=" . urlencode($_POST['anuncio_id']) : "";
+        header("Location: mensaje.php?{$id_param}");
         exit();
     }
     

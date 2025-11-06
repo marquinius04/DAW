@@ -1,7 +1,29 @@
 <?php
+/*
+    =================================
+    head.php
+    =================================
+*/
+
+// [MODIFICADO]
+// 1. Incluir el gestor de sesión ANTES de cualquier HTML.
+// Esto inicia la sesión, gestiona flashdata y el auto-login por cookie.
+
+// ¡ESTA ES LA LÍNEA CORREGIDA!
+// Usamos __DIR__ para que siempre busque 'sesion.php' en su misma carpeta (la carpeta 'include')
+require_once __DIR__ . '/sesion.php';
+
+// Variables por defecto
 $titulo_pagina = $titulo_pagina ?? "PI - Pisos & Inmuebles"; 
 $body_id = $body_id ?? "";
 $menu_tipo = $menu_tipo ?? 'privado';
+
+// [MODIFICADO]
+// 2. Lógica de Estilos (Task 4)
+// Carga el estilo guardado en la sesión, o el principal si no hay sesión.
+$estilo_seleccionado = $_SESSION['estilo_css'] ?? 'css/styles.css';
+$estilo_principal = 'css/styles.css';
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -10,8 +32,20 @@ $menu_tipo = $menu_tipo ?? 'privado';
   <title><?php echo $titulo_pagina; ?></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <link rel="stylesheet" type="text/css" href="css/styles.css" title="Estilo principal">
-
+  <?php
+    // [MODIFICADO]
+    // 3. Carga de Estilos
+    // Si el estilo de sesión NO es el principal, lo cargamos como "principal"
+    // y el de "styles.css" como alternativo.
+    if ($estilo_seleccionado !== $estilo_principal) {
+        echo '<link rel="stylesheet" type="text/css" href="' . htmlspecialchars($estilo_seleccionado) . '" title="Estilo principal">' . "\n";
+        echo '  <link rel="alternate stylesheet" type="text/css" href="' . htmlspecialchars($estilo_principal) . '" title="Estilo por defecto">' . "\n";
+    } else {
+        // Si es el principal, lo cargamos normal
+        echo '<link rel="stylesheet" type="text/css" href="' . htmlspecialchars($estilo_principal) . '" title="Estilo principal">' . "\n";
+    }
+  ?>
+  
   <link rel="alternate stylesheet" type="text/css" href="css/night.css" title="Modo noche">
   <link rel="alternate stylesheet" type="text/css" href="css/contrast.css" title="Alto contraste">
   <link rel="alternate stylesheet" type="text/css" href="css/big.css" title="Texto grande">
@@ -42,10 +76,21 @@ $menu_tipo = $menu_tipo ?? 'privado';
                 </ul>
                 </li>
                 <li><a href="busqueda.php"><span class="icono">search</span>Búsqueda avanzada</a></li>
-                <li><a href="index.php"><span class="icono">logout</span>Salir</a></li>
+                <li><a href="logout.php"><span class="icono">logout</span>Salir</a></li>
             </ul>
             <?php endif; ?>
         </nav>
     </header>
   
 <main id="main-content">
+
+<?php 
+// [MODIFICADO]
+// Mostramos el mensaje de error "flash" si existe
+// $flash_error se define en 'include/sesion.php'
+if (isset($flash_error) && $flash_error !== null): 
+?>
+    <p style='color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px;'>
+        ⛔ Error: <?php echo $flash_error; ?>
+    </p>
+<?php endif; ?>

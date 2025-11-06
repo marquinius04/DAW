@@ -1,14 +1,16 @@
 <?php
 $titulo_pagina = "Solicitar folleto publicitario - PI";
 $body_id = "folletoPage"; 
+// [MODIFICADO]
 require_once 'include/head.php'; 
-if (isset($_GET['error'])) {
-    $error = htmlspecialchars($_GET['error']);
-    echo "<p style='color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px;'>
-            ⛔ Error de solicitud: {$error}
-          </p>";
-}
+controlar_acceso_privado(); // 
+
+// [MODIFICADO]
+// Ya no usamos $_GET['error'], el error flash se muestra en head.php
 ?>
+
+    <h2>Solicitar folleto publicitario impreso</h2>
+...
 
     <h2>Solicitar folleto publicitario impreso</h2>
     

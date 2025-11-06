@@ -1,8 +1,9 @@
 <?php
-require_once 'include/head.php'; 
-require_once 'data/anuncios.php'; 
-
+// [MODIFICADO]
+// head.php ya incluye anuncios.php a través de sesion.php
 $titulo_pagina = "Mis anuncios - PI";
+require_once 'include/head.php'; 
+controlar_acceso_privado(); //
 
 // Creamos un array que contenga los dos anuncios ficticios como si fueran del usuario
 $anuncios_del_usuario = [

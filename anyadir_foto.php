@@ -1,8 +1,9 @@
 <?php
-require_once 'include/head.php';
-require_once 'data/anuncios.php'; 
-
+// [MODIFICADO]
+// head.php ya incluye anuncios.php a través de sesion.php
 $titulo_pagina = "Añadir foto a anuncio - PI";
+require_once 'include/head.php';
+controlar_acceso_privado();
 
 // 1. lógica condicional: capturar id y determinar el modo del formulario
 $anuncio_id_fijo = (int)($_GET['anuncio_id'] ?? 0);

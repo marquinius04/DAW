@@ -1,6 +1,8 @@
 <?php
 $titulo_pagina = "Modificar datos - PI";
+// [MODIFICADO]
 require_once 'include/head.php'; 
+controlar_acceso_privado(); // 
 ?>
 
     <h2>Modificar mis datos</h2>

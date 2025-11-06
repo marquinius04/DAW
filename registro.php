@@ -2,9 +2,16 @@
 $titulo_pagina = "Registro de Nuevo Usuario - PI";
 $body_id = "registroPage";
 $menu_tipo = 'publico'; 
+
+// [MODIFICADO]
+// 1. Incluimos head.php (que ya incluye sesion.php)
 require_once 'include/head.php'; 
 
+// [MODIFICADO]
+// 2. Si el usuario ya está logueado, le impedimos registrarse
+controlar_acceso_publico();
 
+// Datos para repoblar el formulario (se mantienen igual)
 $val_usuario = htmlspecialchars($_GET['usuario'] ?? '');
 $val_email = htmlspecialchars($_GET['email'] ?? '');
 $val_sexo = htmlspecialchars($_GET['sexo'] ?? '');
@@ -17,12 +24,9 @@ $val_pais = htmlspecialchars($_GET['pais'] ?? '');
 ?>
 
     <?php
-    if (isset($_GET['error'])) {
-        $error = htmlspecialchars($_GET['error']);
-        echo "<p style='color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px;'>
-                ⛔ Error de registro: {$error}
-              </p>";
-    }
+    // [MODIFICADO]
+    // 3. El gestor de errores flashdata está ahora en head.php
+    // Ya no necesitamos el bloque if (isset($_GET['error']))
     ?>
 
     <h2>Registro de nuevo usuario</h2>

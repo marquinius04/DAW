@@ -1,4 +1,7 @@
 <?php
+// [MODIFICADO]
+// 1. Incluimos el gestor de sesión.
+require_once 'include/sesion.php';
 
 function validarUsuario($usuario) {
     if (empty($usuario)) return "El nombre de usuario es obligatorio.";
@@ -83,14 +86,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Comprobar si hay errores
     if ($error_mensaje !== "") {
-        // Si hay error, redirigir con el mensaje Y los datos previos
-        $error_url = urlencode($error_mensaje);
+        // [MODIFICADO] Usamos flashdata en lugar de GET 
+        $_SESSION['flash_error'] = $error_mensaje;
+        
         $datos_previos = http_build_query($_POST); // Devuelve los datos para repoblar
         
-        header("Location: registro.php?error={$error_url}&{$datos_previos}");
+        header("Location: registro.php?{$datos_previos}");
         exit();
     }
     
+    // [MODIFICADO]
+    // 2. Incluimos el <head> HTML (que ya tiene sesion.php)
     $titulo_pagina = "Registro Exitoso";
     require_once 'include/head.php'; 
     

@@ -1,6 +1,8 @@
 <?php
 $titulo_pagina = "Darse de baja - PI";
+// [MODIFICADO]
 require_once 'include/head.php'; 
+controlar_acceso_privado(); // 
 ?>
 
     <h2>Darse de baja</h2>

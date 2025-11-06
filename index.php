@@ -2,17 +2,43 @@
 $titulo_pagina = "Acceso y Anuncios Recientes";
 $body_id = "loginPage"; 
 $menu_tipo = 'publico';
+
+// [MODIFICADO]
+// 1. Incluimos head.php (que ya incluye sesion.php)
 require_once 'include/head.php'; 
-if (isset($_GET['error'])) {
-    // Saneamos el error para mostrarlo de forma segura
-    $error = htmlspecialchars($_GET['error']);
-    echo "<p style='color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px;'>
-            ⛔ Error de acceso: {$error}
-          </p>";
-}
+
+// [MODIFICADO]
+// 2. Si el usuario ya está logueado (por sesión o cookie), redirigir a la zona privada
+controlar_acceso_publico();
+
+// [MODIFICADO]
+// 3. El gestor de errores flashdata está ahora en head.php
+// Ya no necesitamos el bloque if (isset($_GET['error']))
 ?>
 
-<section>
+<?php 
+// [MODIFICADO]
+// [Requisito PDF: Task 1 - Figura 2]
+// Mostrar bienvenida si el usuario está siendo recordado 
+if (isset($_COOKIE['recordar_usuario']) && isset($_COOKIE['ultima_visita_real'])): 
+    $usuario_recordado = htmlspecialchars($_COOKIE['recordar_usuario']);
+    $ultima_visita = htmlspecialchars($_COOKIE['ultima_visita_real']);
+?>
+    <section style="background-color: #e5efff; border: 1px solid var(--color-primario);">
+        <h2>Bienvenido de nuevo, <?php echo $usuario_recordado; ?></h2>
+        <p>Su última visita fue el <?php echo $ultima_visita; ?>.</p>
+        <p>Pulse 'Entrar' para acceder directamente o <a href="logout.php">pulse aquí si no es usted</a>.</p>
+        
+        <form action="respuesta_login.php" method="post" style="padding: 0; box-shadow: none;">
+            <input type="hidden" name="usuario" value="<?php echo $usuario_recordado; ?>">
+            <input type="hidden" name="clave" value="<?php echo htmlspecialchars($_COOKIE['recordar_clave']); ?>">
+            <input type="hidden" name="recordarme" value="on"> <button type="submit">Entrar</button>
+        </form>
+    </section>
+
+<?php else: ?>
+
+    <section>
       <h2>Acceso de usuario</h2>
       <form action="respuesta_login.php" method="post">
         <label for="usuario">Usuario:</label>
@@ -20,9 +46,18 @@ if (isset($_GET['error'])) {
         <span id="usuarioError" class="error"></span>
         <label for="clave">Contraseña:</label>
         <input type="password" id="clave" name="clave" >
-        <span id="claveError" class="error"></span> <button type="submit">Entrar</button>
+        <span id="claveError" class="error"></span> 
+        
+        <div>
+            <input type="checkbox" id="recordarme" name="recordarme">
+            <label for="recordarme" style="font-weight: normal; color: var(--color-texto);">Recordarme en este equipo</label>
+        </div>
+        
+        <button type="submit">Entrar</button>
       </form>
     </section>
+
+<?php endif; ?>
 
     <section>
       <h2>Búsqueda rápida</h2>

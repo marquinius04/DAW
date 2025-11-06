@@ -1,8 +1,7 @@
 <?php
 $titulo_pagina = "Perfil de usuario registrado - PI";
-// [MODIFICADO]
 require_once 'include/head.php'; 
-controlar_acceso_privado(); // 
+controlar_acceso_privado();
 ?>
 
     <h2>Perfil de usuario registrado</h2>

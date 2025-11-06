@@ -1,5 +1,4 @@
 <?php
-// [MODIFICADO]
 // 1. Incluimos el gestor de sesión. Esto nos da $usuarios_permitidos
 require_once 'include/sesion.php'; 
 
@@ -12,42 +11,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validación de campos vacíos
     if (empty($usuario_ingresado) || empty($clave_ingresada)) {
-        // [MODIFICADO] Usamos flashdata en lugar de GET 
         $_SESSION['flash_error'] = "El usuario y la contraseña no pueden estar vacíos.";
         header("Location: index.php");
         exit();
     }
     
-    // Comprobar credenciales [cite: 88]
+    // Comprobar credenciales
     if (array_key_exists($usuario_ingresado, $usuarios_permitidos) && 
         $usuarios_permitidos[$usuario_ingresado] === $clave_ingresada) {
         
-        // [MODIFICADO] Éxito: Guardar datos en la SESIÓN
-        // [Requisito PDF: Task 2]
+        // Guardar datos en la SESIÓN
         $_SESSION['usuario'] = $usuario_ingresado;
         
-        // [MODIFICADO] Asignar estilo (Task 4) 
-        // (Simulamos que 'user1' prefiere el modo noche, el resto el normal)
-        if ($usuario_ingresado === 'user1') {
-            $_SESSION['estilo_css'] = 'css/night.css';
-        } else {
-            $_SESSION['estilo_css'] = 'css/styles.css';
-        }
+        // Asignar estilo 
+        // Llamamos a la función de sesion.php para obtener el estilo de este usuario
+        $_SESSION['estilo_css'] = get_estilo_por_usuario($usuario_ingresado);
         
-        // [MODIFICADO] Gestionar Cookie "Recordarme" (Task 1) 
+        // Gestionar cookie "Recordarme" 
         if ($recordarme) {
-            // Cookie por 90 días [cite: 60]
+            // Cookie por 90 días
             $expiracion = time() + (90 * 24 * 60 * 60);
             $path = '/';
             $domain = '';
             $secure = false; // Solo true si usas HTTPS
-            $httponly = true; // [cite: 802]
+            $httponly = true; 
             
             setcookie('recordar_usuario', $usuario_ingresado, $expiracion, $path, $domain, $secure, $httponly);
-            // ATENCIÓN: Guardar clave en cookie es inseguro, pero es un requisito de la práctica [cite: 59, 88]
             setcookie('recordar_clave', $clave_ingresada, $expiracion, $path, $domain, $secure, $httponly);
             
-            // Guardamos la cookie de "última visita" por primera vez [cite: 78]
+            // Guardamos la cookie de "última visita" por primera vez
             setcookie('ultima_visita_real', date('d/m/Y \a \l\a\s H:i:s'), $expiracion, $path, $domain, $secure, $httponly);
             
             // Borramos la sesión de "ultima_visita" para que no se muestre en el primer login
@@ -65,7 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
         
     } else {
-        // [MODIFICADO] Usamos flashdata en lugar de GET 
         $_SESSION['flash_error'] = "Usuario o contraseña incorrectos.";
         header("Location: index.php");
         exit();

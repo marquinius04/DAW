@@ -2,11 +2,9 @@
 $titulo_pagina = "PI - Menú Principal (Logueado)";
 $menu_tipo = 'privado';
 
-// [MODIFICADO]
 // 1. Incluimos head.php (que ya incluye sesion.php)
 require_once 'include/head.php'; 
 
-// [MODIFICADO]
 // 2. Controlamos que el usuario esté logueado para ver esta página 
 controlar_acceso_privado();
 ?>
@@ -16,7 +14,7 @@ controlar_acceso_privado();
         <h2><?php echo get_saludo(); ?></h2> 
         
         <?php 
-        // Mensaje de última visita (Task 1) 
+        // Mensaje de última visita 
         // Esta variable de sesión solo se crea en sesion.php si el login fue por cookie
         if (isset($_SESSION['ultima_visita'])): 
         ?>

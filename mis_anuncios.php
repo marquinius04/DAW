@@ -1,6 +1,4 @@
 <?php
-// [MODIFICADO]
-// head.php ya incluye anuncios.php a través de sesion.php
 $titulo_pagina = "Mis anuncios - PI";
 require_once 'include/head.php'; 
 controlar_acceso_privado(); //

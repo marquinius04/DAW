@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Si hay un error, redirigir al formulario de mensaje con error en la URL
     if ($error_mensaje !== "") {
-        // [MODIFICADO] Usamos flashdata 
+        // Usamos flashdata 
         $_SESSION['flash_error'] = $error_mensaje;
         $id_param = isset($_POST['anuncio_id']) ? "anuncio_id=" . urlencode($_POST['anuncio_id']) : "";
         header("Location: mensaje.php?{$id_param}");

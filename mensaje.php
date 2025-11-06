@@ -1,9 +1,8 @@
 <?php
 $titulo_pagina = "Enviar Mensaje - PI";
 $anuncio_id = htmlspecialchars($_GET['anuncio_id'] ?? 'N/A');
-// [MODIFICADO]
 require_once 'include/head.php'; 
-controlar_acceso_privado(); // 
+controlar_acceso_privado(); 
 ?>
 
     <h2>Enviar mensaje al anunciante</h2>

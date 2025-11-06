@@ -1,5 +1,4 @@
 <?php
-// Fichero: accesibilidad.php
 $titulo_pagina = "Declaración de Accesibilidad - PI";
 require_once 'include/head.php'; 
 ?>

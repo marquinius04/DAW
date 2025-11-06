@@ -1,5 +1,5 @@
 <?php
-// 1. Cargar el gestor de sesión (inicia session_start())
+// 1. Cargar el gestor de sesión 
 require_once 'include/sesion.php';
 
 // 2. Borrar todas las variables de sesión
@@ -17,8 +17,7 @@ if (ini_get("session.use_cookies")) {
 // 4. Finalmente, destruir la sesión
 session_destroy();
 
-// 5. [Requisito PDF: Task 5]
-// Borrar las cookies de "Recordarme" al hacer logout [cite: 146, 153]
+// 5. Borrar las cookies de "Recordarme" al hacer logout
 $expira_pasado = time() - 3600; // 1 hora en el pasado
 setcookie('recordar_usuario', '', $expira_pasado, '/', '', false, true);
 setcookie('recordar_clave', '', $expira_pasado, '/', '', false, true);

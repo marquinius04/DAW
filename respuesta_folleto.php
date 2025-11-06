@@ -1,11 +1,9 @@
 <?php
-// [MODIFICADO]
 // 1. Incluir el gestor de sesión
 require_once 'include/sesion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // [MODIFICADO]
     // 2. Controlar acceso
     controlar_acceso_privado();
     

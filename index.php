@@ -3,22 +3,15 @@ $titulo_pagina = "Acceso y Anuncios Recientes";
 $body_id = "loginPage"; 
 $menu_tipo = 'publico';
 
-// [MODIFICADO]
-// 1. Incluimos head.php (que ya incluye sesion.php)
+// 1. Incluimos head.php 
 require_once 'include/head.php'; 
 
-// [MODIFICADO]
 // 2. Si el usuario ya está logueado (por sesión o cookie), redirigir a la zona privada
 controlar_acceso_publico();
 
-// [MODIFICADO]
-// 3. El gestor de errores flashdata está ahora en head.php
-// Ya no necesitamos el bloque if (isset($_GET['error']))
 ?>
 
 <?php 
-// [MODIFICADO]
-// [Requisito PDF: Task 1 - Figura 2]
 // Mostrar bienvenida si el usuario está siendo recordado 
 if (isset($_COOKIE['recordar_usuario']) && isset($_COOKIE['ultima_visita_real'])): 
     $usuario_recordado = htmlspecialchars($_COOKIE['recordar_usuario']);

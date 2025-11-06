@@ -1,5 +1,4 @@
 <?php
-// Fichero: 404.php
 $titulo_pagina = "404 - Página no encontrada";
 require_once 'include/head.php'; 
 ?>

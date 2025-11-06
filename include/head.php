@@ -1,16 +1,8 @@
 <?php
-/*
-    =================================
-    head.php
-    =================================
-*/
-
-// [MODIFICADO]
 // 1. Incluir el gestor de sesión ANTES de cualquier HTML.
 // Esto inicia la sesión, gestiona flashdata y el auto-login por cookie.
 
-// ¡ESTA ES LA LÍNEA CORREGIDA!
-// Usamos __DIR__ para que siempre busque 'sesion.php' en su misma carpeta (la carpeta 'include')
+// Usamos __DIR__ para que siempre busque 'sesion.php' en su misma carpeta 
 require_once __DIR__ . '/sesion.php';
 
 // Variables por defecto
@@ -18,8 +10,7 @@ $titulo_pagina = $titulo_pagina ?? "PI - Pisos & Inmuebles";
 $body_id = $body_id ?? "";
 $menu_tipo = $menu_tipo ?? 'privado';
 
-// [MODIFICADO]
-// 2. Lógica de Estilos (Task 4)
+// 2. Lógica de estilos CSS 
 // Carga el estilo guardado en la sesión, o el principal si no hay sesión.
 $estilo_seleccionado = $_SESSION['estilo_css'] ?? 'css/styles.css';
 $estilo_principal = 'css/styles.css';
@@ -33,8 +24,7 @@ $estilo_principal = 'css/styles.css';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <?php
-    // [MODIFICADO]
-    // 3. Carga de Estilos
+    // 3. Carga de los estilos
     // Si el estilo de sesión NO es el principal, lo cargamos como "principal"
     // y el de "styles.css" como alternativo.
     if ($estilo_seleccionado !== $estilo_principal) {
@@ -85,9 +75,7 @@ $estilo_principal = 'css/styles.css';
 <main id="main-content">
 
 <?php 
-// [MODIFICADO]
 // Mostramos el mensaje de error "flash" si existe
-// $flash_error se define en 'include/sesion.php'
 if (isset($flash_error) && $flash_error !== null): 
 ?>
     <p style='color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px;'>

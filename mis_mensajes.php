@@ -1,8 +1,7 @@
 <?php
 $titulo_pagina = "Mis mensajes - PI";
-// [MODIFICADO]
 require_once 'include/head.php'; 
-controlar_acceso_privado(); // 
+controlar_acceso_privado(); 
 ?>
 
     <h2>Mis mensajes</h2>

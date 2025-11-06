@@ -1,6 +1,5 @@
 <?php
-// [MODIFICADO]
-// 1. Incluimos head.php LO PRIMERO DE TODO.
+// 1. Incluimos head.php al principio
 // Esto carga 'sesion.php', que a su vez carga 'data/anuncios.php'.
 // Ahora la variable $anuncios_ficticios existirá para el resto del script.
 require_once 'include/head.php'; 
@@ -23,14 +22,10 @@ if ($anuncio) {
     $titulo_pagina = "Anuncio no encontrado - PI";
 }
 
-// [MODIFICADO]
-// 4. [Requisito PDF: Task 2]
 // Esta página ahora es PRIVADA. La función viene de 'sesion.php'.
 controlar_acceso_privado();
 
-// [MODIFICADO]
-// 5. [Requisito PDF: Task 6]
-// Si el anuncio es válido, lo añadimos a "visitados"
+// Si el anuncio es válido, lo añadimos a la sección de "visitados"
 if ($anuncio) {
     // La función add_anuncio_visitado() está definida en sesion.php
     add_anuncio_visitado($anuncio_id, $anuncio);

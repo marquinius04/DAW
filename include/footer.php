@@ -1,8 +1,5 @@
 <?php
-// [MODIFICADO]
-// [Requisito PDF: Task 6]
 // Mostrar el panel de últimos anuncios visitados en todas las páginas
-// Llamamos a la función de 'sesion.php' (ya incluido en head.php)
 $ultimos_anuncios = get_ultimos_anuncios();
 
 if (!empty($ultimos_anuncios)):

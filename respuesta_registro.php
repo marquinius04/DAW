@@ -1,5 +1,4 @@
 <?php
-// [MODIFICADO]
 // 1. Incluimos el gestor de sesión.
 require_once 'include/sesion.php';
 
@@ -86,7 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Comprobar si hay errores
     if ($error_mensaje !== "") {
-        // [MODIFICADO] Usamos flashdata en lugar de GET 
         $_SESSION['flash_error'] = $error_mensaje;
         
         $datos_previos = http_build_query($_POST); // Devuelve los datos para repoblar
@@ -95,8 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    // [MODIFICADO]
-    // 2. Incluimos el <head> HTML (que ya tiene sesion.php)
     $titulo_pagina = "Registro Exitoso";
     require_once 'include/head.php'; 
     

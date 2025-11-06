@@ -3,11 +3,9 @@ $titulo_pagina = "Registro de Nuevo Usuario - PI";
 $body_id = "registroPage";
 $menu_tipo = 'publico'; 
 
-// [MODIFICADO]
 // 1. Incluimos head.php (que ya incluye sesion.php)
 require_once 'include/head.php'; 
 
-// [MODIFICADO]
 // 2. Si el usuario ya está logueado, le impedimos registrarse
 controlar_acceso_publico();
 
@@ -24,9 +22,7 @@ $val_pais = htmlspecialchars($_GET['pais'] ?? '');
 ?>
 
     <?php
-    // [MODIFICADO]
-    // 3. El gestor de errores flashdata está ahora en head.php
-    // Ya no necesitamos el bloque if (isset($_GET['error']))
+    // El gestor de errores flashdata está ahora en head.php
     ?>
 
     <h2>Registro de nuevo usuario</h2>

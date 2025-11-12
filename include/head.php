@@ -13,6 +13,14 @@ $menu_tipo = $menu_tipo ?? 'privado';
 $estilo_seleccionado = $_SESSION['estilo_css'] ?? 'css/styles.css';
 $estilo_principal = 'css/styles.css';
 
+// --- CRUCIAL: INCLUIR FLASH DATA ANTES DE USARLO ---
+// (Si no lo incluyes en registro.php, get_flashdata() no existe)
+require_once 'include/flashdata.inc.php'; 
+
+// --- CRUCIAL: Leer el flashdata y guardarlo en una variable ---
+// Usaremos $flash_error para ser compatible con head.php, aunque lo estamos leyendo del sistema flashdata.
+$flash_error = get_flashdata('error');
+
 ?>
 <!DOCTYPE html>
 <html lang="es">

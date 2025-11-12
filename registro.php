@@ -3,11 +3,23 @@ $titulo_pagina = "Registro de Nuevo Usuario - PI";
 $body_id = "registroPage"; 
 $menu_tipo = 'publico'; 
 
-// Incluye la cabecera y el gestor de sesión
-require_once 'include/head.php'; 
+// --- INCLUSIONES CRÍTICAS ---
+require_once 'include/flashdata.inc.php'; 
+require_once 'include/db_connect.php';
+require_once 'include/select_options.inc.php'; 
+
+// --- LECTURA DE FLASH DATA ---
+// Leemos el mensaje de error que pudo dejar respuesta_registro.php (y lo eliminamos de la sesión)
+$flash_error = get_flashdata('error');
+
+// Incluye la cabecera (que incluye sesion.php)
+require_once 'include/head.php';
 
 // Si el usuario ya está logueado, le impedimos registrarse
 controlar_acceso_publico();
+
+// --- MODIFICACIÓN 2: INICIAR CONEXIÓN ---
+$mysqli = conectar_bd();
 
 // Datos para repoblar el formulario (vienen de la url después de un error de validación)
 $val_usuario = htmlspecialchars($_GET['usuario'] ?? '');
@@ -16,13 +28,13 @@ $val_sexo = htmlspecialchars($_GET['sexo'] ?? '');
 $val_dia = htmlspecialchars($_GET['diaNacimiento'] ?? '');
 $val_mes = htmlspecialchars($_GET['mesNacimiento'] ?? '');
 $val_anyo = htmlspecialchars($_GET['anyoNacimiento'] ?? '');
-$val_ciudad = htmlspecialchars($_GET['ciudad'] ?? '');
-$val_pais = htmlspecialchars($_GET['pais'] ?? '');
+// Convertimos el valor de país a entero, ya que el ID del país es un número
+$val_pais = (int)($_GET['pais'] ?? 0);
 
 ?>
 
     <?php
-    // El gestor de errores flashdata está ahora en head.php
+    // El gestor de errores flashdata (get_flashdata) debe estar en head.php o aquí
     ?>
 
     <h2>Registro de nuevo usuario</h2>
@@ -78,6 +90,11 @@ $val_pais = htmlspecialchars($_GET['pais'] ?? '');
       <label for="pais">País de residencia:</label>
       <select id="pais" name="pais">
         <option value="">-- Seleccione una opción --</option>
+        <?php
+        // Llama a la función para generar las opciones de la tabla PAISES
+        // Pasa $val_pais como el ID seleccionado (para repoblar el formulario)
+        generar_select_options($mysqli, 'PAISES', 'IdPais', 'NomPais', $val_pais);
+        ?>
         </select>
       <span id="paisError" class="error"></span> 
 
@@ -89,6 +106,9 @@ $val_pais = htmlspecialchars($_GET['pais'] ?? '');
     </form>
   
 <?php
+// --- MODIFICACIÓN 4: CERRAR CONEXIÓN ---
+$mysqli->close();
+
 // require_once 'js/validaciones.js'; 
 require_once 'include/footer.php';
 ?>

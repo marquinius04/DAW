@@ -1,90 +1,69 @@
 <?php
-// Incluye el gestor de sesión
-require_once 'include/sesion.php';
+// /respuesta_registro.php
 
+// 1. INCLUSIONES ESENCIALES
+require_once 'include/sesion.php'; 
+require_once 'include/flashdata.inc.php'; // <-- NECESARIO PARA set_flashdata()
+require_once 'include/db_connect.php';      // <-- NECESARIO PARA INSERTAR EN BD
+
+$menu_tipo = 'publico'; 
+
+// --- FUNCIONES DE VALIDACIÓN (SE MANTIENEN INTACTAS) ---
 function validarUsuario($usuario) {
-    // Valida que el campo no esté vacío
     if (empty($usuario)) return "El nombre de usuario es obligatorio";
-    // Valida la longitud (3-15 caracteres)
     $len = strlen($usuario);
-    if ($len < 3 || $len > 15) return "Longitud incorrecta (debe ser 3-15 caracteres)";
-    // Valida que solo contenga caracteres alfanuméricos
-    if (!preg_match('/^[a-zA-Z0-9]+$/', $usuario)) return "Solo puede contener letras inglesas y números";
-    // Valida que no comience con un número
-    if (preg_match('/^[0-9]/', $usuario)) return "No puede comenzar por un número";
+    if ($len < 3 || $len > 15) return "Usuario: longitud incorrecta (debe ser 3-15 caracteres)";
+    if (!preg_match('/^[a-zA-Z0-9]+$/', $usuario)) return "Usuario: solo puede contener letras inglesas y números";
+    if (preg_match('/^[0-9]/', $usuario)) return "Usuario: no puede comenzar por un número";
     return "";
 }
 
 function validarClave($clave) {
-    // Valida que el campo no esté vacío
     if (empty($clave)) return "Debe introducir una contraseña";
-    // Valida la longitud (6-15 caracteres)
     $len = strlen($clave);
-    if ($len < 6 || $len > 15) return "Longitud incorrecta (debe ser 6-15 caracteres)";
-    // Valida que solo contenga los caracteres permitidos
-    if (preg_match('/[^a-zA-Z0-9_-]/', $clave)) return "Carácter no permitido (solo letras, números, - y _)";
-    // Valida la presencia de una mayúscula
-    if (!preg_match('/[A-Z]/', $clave)) return "Debe contener al menos una mayúscula";
-    // Valida la presencia de una minúscula
-    if (!preg_match('/[a-z]/', $clave)) return "Debe contener al menos una minúscula";
-    // Valida la presencia de un número
-    if (!preg_match('/[0-9]/', $clave)) return "Debe contener al menos un número";
+    if ($len < 6 || $len > 15) return "Contraseña: longitud incorrecta (debe ser 6-15 caracteres)";
+    if (preg_match('/[^a-zA-Z0-9_-]/', $clave)) return "Contraseña: carácter no permitido (solo letras, números, - y _)";
+    if (!preg_match('/[A-Z]/', $clave)) return "Contraseña: Debe contener al menos una mayúscula";
+    if (!preg_match('/[a-z]/', $clave)) return "Contraseña: Debe contener al menos una minúscula";
+    if (!preg_match('/[0-9]/', $clave)) return "Contraseña: Debe contener al menos un número";
     return "";
 }
 
 function validarEmail($email) {
-    // Valida que el campo no esté vacío
     if (empty($email)) return "El correo electrónico es obligatorio";
-    // Valida la longitud máxima
     if (strlen($email) > 254) return "Email demasiado largo (máx 254)";
-    // Divide el email en parte local y dominio
     $partes = explode('@', $email);
     if (count($partes) !== 2) return "El email debe tener una sola '@'";
     $local = $partes[0]; $dominio = $partes[1];
-    // Valida la longitud de la parte local
     $lenLocal = strlen($local);
     if ($lenLocal < 1 || $lenLocal > 64) return "Error en la longitud de la parte local (1-64)";
-    // La parte local no puede empezar o terminar con punto
     if (str_starts_with($local, '.') || str_ends_with($local, '.')) return "La parte local no puede empezar o acabar con punto";
-    // La parte local no puede tener puntos seguidos
     if (str_contains($local, '..')) return "La parte local no puede tener dos puntos seguidos";
-    // Valida los caracteres permitidos en la parte local
     if (!preg_match('/^[a-zA-Z0-9!#$%&\'*+\-\/=?^_`{|}~.]+$/', $local)) return "Carácter no permitido en la parte local";
-    // Valida la longitud del dominio
     $lenDominio = strlen($dominio);
     if ($lenDominio < 1 || $lenDominio > 255) return "Error en la longitud del dominio (1-255)";
-    // Valida cada subdominio
     $subdominios = explode('.', $dominio);
     if (empty($subdominios)) return "El dominio debe tener al menos una parte";
     foreach ($subdominios as $sub) {
-        // Valida la longitud del subdominio
         $lenSub = strlen($sub);
         if ($lenSub < 1 || $lenSub > 63) return "Error en la longitud del subdominio (1-63)";
-        // El subdominio no puede empezar o terminar con guion
         if (str_starts_with($sub, '-') || str_ends_with($sub, '-')) return "El subdominio no puede empezar o acabar con guion";
-        // Valida los caracteres permitidos en el subdominio
         if (!preg_match('/^[a-zA-Z0-9-]+$/', $sub)) return "Carácter no permitido en el subdominio (solo letras, números, -)";
     }
     return "";
 }
 
 function validarFechaNacimiento($dia, $mes, $anyo) {
-    // Valida que todos los campos de fecha estén rellenos
     if (empty($dia) || empty($mes) || empty($anyo)) return "La fecha de nacimiento es obligatoria";
-    // Convierte a enteros y comprueba si la fecha es real
     $diaInt = (int)$dia; $mesInt = (int)$mes; $anyoInt = (int)$anyo;
     if (!checkdate($mesInt, $diaInt, $anyoInt)) return "La fecha introducida no es válida";
     try {
-        // Crea objetos DateTime para la comparación de edad
         $fechaNacimiento = new DateTime("{$anyo}-{$mes}-{$dia}");
-        // Obtiene la fecha de hace 18 años
         $fechaHace18Anios = new DateTime('-18 years');
-        // Comprueba si el usuario es mayor de 18 años
         if ($fechaNacimiento > $fechaHace18Anios) {
             return "Debe ser mayor de 18 años";
         }
     } catch (Exception $e) { 
-        // Captura errores si el formato de fecha no es correcto
         return "Error al procesar la fecha"; 
     }
     return "";
@@ -92,7 +71,7 @@ function validarFechaNacimiento($dia, $mes, $anyo) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // Recoge todos los datos del formulario
+    // Recoge y sanea todos los datos del formulario
     $usuario = trim($_POST['usuario'] ?? '');
     $clave1 = $_POST['clave'] ?? '';
     $clave2 = $_POST['clave2'] ?? '';
@@ -101,6 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $diaNac = trim($_POST['diaNacimiento'] ?? '');
     $mesNac = trim($_POST['mesNacimiento'] ?? '');
     $anyoNac = trim($_POST['anyoNacimiento'] ?? '');
+    $ciudad = trim($_POST['ciudad'] ?? '');
+    // Asumimos que $val_pais es el ID (entero)
+    $pais_id = (int)($_POST['pais'] ?? 0); 
     
     // Ejecuta validaciones una por una
     $error_mensaje = "";
@@ -112,11 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     elseif (($msg = validarEmail($email)) !== "") $error_mensaje = $msg;
     elseif (empty($sexo)) $error_mensaje = "Debe seleccionar un sexo";
     elseif (($msg = validarFechaNacimiento($diaNac, $mesNac, $anyoNac)) !== "") $error_mensaje = $msg;
+    // Agregamos la validación del país (que ahora es un ID de la BD)
+    elseif ($pais_id === 0) $error_mensaje = "Debe seleccionar un país válido";
     
-    // Comprueba si hay errores
+    // --- MANEJO DE ERRORES DE VALIDACIÓN ---
     if ($error_mensaje !== "") {
-        // Establece el mensaje de error para mostrar en la página de registro
-        $_SESSION['flash_error'] = $error_mensaje;
+        // [CORRECCIÓN] Usar set_flashdata() para guardar el error
+        set_flashdata('error', $error_mensaje); 
         
         // Devuelve los datos del formulario para repoblar los campos
         $datos_previos = http_build_query($_POST); 
@@ -126,39 +110,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    // --- Lógica de éxito: mostrar resumen ---
+    // --- LÓGICA DE ÉXITO: INSERCIÓN EN BASE DE DATOS (Práctica 9) ---
     
-    $titulo_pagina = "Registro Exitoso";
-    // Incluye la plantilla después de las redirecciones
-    require_once 'include/head.php'; 
-    
-    $nacimiento = htmlspecialchars("{$diaNac}/{$mesNac}/{$anyoNac}");
-    ?>
-    
-    <h2><span class="icono">check_circle</span> ¡registro exitoso!</h2>
-    <p>La validación se ha completado. Tus datos han sido recibidos correctamente:</p>
-    
-    <section class="caja-lateral" style="background-color: #d4edda; border: 1px solid #28a745; line-height: 1.8;">
-        
-        <h3>Datos Introducidos:</h3>
-        
-        <p style="margin-bottom: 0.75em;">Nombre de Usuario: <strong><?php echo htmlspecialchars($usuario); ?></strong></p>
-        <p style="margin-bottom: 0.75em;">Email: <strong><?php echo htmlspecialchars($email); ?></strong></p>
-        <p style="margin-bottom: 0.75em;">Fecha de Nacimiento: <strong><?php echo $nacimiento; ?></strong></p>
-        <p style="margin-bottom: 0.75em;">Sexo: <strong><?php echo htmlspecialchars($sexo); ?></strong></p>
-        <p style="margin-bottom: 0.75em;">Contraseña: <strong>********</strong></p>
-        
-    </section>
+    $mysqli = conectar_bd();
 
-    <p>Ya puedes volver a la página principal para entrar con tu nueva cuenta.</p>
+    // 1. Mapeo y preparación de datos para la base de datos
+    $foto_ruta = "img/default_user.jpg"; 
+    $estilo_id = 1; // Asignamos el estilo por defecto (ID 1)
+
+    // Mapeo de sexo (Hombre=1, Mujer=0, Otro=2) para la columna TINYINT
+    $sexo_map = ['Hombre' => 1, 'Mujer' => 0, 'Otro' => 2]; 
+    $sexo_db = $sexo_map[$sexo] ?? 2; 
+
+    // Formato de fecha para MySQL (YYYY-MM-DD)
+    $fecha_nacimiento_db = "{$anyoNac}-{$mesNac}-{$diaNac}"; 
+
+    // 2. Sentencia preparada para la inserción
+    $sql = "
+        INSERT INTO USUARIOS 
+        (NomUsuario, Clave, Email, Sexo, FNacimiento, Ciudad, Pais, Foto, Estilo) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ";
     
-    <a href="index.php" style="display: inline-block; background-color: var(--color-primario); color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-top: 15px; font-weight: bold;">
-        <span class="icono">login</span> Ir al Acceso
-    </a>
-    
-    <?php
-    require_once 'include/footer.php';
+    $stmt = $mysqli->prepare($sql);
+
+    // Si hay un error al preparar la consulta
+    if ($stmt === false) {
+        set_flashdata('error', 'Error interno del servidor al preparar el registro.');
+        $mysqli->close();
+        header("Location: registro.php");
+        exit();
+    }
+
+    // 3. Vinculación y ejecución
+    // Tipos: s (string), i (integer) -> "sssissssi"
+    $stmt->bind_param("sssissssi", 
+        $usuario, 
+        $clave1, 
+        $email, 
+        $sexo_db, 
+        $fecha_nacimiento_db, 
+        $ciudad, 
+        $pais_id, 
+        $foto_ruta, 
+        $estilo_id
+    );
+
+    if ($stmt->execute()) {
+        // Éxito: Registro completado
+        set_flashdata('success', "¡Registro completado para el usuario '{$usuario}'! Ya puedes iniciar sesión.");
+        
+        // Redirigir a la página de acceso
+        header("Location: index.php");
+
+    } else {
+        // Fallo: Error de BD (Ej. NomUsuario duplicado: error 1062)
+        $error_msg = "Error desconocido al registrar. Código: {$stmt->errno}";
+        
+        // Captura de error de clave única (NomUsuario ya existe)
+        if ($stmt->errno === 1062) { 
+            $error_msg = "El nombre de usuario '{$usuario}' ya está registrado. Por favor, elige otro.";
+        } 
+        // Captura de error de clave ajena (Ej. País no existe o Estilo no existe)
+        elseif ($stmt->errno === 1452) {
+            $error_msg = "Error al asignar un país. Por favor, inténtalo de nuevo.";
+        }
+
+        set_flashdata('error', "Error al completar el registro: {$error_msg}");
+        
+        // Redirigir de vuelta al formulario, repoblando los campos
+        $datos_previos = http_build_query($_POST); 
+        header("Location: registro.php?{$datos_previos}");
+    }
+
+    $stmt->close();
+    $mysqli->close();
     exit();
+
 } else {
     // Si se accede directamente sin post, redirige al formulario
     header("Location: registro.php");

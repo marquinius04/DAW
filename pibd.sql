@@ -49,7 +49,7 @@ CREATE TABLE `ANUNCIOS` (
   CONSTRAINT `FK_Anuncios_TiposAnuncios` FOREIGN KEY (`TAnuncio`) REFERENCES `TIPOSANUNCIOS` (`IdTAnuncio`),
   CONSTRAINT `FK_Anuncios_TiposViviendas` FOREIGN KEY (`TVivienda`) REFERENCES `TIPOSVIVIENDAS` (`IdTVivienda`),
   CONSTRAINT `FK_Anuncios_Usuarios` FOREIGN KEY (`Usuario`) REFERENCES `USUARIOS` (`IdUsuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -58,6 +58,7 @@ CREATE TABLE `ANUNCIOS` (
 
 LOCK TABLES `ANUNCIOS` WRITE;
 /*!40000 ALTER TABLE `ANUNCIOS` DISABLE KEYS */;
+INSERT INTO `ANUNCIOS` VALUES (1,1,2,'img/casa1.jpg','Foto de Chalet de lujo con piscina','Chalet de lujo con piscina',750000.00,'Espectacular chalet ubicado en zona premium. Cuenta con 4 habitaciones, 3 baños, jardín y piscina privada. Vistas a la montaña y al mar.','Marbella',1,250.00,4,3,NULL,NULL,'2025-11-12 18:05:12',1),(2,2,2,'img/casa2.jpg','Foto de Estudio funcional y económico','Estudio funcional y económico',450.00,'Acogedor estudio cerca del centro. Ideal para estudiantes o solteros. Cocina americana, baño completo y todos los gastos incluidos en el precio.','Bilbao',1,40.00,1,1,NULL,NULL,'2025-11-12 18:05:12',2),(3,1,3,'img/casa3.jpg','Foto de oficina moderna en distrito financiero','Oficina moderna en Madrid',320000.00,'Oficina luminosa en edificio exclusivo. Recepción, 3 despachos y sala de reuniones. Baños comunes.','Madrid',1,120.00,3,2,NULL,2005,'2025-11-12 18:05:12',3),(4,2,4,'img/casa4.jpg','Foto de local comercial a pie de calle','Local comercial en alquiler',1200.00,'Local comercial de 80m2 a pie de calle, zona de mucho paso. Antigua tienda de ropa. Salida de humos no disponible.','Barcelona',1,80.00,0,1,0,NULL,'2025-11-12 18:05:12',4),(5,1,5,'img/casa5.jpg','Foto de plaza de garaje amplia','Plaza de garaje céntrica',18000.00,'Plaza de garaje para coche grande. Fácil acceso y maniobra. Puerta automática y vigilancia 24h.','Valencia',1,15.00,0,0,NULL,NULL,'2025-11-12 18:05:12',5),(6,1,1,'img/casa10.jpg','Foto de promoción de obra nueva','Piso de Obra Nueva en Alicante',210000.00,'Promoción de obra nueva en Playa de San Juan. 2 habitaciones, 2 baños. Urbanización con piscina, pádel y zonas verdes.','Alicante',1,90.00,2,2,NULL,2024,'2025-11-12 18:05:14',1);
 /*!40000 ALTER TABLE `ANUNCIOS` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -310,7 +311,7 @@ CREATE TABLE `USUARIOS` (
   KEY `FK_Usuarios_Estilos` (`Estilo`),
   CONSTRAINT `FK_Usuarios_Estilos` FOREIGN KEY (`Estilo`) REFERENCES `ESTILOS` (`IdEstilo`),
   CONSTRAINT `FK_Usuarios_Paises` FOREIGN KEY (`Pais`) REFERENCES `PAISES` (`IdPais`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -319,7 +320,7 @@ CREATE TABLE `USUARIOS` (
 
 LOCK TABLES `USUARIOS` WRITE;
 /*!40000 ALTER TABLE `USUARIOS` DISABLE KEYS */;
-INSERT INTO `USUARIOS` VALUES (1,'a','a','a@ejemplo.com',1,'2000-01-01','Alicante',1,NULL,'2025-11-12 11:18:58',1),(2,'user1','clave1','user1@ejemplo.com',0,'1995-05-10','Madrid',1,NULL,'2025-11-12 11:18:58',2),(3,'admin','secreto','admin@ejemplo.com',1,'1990-03-20','Barcelona',1,NULL,'2025-11-12 11:18:58',3),(4,'marcos','a','marcos@ejemplo.com',1,'2002-11-15','Valencia',1,NULL,'2025-11-12 11:18:58',4),(5,'gustavo','a','gustavo@ejemplo.com',1,'1988-07-30','Sevilla',1,NULL,'2025-11-12 11:19:00',5);
+INSERT INTO `USUARIOS` VALUES (1,'a','a','a@ejemplo.com',1,'2000-01-01','Alicante',1,NULL,'2025-11-12 11:18:58',1),(2,'user1','clave1','user1@ejemplo.com',0,'1995-05-10','Madrid',1,NULL,'2025-11-12 11:18:58',2),(3,'admin','secreto','admin@ejemplo.com',1,'1990-03-20','Barcelona',1,NULL,'2025-11-12 11:18:58',3),(4,'marcos','a','marcos@ejemplo.com',1,'2002-11-15','Valencia',1,NULL,'2025-11-12 11:18:58',4),(5,'gustavo','a','gustavo@ejemplo.com',1,'1988-07-30','Sevilla',1,NULL,'2025-11-12 11:19:00',5),(18,'jose','Jose12','adwadwadwadw@gmail.com',1,'2004-12-06','Alicante',1,'img/default_user.jpg','2025-11-12 17:43:06',1);
 /*!40000 ALTER TABLE `USUARIOS` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -332,4 +333,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-12 12:26:09
+-- Dump completed on 2025-11-12 20:05:59

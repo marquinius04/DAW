@@ -2,11 +2,31 @@
 $titulo_pagina = "PI - Menú Principal (Logueado)";
 $menu_tipo = 'privado';
 
-// Incluye la cabecera y el gestor de sesión
+// 1. INCLUSIONES (Añadimos db_connect para la consulta de anuncios)
 require_once 'include/head.php'; 
+require_once 'include/db_connect.php'; 
 
 // Controla que el usuario esté logueado para ver esta página
 controlar_acceso_privado();
+
+// 2. LÓGICA DE ÚLTIMOS ANUNCIOS (Conexión y Consulta)
+$mysqli = conectar_bd();
+$sql_anuncios = "
+    SELECT 
+        A.IdAnuncio, A.FPrincipal, A.Titulo, A.Precio 
+    FROM 
+        ANUNCIOS A
+    ORDER BY 
+        A.FRegistro DESC 
+    LIMIT 5
+"; // Obtenemos los 5 más nuevos
+
+if (!$resultado_anuncios = $mysqli->query($sql_anuncios)) {
+    // Manejo de error si la consulta falla
+    $error_anuncios = "Error al cargar los últimos anuncios: " . $mysqli->error;
+} else {
+    $error_anuncios = null;
+}
 ?>
 
     <section style="background-color: #e5efff; border: 1px solid var(--color-primario);">
@@ -14,8 +34,6 @@ controlar_acceso_privado();
         <h2><?php echo get_saludo(); ?></h2> 
         
         <?php 
-        // Mensaje de última visita 
-        // Esta variable de sesión solo se crea en sesion.php si el login fue por cookie
         if (isset($_SESSION['ultima_visita'])): 
         ?>
             <p>Tu última visita (registrada por la cookie) fue el <?php echo htmlspecialchars($_SESSION['ultima_visita']); ?>.</p>
@@ -27,42 +45,42 @@ controlar_acceso_privado();
 
     <section>
       <h2>Búsqueda rápida</h2>
-      <form action="resultados.php" method="get"> <label for="ciudad">Ciudad:</label>
-        <input type="text" id="ciudad" name="ciudad">
+      <form action="resultados.php" method="get"> 
+        <label for="q">Búsqueda rápida:</label>
+        <input type="text" id="q" name="q" placeholder="Ej: local alquiler alicante">
         <button type="submit">Buscar</button>
       </form>
     </section>
 
     <section>
       <h2>Últimos anuncios</h2>
-      <ul>
-        <li>
-          <article>
-            <a href="aviso.php?id=1"> <img src="img/casa1.jpg" alt="Foto de vivienda 1" width="100">
-              <h3>Piso céntrico en Madrid</h3>
-              <p>250.000€</p>
-            </a>
-          </article>
-        </li>
-        <li>
-          <article>
-            <a href="aviso.php?id=2"> <img src="img/casa2.jpg" alt="Foto de vivienda 2" width="100">
-              <h3>Apartamento en Valencia</h3>
-              <p>750€/mes</p>
-            </a>
-          </article>
-        </li>
-        <li>
-          <article>
-            <a href="aviso.php?id=5"> <img src="img/casa5.jpg" alt="Foto de vivienda 5" width="100">
-              <h3>Casa rural en Asturias</h3>
-              <p>150.000€</p>
-            </a>
-          </article>
-        </li>
-      </ul>
+      
+      <?php if ($error_anuncios): ?>
+          <p style="color: red;"><?= $error_anuncios ?></p>
+          
+      <?php elseif ($resultado_anuncios->num_rows > 0): ?>
+          <ul>
+              <?php while ($anuncio = $resultado_anuncios->fetch_assoc()): ?>
+                  <li>
+                      <article>
+                          <a href="aviso.php?id=<?= $anuncio['IdAnuncio'] ?>"> 
+                              <img src="<?= htmlspecialchars($anuncio['FPrincipal'] ?? 'img/default.jpg') ?>" alt="Foto de <?= htmlspecialchars($anuncio['Titulo']) ?>" width="100">
+                              <h3><?= htmlspecialchars($anuncio['Titulo']) ?></h3>
+                              <p><?= number_format($anuncio['Precio'], 2, ',', '.') ?> €</p>
+                          </a>
+                      </article>
+                  </li>
+              <?php endwhile; ?>
+          </ul>
+          <?php $resultado_anuncios->close(); // Libera resultados ?>
+      <?php else: ?>
+          <p>No hay anuncios publicados actualmente.</p>
+      <?php endif; ?>
+      
     </section>
 
 <?php
+// 4. CIERRE DE CONEXIÓN Y FOOTER
+$mysqli->close(); // Cierra la conexión a la BD
 require_once 'include/footer.php';
 ?>

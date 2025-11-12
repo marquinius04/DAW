@@ -1,37 +1,51 @@
 <?php
+// /include/sesion.php
 
 // Inicia la sesión
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Incluye datos de usuarios y anuncios
-require_once __DIR__ . '/../data/usuarios.php';
-require_once __DIR__ . '/../data/anuncios.php'; 
-
-// Coge el mensaje de error de la sesión
-$flash_error = $_SESSION['flash_error'] ?? null;
-if ($flash_error) {
-    // Lo borra de la sesión para que solo se muestre una vez
-    unset($_SESSION['flash_error']);
-}
+// Incluye la conexión a BD y el nuevo sistema de Flashdata
+require_once __DIR__ . '/db_connect.php'; 
+require_once __DIR__ . '/flashdata.inc.php'; 
 
 /**
-*** Asigna un estilo css único a cada usuario
-**/
-function get_estilo_por_usuario($usuario) {
-    $estilos_usuarios = [
-        // Usuario => Fichero css
-        'a' => 'css/styles.css',         
-        'user1' => 'css/night.css',          
-        'admin' => 'css/contrast.css',       
-        'marcos' => 'css/big.css',           
-        'gustavo' => 'css/contrast_big.css'  
-    ];
+ * Asigna un estilo CSS único a cada usuario consultando la BD
+ *
+ * @param mysqli $mysqli Objeto de conexión a la BD.
+ * @param string $usuario Nombre de usuario.
+ * @return string Fichero CSS
+ */
+function get_estilo_por_usuario_bd($mysqli, $usuario) {
+    $default_style = 'css/styles.css'; // Estilo por defecto
+
+    $stmt = $mysqli->prepare("
+        SELECT E.Fichero 
+        FROM USUARIOS U 
+        JOIN ESTILOS E ON U.Estilo = E.IdEstilo 
+        WHERE U.NomUsuario = ?
+    ");
+
+    if ($stmt === false) {
+        error_log("Error al preparar consulta de estilo: " . $mysqli->error);
+        return $default_style;
+    }
+
+    $stmt->bind_param("s", $usuario);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    if ($fila = $resultado->fetch_assoc()) {
+        $fichero_css = htmlspecialchars($fila['Fichero']);
+    } else {
+        $fichero_css = $default_style;
+    }
+
+    $stmt->close();
+    $resultado->close();
     
-    // Si el usuario existe en el array, devuelve su estilo
-    // Si no, devuelve el estilo por defecto
-    return $estilos_usuarios[$usuario] ?? 'css/styles.css';
+    return $fichero_css;
 }
 
 // Si el usuario no tiene una sesión activa pero sí tiene las cookies de "recordarme"
@@ -40,41 +54,132 @@ if (!isset($_SESSION['usuario']) && isset($_COOKIE['recordar_usuario']) && isset
     $usuario_cookie = $_COOKIE['recordar_usuario'];
     $clave_cookie = $_COOKIE['recordar_clave'];
 
-    // Valida que el usuario y clave de la cookie sigan existiendo
-    // $usuarios_permitidos se carga desde 'data/usuarios.php'
-    if (array_key_exists($usuario_cookie, $usuarios_permitidos) && $usuarios_permitidos[$usuario_cookie] === $clave_cookie) {
+    $mysqli = conectar_bd();
+
+    $stmt = $mysqli->prepare("
+        SELECT NomUsuario, Estilo, Clave 
+        FROM USUARIOS 
+        WHERE NomUsuario = ? AND Clave = ?
+    ");
+    
+    if ($stmt === false) {
+        $mysqli->close();
+        goto end_recuerdame; 
+    }
+
+    $stmt->bind_param("ss", $usuario_cookie, $clave_cookie);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    if ($fila = $resultado->fetch_assoc()) {
+        $_SESSION['usuario'] = $fila['NomUsuario'];
         
-        // Si la validación es correcta, inicia la sesión
-        $_SESSION['usuario'] = $usuario_cookie;
-        
-        // Guarda la "última visita" en la sesión para mostrarla
         if (isset($_COOKIE['ultima_visita_real'])) {
             $_SESSION['ultima_visita'] = $_COOKIE['ultima_visita_real'];
         }
         
-        // Actualiza la cookie de "última visita" con la hora actual
         $expira_visita = time() + (90 * 24 * 60 * 60); // 90 días
         setcookie('ultima_visita_real', date('d/m/Y \a \l\a\s H:i:s'), $expira_visita, '/', '', false, true);
 
-        // Asigna el estilo llamando a la función
-        $_SESSION['estilo_css'] = get_estilo_por_usuario($usuario_cookie);
+        $fichero_css = get_estilo_por_usuario_bd($mysqli, $fila['NomUsuario']);
+        $_SESSION['estilo_css'] = $fichero_css;
     }
-}
+    
+    $stmt->close();
+    $resultado->close();
+    $mysqli->close();
 
+    end_recuerdame:
+}
 
 /*
     =================================
-            FUNCIONES DE AYUDA
+            FUNCIONES DE AYUDA (Reactivadas y Actualizadas)
     =================================
 */
 
 /**
+ * Obtiene la lista de anuncios visitados desde la cookie
+ * (Reactivada, necesaria para add_anuncio_visitado)
+ */
+function get_ultimos_anuncios() {
+    $visitados_json = $_COOKIE['anuncios_visitados'] ?? null;
+    if ($visitados_json) {
+        // Devuelve el array si ha visitado anuncios antes
+        return json_decode($visitados_json, true);
+    }
+    // Devuelve array vacío si no hay cookie
+    return []; 
+}
+
+/**
+ * Añade un anuncio a la cookie de "últimos visitados"
+ * Mantiene un máximo de 4 anuncios y gestiona duplicados
+ *
+ * @param mysqli $mysqli Objeto de conexión a la BD.
+ * @param int $id ID del anuncio visitado.
+ */
+function add_anuncio_visitado($mysqli, $id) {
+    
+    $sql_anuncio = "
+        SELECT A.Titulo, A.Ciudad, A.Precio, P.NomPais, A.FPrincipal
+        FROM ANUNCIOS A
+        JOIN PAISES P ON A.Pais = P.IdPais
+        WHERE A.IdAnuncio = ?
+    ";
+    
+    $stmt = $mysqli->prepare($sql_anuncio);
+    if ($stmt === false) return;
+
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    $anuncio_data = $resultado->fetch_assoc();
+    
+    $stmt->close();
+
+    if (!$anuncio_data) return; 
+    
+    // Obtiene los datos actuales (Llama a la función reactivada)
+    $lista_visitados = get_ultimos_anuncios(); 
+    
+    $item_nuevo = [
+        'id' => $id,
+        'foto' => $anuncio_data['FPrincipal'] ?? 'img/default.jpg',
+        'titulo' => $anuncio_data['Titulo'],
+        'ciudad' => $anuncio_data['Ciudad'],
+        'pais' => $anuncio_data['NomPais'],
+        'precio' => $anuncio_data['Precio']
+    ];
+
+    foreach ($lista_visitados as $key => $item) {
+        if ($item['id'] == $id) {
+            unset($lista_visitados[$key]);
+        }
+    }
+    
+    $lista_visitados[] = $item_nuevo;
+    
+    while (count($lista_visitados) > 4) {
+        array_shift($lista_visitados);
+    }
+    
+    $json_visitados = json_encode(array_values($lista_visitados)); 
+    $expira = time() + (7 * 24 * 60 * 60); // 1 semana
+    
+    setcookie('anuncios_visitados', $json_visitados, $expira, '/', '', false, true);
+}
+
+
+/**
  * Comprueba si el usuario está logueado
  * Si no lo está, le redirige a la página de login
+ * (Reactivada y actualizada para usar set_flashdata)
  */
 function controlar_acceso_privado() {
     if (!isset($_SESSION['usuario'])) {
-        $_SESSION['flash_error'] = "Debe iniciar sesión para acceder a esta página";
+        // Actualizado para usar el nuevo sistema flashdata
+        set_flashdata('error', "Debe iniciar sesión para acceder a esta página");
         header("Location: index.php");
         exit();
     }
@@ -93,10 +198,12 @@ function controlar_acceso_publico() {
 
 /**
  * Genera el saludo de bienvenida según la hora del servidor
+ * (Reactivada)
  */
 function get_saludo() {
     if (!isset($_SESSION['usuario'])) return "";
 
+    // Establece la zona horaria (¡Importante!)
     date_default_timezone_set('Europe/Madrid');
     $hora = (int)date('G');
     $nombre = htmlspecialchars($_SESSION['usuario']);
@@ -110,70 +217,5 @@ function get_saludo() {
     } else {
         return "Buenas noches, {$nombre}"; 
     }
-}
-
-
-/**
- * Obtiene la lista de anuncios visitados desde la cookie
- */
-function get_ultimos_anuncios() {
-    $visitados_json = $_COOKIE['anuncios_visitados'] ?? null;
-    if ($visitados_json) {
-        // Devuelve el array si ha visitado anuncios antes
-        return json_decode($visitados_json, true);
-    }
-    // Devuelve array vacío si no hay cookie
-    return []; 
-}
-
-/**
- * Añade un anuncio a la cookie de "últimos visitados"
- * Mantiene un máximo de 4 anuncios y gestiona duplicados
- */
-function add_anuncio_visitado($id, $anuncio) {
-    // Usamos global para acceder a $anuncios_ficticios si es necesario
-    global $anuncios_ficticios; 
-    
-    // Si no nos pasan los datos, los buscamos
-    if ($anuncio === null) {
-         $clave_anuncio = ($id % 2 === 0) ? 'par' : 'impar';
-         $anuncio = $anuncios_ficticios[$clave_anuncio] ?? null;
-         if ($anuncio === null) return; // No se encontró el anuncio
-    }
-   
-    // Obtiene los datos actuales
-    $lista_visitados = get_ultimos_anuncios();
-    
-    // Crea el item a guardar 
-    $item_nuevo = [
-        'id' => $id,
-        'foto' => $anuncio['fotos'][0] ?? 'img/default.jpg',
-        'titulo' => $anuncio['titulo'],
-        'ciudad' => $anuncio['ciudad'],
-        'pais' => 'España',
-        'precio' => $anuncio['precio']
-    ];
-
-    // Quita duplicados: Si ya estaba, lo borra de su antigua posición
-    foreach ($lista_visitados as $key => $item) {
-        if ($item['id'] == $id) {
-            unset($lista_visitados[$key]);
-        }
-    }
-    
-    // Añade el item nuevo al final de la lista
-    $lista_visitados[] = $item_nuevo;
-    
-    // Asegura que solo hay 4 items: si hay más de 4, quita el primero 
-    while (count($lista_visitados) > 4) {
-        array_shift($lista_visitados); // array_shift quita el primer elemento
-    }
-    
-    // Convierte a json y guarda la cookie durante una semana
-    $json_visitados = json_encode(array_values($lista_visitados)); 
-    $expira = time() + (7 * 24 * 60 * 60); // 1 semana
-    
-    // httponly = true para que no sea accesible por js 
-    setcookie('anuncios_visitados', $json_visitados, $expira, '/', '', false, true);
 }
 ?>

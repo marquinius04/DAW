@@ -1,17 +1,13 @@
 <?php
 $titulo_pagina = "Búsqueda avanzada - PI";
 
-// 1. INCLUSIONES DE BD Y FUNCIONES
-// Incluye la cabecera (que ya incluye sesion.php)
 require_once 'include/head.php'; 
-// Incluimos los módulos necesarios para la BD
 require_once 'include/db_connect.php';
 require_once 'include/select_options.inc.php'; 
 
-// 2. CONEXIÓN A BD
 $mysqli = conectar_bd();
 
-// (Variables para repoblar el formulario en caso de error)
+// Variables para repoblar el formulario en caso de error
 $val_t_anuncio = (int)($_GET['tipo_anuncio'] ?? 0);
 $val_t_vivienda = (int)($_GET['tipo_vivienda'] ?? 0);
 $val_pais = (int)($_GET['pais'] ?? 0);
@@ -59,7 +55,6 @@ $val_precio = htmlspecialchars($_GET['precio'] ?? '');
     </form>
 
 <?php
-// 3. CIERRE DE CONEXIÓN Y FOOTER
 $mysqli->close();
 require_once 'include/footer.php';
 ?>

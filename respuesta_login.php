@@ -1,34 +1,25 @@
 <?php
-// /respuesta_login.php
-
-// -----------------------------------------------------------
-// 1. INCLUDES ESENCIALES
-// -----------------------------------------------------------
-// Inicia/reanuda la sesión (siempre lo primero)
 require_once 'include/sesion.php'; 
-// Permite la conexión a la Base de Datos
 require_once 'include/db_connect.php'; 
-// Permite usar set_flashdata() para mensajes de error
 require_once 'include/flashdata.inc.php'; 
 
 // Las redirecciones deben ejecutarse antes de que cargue el html
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // Recoge y sanea los datos de acceso
+    // Recoge y elimina los espacios de los datos de acceso
     $usuario_ingresado = trim($_POST['usuario'] ?? '');
     $clave_ingresada = $_POST['clave'] ?? ''; 
     $recordarme = isset($_POST['recordarme']);
 
     // --- Validación de campos vacíos ---
     if (empty($usuario_ingresado) || empty($clave_ingresada)) {
-        // Usa set_flashdata() en lugar de $_SESSION['flash_error']
         set_flashdata('error', "El usuario y la contraseña no pueden estar vacíos");
         header("Location: index.php");
         exit();
     }
     
     // -----------------------------------------------------------
-    // 2. AUTENTICACIÓN CONTRA LA BASE DE DATOS (mysqli)
+    // VERIFICAR CREDENCIALES EN LA BASE DE DATOS
     // -----------------------------------------------------------
     $mysqli = conectar_bd();
 
@@ -49,16 +40,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     
-    // Vinculación de parámetros (s = string)
+    // Vinculación de parámetros 
     $stmt->bind_param("s", $usuario_ingresado);
     $stmt->execute();
     $resultado = $stmt->get_result();
     $usuario_db = $resultado->fetch_assoc();
     
     $autenticado = false;
-    $estilo_fichero = 'css/styles.css'; // Estilo por defecto
+    $estilo_fichero = 'css/styles.css'; 
 
-    // Comprobación de credenciales (asumiendo clave en texto plano en la BD)
+    // Comprobación de credenciales 
     if ($usuario_db && $usuario_db['Clave'] === $clave_ingresada) {
         $autenticado = true;
         $estilo_fichero = $usuario_db['EstiloFichero'];
@@ -68,13 +59,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mysqli->close();
     
     // -----------------------------------------------------------
-    // 3. MANEJO DE ÉXITO O FALLO
+    // MANEJO DE ÉXITO O FALLO
     // -----------------------------------------------------------
     
     if ($autenticado) {
-        
-        // --- Login exitoso: establecer sesión y cookies ---
-        
         // Guarda el usuario en la sesión
         $_SESSION['usuario'] = $usuario_ingresado;
         
@@ -83,14 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Gestiona la cookie "recordarme"
         if ($recordarme) {
-            // Establece parámetros de cookie (90 días)
+            // Establece parámetros de cookie 
             $expiracion = time() + (90 * 24 * 60 * 60);
             $path = '/';
             $domain = '';
             $secure = false;
             $httponly = true; 
             
-            // Establece las cookies de auto-login (nombre y clave)
+            // Establece las cookies de auto-login 
             setcookie('recordar_usuario', $usuario_ingresado, $expiracion, $path, $domain, $secure, $httponly);
             setcookie('recordar_clave', $clave_ingresada, $expiracion, $path, $domain, $secure, $httponly);
             

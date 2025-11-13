@@ -2,14 +2,12 @@
 $titulo_pagina = "PI - Menú Principal (Logueado)";
 $menu_tipo = 'privado';
 
-// 1. INCLUSIONES (Añadimos db_connect para la consulta de anuncios)
 require_once 'include/head.php'; 
 require_once 'include/db_connect.php'; 
 
-// Controla que el usuario esté logueado para ver esta página
 controlar_acceso_privado();
 
-// 2. LÓGICA DE ÚLTIMOS ANUNCIOS (Conexión y Consulta)
+// LÓGICA DE ÚLTIMOS ANUNCIOS 
 $mysqli = conectar_bd();
 $sql_anuncios = "
     SELECT 
@@ -72,7 +70,7 @@ if (!$resultado_anuncios = $mysqli->query($sql_anuncios)) {
                   </li>
               <?php endwhile; ?>
           </ul>
-          <?php $resultado_anuncios->close(); // Libera resultados ?>
+          <?php $resultado_anuncios->close(); // Muestra resultados ?>
       <?php else: ?>
           <p>No hay anuncios publicados actualmente.</p>
       <?php endif; ?>
@@ -80,7 +78,6 @@ if (!$resultado_anuncios = $mysqli->query($sql_anuncios)) {
     </section>
 
 <?php
-// 4. CIERRE DE CONEXIÓN Y FOOTER
-$mysqli->close(); // Cierra la conexión a la BD
+$mysqli->close(); 
 require_once 'include/footer.php';
 ?>

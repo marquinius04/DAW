@@ -9,8 +9,10 @@ controlar_acceso_privado();
     <h2>Perfil de usuario registrado</h2>
     <p>Seleccione la acción que desea realizar:</p>
     <ul>
+      <li><a href="configurar.php"><span class="icono">settings</span>Configurar estilo</a></li>
       <li><a href="mis_mensajes.php"><span class="icono">mail</span>Mis mensajes</a></li>
       <li><a href="mis_anuncios.php"><span class="icono">article</span>Visualizar mis anuncios</a></li>
+      <li><a href="configurar.php"><span class="icono">settings</span>Configurar estilo</a></li>
       <li><a href="crear_anuncio.php"><span class="icono">add_circle</span>Crear un anuncio nuevo</a></li>
       <li><a href="modificar_datos.php"><span class="icono">manage_accounts</span>Modificar mis datos</a></li>
       <li><a href="folleto.php"><span class="icono">description</span>Solicitar folleto publicitario impreso</a></li>

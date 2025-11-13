@@ -1,30 +1,65 @@
 <?php
 $titulo_pagina = "Mis mensajes - PI";
-// Incluye la cabecera y el gestor de sesión
 require_once 'include/head.php'; 
-// Controla que solo usuarios logueados puedan acceder a la página
+require_once 'include/db_connect.php';
 controlar_acceso_privado(); 
+$mysqli = conectar_bd();
+
+$usuario_nom = $_SESSION['usuario'];
+// Obtener ID
+$res_u = $mysqli->query("SELECT IdUsuario FROM USUARIOS WHERE NomUsuario = '$usuario_nom'");
+$id_usuario = $res_u->fetch_assoc()['IdUsuario'];
+
+// Consultar RECIBIDOS
+$sql_rec = "SELECT M.*, U.NomUsuario as Remitente, TM.NomTMensaje 
+            FROM MENSAJES M 
+            JOIN USUARIOS U ON M.UsuOrigen = U.IdUsuario 
+            JOIN TIPOSMENSAJES TM ON M.TMensaje = TM.IdTMensaje
+            WHERE UsuDestino = $id_usuario";
+$res_rec = $mysqli->query($sql_rec);
+
+// Consultar ENVIADOS
+$sql_env = "SELECT M.*, U.NomUsuario as Destinatario, TM.NomTMensaje 
+            FROM MENSAJES M 
+            JOIN USUARIOS U ON M.UsuDestino = U.IdUsuario 
+            JOIN TIPOSMENSAJES TM ON M.TMensaje = TM.IdTMensaje
+            WHERE UsuOrigen = $id_usuario";
+$res_env = $mysqli->query($sql_env);
 ?>
 
-    <h2>Mis mensajes</h2>
-    <p>Ejemplo de mensajes enviados y recibidos:</p>
-    
-    <table>
-      <thead>
+<h2>Mis mensajes</h2>
+
+<h3>Recibidos (<?= $res_rec->num_rows ?>)</h3>
+<table>
+    <thead><tr><th>De</th><th>Tipo</th><th>Texto</th><th>Fecha</th></tr></thead>
+    <tbody>
+    <?php while($m = $res_rec->fetch_assoc()): ?>
         <tr>
-          <th>Tipo de mensaje</th>
-          <th>Texto del mensaje</th>
-          <th>Fecha</th>
-          <th>Usuario emisor/receptor</th>
+            <td><?= htmlspecialchars($m['Remitente']) ?></td>
+            <td><?= htmlspecialchars($m['NomTMensaje']) ?></td>
+            <td><?= htmlspecialchars($m['Texto']) ?></td>
+            <td><?= $m['FRegistro'] ?></td>
         </tr>
-      </thead>
-      <tbody>
-        <tr><td>Solicitar cita</td><td>Hola, ¿puedo visitar el piso este sábado?</td><td>2025-09-30</td><td>De: usuario1</td></tr>
-        <tr><td>Más información</td><td>Quisiera recibir más detalles sobre el piso.</td><td>2025-09-29</td><td>Para: usuario2</td></tr>
-        <tr><td>Comunicar oferta</td><td>Ofrezco 120.000€ por el piso.</td><td>2025-09-28</td><td>De: usuario3</td></tr>
-      </tbody>
-    </table>
+    <?php endwhile; ?>
+    </tbody>
+</table>
+
+<h3>Enviados (<?= $res_env->num_rows ?>)</h3>
+<table>
+    <thead><tr><th>Para</th><th>Tipo</th><th>Texto</th><th>Fecha</th></tr></thead>
+    <tbody>
+    <?php while($m = $res_env->fetch_assoc()): ?>
+        <tr>
+            <td><?= htmlspecialchars($m['Destinatario']) ?></td>
+            <td><?= htmlspecialchars($m['NomTMensaje']) ?></td>
+            <td><?= htmlspecialchars($m['Texto']) ?></td>
+            <td><?= $m['FRegistro'] ?></td>
+        </tr>
+    <?php endwhile; ?>
+    </tbody>
+</table>
 
 <?php
+$mysqli->close();
 require_once 'include/footer.php';
 ?>

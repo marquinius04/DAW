@@ -1,74 +1,60 @@
 <?php
 $titulo_pagina = "Mis anuncios - PI";
-// Incluye la cabecera y la lógica del gestor de sesión
 require_once 'include/head.php'; 
-// Controla que solo usuarios logueados puedan acceder a esta página
+require_once 'include/db_connect.php';
 controlar_acceso_privado(); 
 
-// Creamos un array que contenga los dos anuncios ficticios como si fueran del usuario
-$anuncios_del_usuario = [
-    // El chalet (anuncio impar)
-    array_merge(['id' => 1, 'pais' => 'España'], $anuncios_ficticios['impar']),
-    // El estudio (anuncio par)
-    array_merge(['id' => 2, 'pais' => 'España'], $anuncios_ficticios['par']),
-    // Otro anuncio de prueba (anuncio impar)
-    array_merge(['id' => 3, 'pais' => 'España'], $anuncios_ficticios['impar']),
-];
+$mysqli = conectar_bd();
+
+// Obtener ID del usuario actual por su nombre de sesión
+$usuario_nom = $_SESSION['usuario'];
+$stmt_u = $mysqli->prepare("SELECT IdUsuario FROM USUARIOS WHERE NomUsuario = ?");
+$stmt_u->bind_param("s", $usuario_nom);
+$stmt_u->execute();
+$res_u = $stmt_u->get_result();
+$fila_u = $res_u->fetch_assoc();
+$id_usuario = $fila_u['IdUsuario'];
+$stmt_u->close();
+
+// Consultar anuncios de este usuario
+$sql = "SELECT A.*, P.NomPais FROM ANUNCIOS A JOIN PAISES P ON A.Pais = P.IdPais WHERE Usuario = ?";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("i", $id_usuario);
+$stmt->execute();
+$resultado = $stmt->get_result();
+$total_anuncios = $resultado->num_rows;
 ?>
 
     <h2>Mis anuncios</h2>
-    <p>A continuación se muestran los anuncios que has publicado:</p>
-
+    
     <table style="width: 100%; border-collapse: collapse;">
       <thead>
         <tr>
-          <th>Miniatura</th> <th>Título</th>
-          <th>Precio</th> <th>Ubicación (Ciudad/País)</th> <th>Fecha de publicación</th>
+          <th>Foto</th> <th>Título</th> <th>Precio</th> <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <?php if (count($anuncios_del_usuario) > 0): ?>
-            
-            <?php foreach ($anuncios_del_usuario as $anuncio): 
-                // Extraemos la primera foto como miniatura
-                $foto_miniatura = $anuncio['fotos'][0] ?? 'img/default.jpg';
-            ?>
+        <?php if ($total_anuncios > 0): ?>
+            <?php while ($anuncio = $resultado->fetch_assoc()): ?>
                 <tr>
-                    <td style="text-align: center;">
-                        <a href="aviso.php?id=<?php echo htmlspecialchars($anuncio['id']); ?>">
-                            <img src="<?php echo htmlspecialchars($foto_miniatura); ?>" 
-                                 alt="Miniatura" width="80" height="60" style="object-fit: cover;">
-                        </a>
-                    </td>
-                    
+                    <td><img src="<?= htmlspecialchars($anuncio['FPrincipal']) ?>" width="60"></td>
+                    <td><a href="aviso.php?id=<?= $anuncio['IdAnuncio'] ?>"><?= htmlspecialchars($anuncio['Titulo']) ?></a></td>
+                    <td><?= $anuncio['Precio'] ?> €</td>
                     <td>
-                        <a href="aviso.php?id=<?php echo htmlspecialchars($anuncio['id']); ?>">
-                            <?php echo htmlspecialchars($anuncio['titulo']); ?>
-                        </a>
+                        <a href="ver_mensajes_anuncio.php?id=<?= $anuncio['IdAnuncio'] ?>">Ver mensajes</a> | 
+                        <a href="ver_fotos.php?id=<?= $anuncio['IdAnuncio'] ?>&modo=privado">Gestionar fotos</a>
                     </td>
-                    
-                    <td style="color: darkgreen; font-weight: bold;">
-                        <?php echo htmlspecialchars($anuncio['precio']); ?>
-                    </td>
-                    
-                    <td>
-                        <?php echo htmlspecialchars($anuncio['ciudad']); ?><br>
-                        (<?php echo htmlspecialchars($anuncio['pais']); ?>)
-                    </td>
-                    
-                    <td><?php echo htmlspecialchars($anuncio['fecha']); ?></td>
                 </tr>
-            <?php endforeach; ?>
-
+            <?php endwhile; ?>
         <?php else: ?>
-            <tr>
-                <td colspan="5">No tienes anuncios publicados actualmente</td>
-            </tr>
+            <tr><td colspan="4">No tienes anuncios publicados.</td></tr>
         <?php endif; ?>
       </tbody>
     </table>
-    <button><a href="anyadir_foto.php"><span class="icono">photo</span>Añadir foto a anuncio</a></button>
+    <br>
+    <button><a href="crear_anuncio.php" style="color:white; text-decoration:none;">Crear nuevo anuncio</a></button>
 
 <?php
+$mysqli->close();
 require_once 'include/footer.php';
 ?>

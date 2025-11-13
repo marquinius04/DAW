@@ -1,23 +1,15 @@
 <?php
-// /aviso.php (Página Detalle Anuncio)
-
-// 1. INCLUSIONES (BD y Cabecera)
-// (head.php carga sesion.php, que ya tiene session_start() y db_connect.php)
 require_once 'include/head.php'; 
 
-// 2. CONTROL DE ACCESO
-// (Práctica 8: El detalle del anuncio SÓLO es visible para usuarios registrados)
 controlar_acceso_privado();
 
-// 3. OBTENER ID Y CONECTAR A BD
 $anuncio_id = (int)($_GET['id'] ?? 0); 
 $anuncio = null;
 
 $mysqli = conectar_bd();
 
 if ($anuncio_id > 0) {
-    // 4. CONSULTA PRINCIPAL DEL ANUNCIO
-    // (Buscamos el anuncio específico por su ID y unimos las tablas maestras)
+    // Buscamos el anuncio específico por su ID y unimos las tablas
     $sql_anuncio = "
         SELECT 
             A.*, -- Todos los campos de ANUNCIOS
@@ -47,14 +39,12 @@ if ($anuncio_id > 0) {
     $stmt->close();
 }
 
-// 5. LÓGICA DE COOKIE "ÚLTIMOS VISITADOS" (Práctica 8)
+// LÓGICA DE COOKIE "ÚLTIMOS VISITADOS" 
 if ($anuncio) {
-    // La función add_anuncio_visitado() (en sesion.php) ya está adaptada para la BD.
-    // Le pasamos la conexión y el ID.
     add_anuncio_visitado($mysqli, $anuncio_id);
 }
 
-// 6. CONSULTA DE FOTOS SECUNDARIAS (TABLA 'FOTOS')
+// CONSULTA DE FOTOS SECUNDARIAS 
 $fotos_secundarias = [];
 if ($anuncio) {
     $sql_fotos = "SELECT Foto, Titulo, Alternativo FROM FOTOS WHERE Anuncio = ?";
@@ -68,7 +58,6 @@ if ($anuncio) {
     $stmt_fotos->close();
 }
 
-// Define el título de página dinámicamente
 if ($anuncio) {
     $titulo_pagina = $anuncio['Titulo'] . " - PI";
 } else {
@@ -103,7 +92,7 @@ if ($anuncio) {
                 <p><strong>Año:</strong> <?php echo htmlspecialchars($anuncio['Anyo']); ?></p>
                 <p><strong>Planta:</strong> <?php echo htmlspecialchars($anuncio['Planta']); ?></p>
                 
-                <p><strong>Publicado por:</strong> <a href="perfil.php?id=<?php echo $anuncio['Usuario']; ?>"><?php echo htmlspecialchars($anuncio['NomUsuario']); ?></a></p>
+                <p><strong>Publicado por:</strong> <a href="ver_perfil.php?id=<?php echo $anuncio['Usuario']; ?>"><?php echo htmlspecialchars($anuncio['NomUsuario']); ?></a></p>
             </div>
         </div>
 

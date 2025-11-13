@@ -1,13 +1,11 @@
 <?php
-// Incluye el gestor de sesión
 require_once 'include/sesion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // Controla que solo usuarios logueados puedan acceder a la página
     controlar_acceso_privado();
     
-    // Recoge y sanea los campos obligatorios de dirección y datos principales
+    // Recoge y elimina los espacios de los campos obligatorios de dirección y datos principales
     $nombre = trim($_POST['nombre'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $calle = trim($_POST['calle'] ?? '');
@@ -41,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($error_mensaje !== "") {
         // Usa flashdata para almacenar el error
         $_SESSION['flash_error'] = $error_mensaje;
-        // Devuelve los datos del formulario (POST) para repoblar
+        // Devuelve los datos del formulario para repoblar
         $datos_previos = http_build_query($_POST);
         header("Location: folleto.php?{$datos_previos}");
         exit();

@@ -1,14 +1,11 @@
 <?php
-// /respuesta_registro.php
-
-// 1. INCLUSIONES ESENCIALES
 require_once 'include/sesion.php'; 
-require_once 'include/flashdata.inc.php'; // <-- NECESARIO PARA set_flashdata()
-require_once 'include/db_connect.php';      // <-- NECESARIO PARA INSERTAR EN BD
+require_once 'include/flashdata.inc.php'; 
+require_once 'include/db_connect.php';      
 
 $menu_tipo = 'publico'; 
 
-// --- FUNCIONES DE VALIDACIÓN (SE MANTIENEN INTACTAS) ---
+// --- FUNCIONES DE VALIDACIÓN  ---
 function validarUsuario($usuario) {
     if (empty($usuario)) return "El nombre de usuario es obligatorio";
     $len = strlen($usuario);
@@ -71,7 +68,7 @@ function validarFechaNacimiento($dia, $mes, $anyo) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // Recoge y sanea todos los datos del formulario
+    // Recoge y elimina los espacios de todos los datos del formulario
     $usuario = trim($_POST['usuario'] ?? '');
     $clave1 = $_POST['clave'] ?? '';
     $clave2 = $_POST['clave2'] ?? '';
@@ -81,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mesNac = trim($_POST['mesNacimiento'] ?? '');
     $anyoNac = trim($_POST['anyoNacimiento'] ?? '');
     $ciudad = trim($_POST['ciudad'] ?? '');
-    // Asumimos que $val_pais es el ID (entero)
+    // Asumimos que $val_pais es el ID 
     $pais_id = (int)($_POST['pais'] ?? 0); 
     
     // Ejecuta validaciones una por una
@@ -94,12 +91,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     elseif (($msg = validarEmail($email)) !== "") $error_mensaje = $msg;
     elseif (empty($sexo)) $error_mensaje = "Debe seleccionar un sexo";
     elseif (($msg = validarFechaNacimiento($diaNac, $mesNac, $anyoNac)) !== "") $error_mensaje = $msg;
-    // Agregamos la validación del país (que ahora es un ID de la BD)
+    // Agregamos la validación del país 
     elseif ($pais_id === 0) $error_mensaje = "Debe seleccionar un país válido";
     
     // --- MANEJO DE ERRORES DE VALIDACIÓN ---
     if ($error_mensaje !== "") {
-        // [CORRECCIÓN] Usar set_flashdata() para guardar el error
+        // Usar set_flashdata() para guardar el error
         set_flashdata('error', $error_mensaje); 
         
         // Devuelve los datos del formulario para repoblar los campos
@@ -110,22 +107,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    // --- LÓGICA DE ÉXITO: INSERCIÓN EN BASE DE DATOS (Práctica 9) ---
+    // --- LÓGICA DE ÉXITO ---
     
     $mysqli = conectar_bd();
 
-    // 1. Mapeo y preparación de datos para la base de datos
+    // Preparación de datos para la base de datos
     $foto_ruta = "img/default_user.jpg"; 
-    $estilo_id = 1; // Asignamos el estilo por defecto (ID 1)
+    $estilo_id = 1; // Asignamos el estilo por defecto 
 
-    // Mapeo de sexo (Hombre=1, Mujer=0, Otro=2) para la columna TINYINT
     $sexo_map = ['Hombre' => 1, 'Mujer' => 0, 'Otro' => 2]; 
     $sexo_db = $sexo_map[$sexo] ?? 2; 
 
-    // Formato de fecha para MySQL (YYYY-MM-DD)
+    // Formato de fecha para MySQL 
     $fecha_nacimiento_db = "{$anyoNac}-{$mesNac}-{$diaNac}"; 
 
-    // 2. Sentencia preparada para la inserción
+    // Sentencia preparada para la inserción
     $sql = "
         INSERT INTO USUARIOS 
         (NomUsuario, Clave, Email, Sexo, FNacimiento, Ciudad, Pais, Foto, Estilo) 
@@ -142,8 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // 3. Vinculación y ejecución
-    // Tipos: s (string), i (integer) -> "sssissssi"
+    // Vinculación y ejecución
     $stmt->bind_param("sssissssi", 
         $usuario, 
         $clave1, 
@@ -157,21 +152,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     if ($stmt->execute()) {
-        // Éxito: Registro completado
+        // Registro completado
         set_flashdata('success', "¡Registro completado para el usuario '{$usuario}'! Ya puedes iniciar sesión.");
         
         // Redirigir a la página de acceso
         header("Location: index.php");
 
     } else {
-        // Fallo: Error de BD (Ej. NomUsuario duplicado: error 1062)
+        // Error de BD 
         $error_msg = "Error desconocido al registrar. Código: {$stmt->errno}";
         
-        // Captura de error de clave única (NomUsuario ya existe)
+        // Captura de error de clave única 
         if ($stmt->errno === 1062) { 
             $error_msg = "El nombre de usuario '{$usuario}' ya está registrado. Por favor, elige otro.";
         } 
-        // Captura de error de clave ajena (Ej. País no existe o Estilo no existe)
+        // Captura de error de clave ajena 
         elseif ($stmt->errno === 1452) {
             $error_msg = "Error al asignar un país. Por favor, inténtalo de nuevo.";
         }
@@ -188,7 +183,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 
 } else {
-    // Si se accede directamente sin post, redirige al formulario
     header("Location: registro.php");
     exit();
 }

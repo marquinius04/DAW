@@ -1,5 +1,4 @@
 <?php
-// /include/sesion.php
 
 // Inicia la sesión
 if (session_status() === PHP_SESSION_NONE) {
@@ -12,10 +11,6 @@ require_once __DIR__ . '/flashdata.inc.php';
 
 /**
  * Asigna un estilo CSS único a cada usuario consultando la BD
- *
- * @param mysqli $mysqli Objeto de conexión a la BD.
- * @param string $usuario Nombre de usuario.
- * @return string Fichero CSS
  */
 function get_estilo_por_usuario_bd($mysqli, $usuario) {
     $default_style = 'css/styles.css'; // Estilo por defecto
@@ -92,15 +87,8 @@ if (!isset($_SESSION['usuario']) && isset($_COOKIE['recordar_usuario']) && isset
     end_recuerdame:
 }
 
-/*
-    =================================
-            FUNCIONES DE AYUDA (Reactivadas y Actualizadas)
-    =================================
-*/
-
 /**
  * Obtiene la lista de anuncios visitados desde la cookie
- * (Reactivada, necesaria para add_anuncio_visitado)
  */
 function get_ultimos_anuncios() {
     $visitados_json = $_COOKIE['anuncios_visitados'] ?? null;
@@ -115,9 +103,6 @@ function get_ultimos_anuncios() {
 /**
  * Añade un anuncio a la cookie de "últimos visitados"
  * Mantiene un máximo de 4 anuncios y gestiona duplicados
- *
- * @param mysqli $mysqli Objeto de conexión a la BD.
- * @param int $id ID del anuncio visitado.
  */
 function add_anuncio_visitado($mysqli, $id) {
     
@@ -140,7 +125,7 @@ function add_anuncio_visitado($mysqli, $id) {
 
     if (!$anuncio_data) return; 
     
-    // Obtiene los datos actuales (Llama a la función reactivada)
+    // Obtiene los datos actuales 
     $lista_visitados = get_ultimos_anuncios(); 
     
     $item_nuevo = [
@@ -174,11 +159,9 @@ function add_anuncio_visitado($mysqli, $id) {
 /**
  * Comprueba si el usuario está logueado
  * Si no lo está, le redirige a la página de login
- * (Reactivada y actualizada para usar set_flashdata)
  */
 function controlar_acceso_privado() {
     if (!isset($_SESSION['usuario'])) {
-        // Actualizado para usar el nuevo sistema flashdata
         set_flashdata('error', "Debe iniciar sesión para acceder a esta página");
         header("Location: index.php");
         exit();
@@ -198,12 +181,11 @@ function controlar_acceso_publico() {
 
 /**
  * Genera el saludo de bienvenida según la hora del servidor
- * (Reactivada)
  */
 function get_saludo() {
     if (!isset($_SESSION['usuario'])) return "";
 
-    // Establece la zona horaria (¡Importante!)
+    // Establece la zona horaria
     date_default_timezone_set('Europe/Madrid');
     $hora = (int)date('G');
     $nombre = htmlspecialchars($_SESSION['usuario']);

@@ -1,29 +1,42 @@
 <?php
 $titulo_pagina = "Crear anuncio - PI";
-// Incluye la cabecera y la lógica del gestor de sesión
 require_once 'include/head.php'; 
-// Controla que solo usuarios logueados puedan acceder a esta página
+require_once 'include/db_connect.php';
+require_once 'include/select_options.inc.php';
 controlar_acceso_privado(); 
+$mysqli = conectar_bd();
 ?>
 
     <h2>Crear un nuevo anuncio</h2>
     
-    <form action="procesar_anuncio.php" method="post" enctype="multipart/form-data">
+    <form action="index_logueado.php" method="post" enctype="multipart/form-data">
         
         <label for="titulo">Título del anuncio:</label>
-        <input type="text" id="titulo" name="titulo">
+        <input type="text" id="titulo" name="titulo" required>
+
+        <label for="tanuncio">Tipo de Anuncio:</label>
+        <select id="tanuncio" name="tanuncio" required>
+            <?php generar_select_options($mysqli, 'TIPOSANUNCIOS', 'IdTAnuncio', 'NomTAnuncio'); ?>
+        </select>
+
+        <label for="tvivienda">Tipo de Vivienda:</label>
+        <select id="tvivienda" name="tvivienda" required>
+            <?php generar_select_options($mysqli, 'TIPOSVIVIENDAS', 'IdTVivienda', 'NomTVivienda'); ?>
+        </select>
+
+        <label for="pais">País:</label>
+        <select id="pais" name="pais" required>
+             <?php generar_select_options($mysqli, 'PAISES', 'IdPais', 'NomPais'); ?>
+        </select>
+
+        <label for="ciudad">Ciudad:</label>
+        <input type="text" id="ciudad" name="ciudad" required>
 
         <label for="descripcion">Descripción:</label>
         <textarea id="descripcion" name="descripcion" rows="5" cols="40"></textarea>
 
         <label for="precio">Precio (€):</label>
-        <input type="number" id="precio" name="precio" min="0" step="1000">
-
-        <label for="ubicacion">Ubicación (Ciudad/País):</label>
-        <input type="text" id="ubicacion" name="ubicacion">
-
-        <label for="fecha">Fecha de publicación:</label>
-        <input type="date" id="fecha" name="fecha">
+        <input type="number" id="precio" name="precio" min="0" required>
 
         <label for="foto_principal">Foto Principal:</label>
         <input type="file" id="foto_principal" name="foto_principal" accept="image/*">
@@ -32,5 +45,6 @@ controlar_acceso_privado();
     </form>
 
 <?php
+$mysqli->close();
 require_once 'include/footer.php'; 
 ?>

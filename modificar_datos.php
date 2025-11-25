@@ -8,7 +8,7 @@ controlar_acceso_privado();
 // Obtener datos del usuario logueado
 $mysqli = conectar_bd();
 $nom = $_SESSION['usuario'];
-$sql = "SELECT * FROM USUARIOS WHERE NomUsuario = ?";
+$sql = "SELECT * FROM usuarios WHERE NomUsuario = ?";
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param("s", $nom);
 $stmt->execute();
@@ -28,7 +28,7 @@ $datos = $res->fetch_assoc();
 
       <label for="pais">País:</label>
       <select id="pais" name="pais">
-          <?php generar_select_options($mysqli, 'PAISES', 'IdPais', 'NomPais', $datos['Pais']); ?>
+          <?php generar_select_options($mysqli, 'paises', 'IdPais', 'NomPais', $datos['Pais']); ?>
       </select>
 
       <button type="submit">Guardar cambios</button>

@@ -9,7 +9,7 @@ $mysqli = conectar_bd();
 
 // Verificar que el anuncio pertenece al usuario logueado
 $nom = $_SESSION['usuario'];
-$check = $mysqli->query("SELECT A.IdAnuncio, A.Titulo FROM ANUNCIOS A JOIN USUARIOS U ON A.Usuario = U.IdUsuario WHERE A.IdAnuncio = $id_anuncio AND U.NomUsuario = '$nom'");
+$check = $mysqli->query("SELECT A.IdAnuncio, A.Titulo FROM anuncios A JOIN usuarios U ON A.Usuario = U.IdUsuario WHERE A.IdAnuncio = $id_anuncio AND U.NomUsuario = '$nom'");
 
 if ($check->num_rows === 0) {
     die("No tienes permiso para ver mensajes de este anuncio.");
@@ -18,9 +18,9 @@ $datos_anuncio = $check->fetch_assoc();
 
 // Obtener mensajes recibidos para este anuncio
 $sql = "SELECT M.*, TM.NomTMensaje, U.NomUsuario as Remitente 
-        FROM MENSAJES M 
-        JOIN TIPOSMENSAJES TM ON M.TMensaje = TM.IdTMensaje
-        JOIN USUARIOS U ON M.UsuOrigen = U.IdUsuario
+        FROM mensajes M 
+        JOIN tiposmensajes TM ON M.TMensaje = TM.IdTMensaje
+        JOIN usuarios U ON M.UsuOrigen = U.IdUsuario
         WHERE M.Anuncio = $id_anuncio";
 $res = $mysqli->query($sql);
 ?>

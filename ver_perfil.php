@@ -15,7 +15,7 @@ if ($id_usuario === 0) {
 $mysqli = conectar_bd();
 
 // Obtener datos del usuario 
-$sql = "SELECT NomUsuario, FRegistro, Foto, Ciudad, Pais FROM USUARIOS WHERE IdUsuario = ?";
+$sql = "SELECT NomUsuario, FRegistro, Foto, Ciudad, Pais FROM usuarios WHERE IdUsuario = ?";
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
@@ -31,7 +31,7 @@ if (!$usuario_datos) {
 }
 
 // Obtener anuncios de este usuario
-$sql_ads = "SELECT IdAnuncio, Titulo, FPrincipal, Precio, Ciudad FROM ANUNCIOS WHERE Usuario = ? ORDER BY FRegistro DESC";
+$sql_ads = "SELECT IdAnuncio, Titulo, FPrincipal, Precio, Ciudad FROM anuncios WHERE Usuario = ? ORDER BY FRegistro DESC";
 $stmt_ads = $mysqli->prepare($sql_ads);
 $stmt_ads->bind_param("i", $id_usuario);
 $stmt_ads->execute();

@@ -84,7 +84,7 @@ if (isset($_GET['q']) && !empty(trim($_GET['q']))) {
 }
 
 // --- CONSTRUCCIÓN DE SQL ---
-$sql = "SELECT A.*, P.NomPais FROM ANUNCIOS A JOIN PAISES P ON A.Pais = P.IdPais";
+$sql = "SELECT A.*, P.NomPais FROM anuncios A JOIN paises P ON A.Pais = P.IdPais";
 if (!empty($where_clauses)) {
     $sql .= " WHERE " . implode(' AND ', $where_clauses);
 }

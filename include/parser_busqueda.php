@@ -17,9 +17,9 @@ function parsear_busqueda_rapida($mysqli, $query) {
 
         $encontrado = false;
 
-        // 1. Buscar en TIPOSANUNCIOS 
+        // 1. Buscar en tiposanuncios 
         if (!$filtros['tipo_anuncio']) {
-            $sql = "SELECT IdTAnuncio FROM TIPOSANUNCIOS WHERE NomTAnuncio LIKE ?";
+            $sql = "SELECT IdTAnuncio FROM tiposanuncios WHERE NomTAnuncio LIKE ?";
             $stmt = $mysqli->prepare($sql);
             $param = "%$termino%";
             $stmt->bind_param("s", $param);
@@ -32,9 +32,9 @@ function parsear_busqueda_rapida($mysqli, $query) {
             $stmt->close();
         }
 
-        // 2. Buscar en TIPOSVIVIENDAS 
+        // 2. Buscar en tiposviviendas 
         if (!$encontrado && !$filtros['tipo_vivienda']) {
-            $sql = "SELECT IdTVivienda FROM TIPOSVIVIENDAS WHERE NomTVivienda LIKE ?";
+            $sql = "SELECT IdTVivienda FROM tiposviviendas WHERE NomTVivienda LIKE ?";
             $stmt = $mysqli->prepare($sql);
             $param = "%$termino%";
             $stmt->bind_param("s", $param);

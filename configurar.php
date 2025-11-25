@@ -10,7 +10,7 @@ $mysqli = conectar_bd();
 $usuario = $_SESSION['usuario'];
 
 // Obtener el estilo actual del usuario
-$sql_actual = "SELECT Estilo FROM USUARIOS WHERE NomUsuario = '$usuario'";
+$sql_actual = "SELECT Estilo FROM usuarios WHERE NomUsuario = '$usuario'";
 $res = $mysqli->query($sql_actual);
 $fila = $res->fetch_assoc();
 $estilo_actual_id = $fila['Estilo'];
@@ -26,8 +26,8 @@ $estilo_actual_id = $fila['Estilo'];
         <label for="estilo">Estilo visual:</label>
         <select name="estilo" id="estilo">
             <?php 
-            // Generar opciones desde la tabla ESTILOS
-            generar_select_options($mysqli, 'ESTILOS', 'IdEstilo', 'Nombre', $estilo_actual_id); 
+            // Generar opciones desde la tabla estilos
+            generar_select_options($mysqli, 'estilos', 'IdEstilo', 'Nombre', $estilo_actual_id); 
             ?>
         </select>
         <br><br>

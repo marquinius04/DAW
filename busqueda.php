@@ -22,8 +22,8 @@ $val_precio = htmlspecialchars($_GET['precio'] ?? '');
       <select id="tipo_anuncio" name="tipo_anuncio">
         <option value="">Cualquiera</option>
         <?php 
-        // Rellena dinámicamente desde la tabla TIPOSANUNCIOS
-        generar_select_options($mysqli, 'TIPOSANUNCIOS', 'IdTAnuncio', 'NomTAnuncio', $val_t_anuncio); 
+        // Rellena dinámicamente desde la tabla tiposanuncios
+        generar_select_options($mysqli, 'tiposanuncios', 'IdTAnuncio', 'NomTAnuncio', $val_t_anuncio); 
         ?>
       </select>
       
@@ -31,8 +31,8 @@ $val_precio = htmlspecialchars($_GET['precio'] ?? '');
       <select id="tipo_vivienda" name="tipo_vivienda">
         <option value="">Cualquiera</option>
         <?php 
-        // Rellena dinámicamente desde la tabla TIPOSVIVIENDAS
-        generar_select_options($mysqli, 'TIPOSVIVIENDAS', 'IdTVivienda', 'NomTVivienda', $val_t_vivienda); 
+        // Rellena dinámicamente desde la tabla tiposviviendas
+        generar_select_options($mysqli, 'tiposviviendas', 'IdTVivienda', 'NomTVivienda', $val_t_vivienda); 
         ?>
       </select>
 
@@ -43,8 +43,8 @@ $val_precio = htmlspecialchars($_GET['precio'] ?? '');
       <select id="pais" name="pais">
         <option value="">Cualquiera</option>
         <?php 
-        // Rellena dinámicamente desde la tabla PAISES
-        generar_select_options($mysqli, 'PAISES', 'IdPais', 'NomPais', $val_pais); 
+        // Rellena dinámicamente desde la tabla paises
+        generar_select_options($mysqli, 'paises', 'IdPais', 'NomPais', $val_pais); 
         ?>
       </select>
 

@@ -8,11 +8,11 @@ $mysqli = conectar_bd();
 
 // Obtener ID usuario
 $nom = $_SESSION['usuario'];
-$res = $mysqli->query("SELECT IdUsuario FROM USUARIOS WHERE NomUsuario = '$nom'");
+$res = $mysqli->query("SELECT IdUsuario FROM usuarios WHERE NomUsuario = '$nom'");
 $uid = $res->fetch_assoc()['IdUsuario'];
 
 // Obtener sus anuncios
-$sql_ads = "SELECT IdAnuncio, Titulo FROM ANUNCIOS WHERE Usuario = $uid";
+$sql_ads = "SELECT IdAnuncio, Titulo FROM anuncios WHERE Usuario = $uid";
 $res_ads = $mysqli->query($sql_ads);
 ?>
 

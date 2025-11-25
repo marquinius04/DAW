@@ -4,7 +4,7 @@ require_once 'include/db_connect.php';
 require_once 'include/flashdata.inc.php'; 
 
 $mensaje_error = get_flashdata('error');
-$titulo_pagina = "Acceso y Anuncios Recientes";
+$titulo_pagina = "Acceso y anuncios Recientes";
 $body_id = "loginPage"; 
 $menu_tipo = 'publico';
 
@@ -17,9 +17,9 @@ $sql_anuncios = "
     SELECT 
         A.IdAnuncio, A.FPrincipal, A.Titulo, A.FRegistro, A.Ciudad, A.Precio, P.NomPais 
     FROM 
-        ANUNCIOS A
+        anuncios A
     JOIN 
-        PAISES P ON A.Pais = P.IdPais
+        paises P ON A.Pais = P.IdPais
     ORDER BY 
         A.FRegistro DESC 
     LIMIT 5

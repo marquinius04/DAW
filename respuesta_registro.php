@@ -1,31 +1,38 @@
 <?php
+// /respuesta_registro.php
+
+// 1. INCLUSIONES ESENCIALES
 require_once 'include/sesion.php'; 
 require_once 'include/flashdata.inc.php'; 
 require_once 'include/db_connect.php';      
 
 $menu_tipo = 'publico'; 
 
-// --- FUNCIONES DE VALIDACIÓN  ---
+// --- FUNCIONES DE VALIDACIÓN (SE MANTIENEN INTACTAS) ---
+// (Tus funciones validarUsuario, validarClave, validarEmail, validarFechaNacimiento están aquí)
+// ... (Tus funciones de validación originales deben estar aquí) ...
+
 function validarUsuario($usuario) {
     if (empty($usuario)) return "El nombre de usuario es obligatorio";
     $len = strlen($usuario);
-    if ($len < 3 || $len > 15) return "Usuario: longitud incorrecta (debe ser 3-15 caracteres)";
-    if (!preg_match('/^[a-zA-Z0-9]+$/', $usuario)) return "Usuario: solo puede contener letras inglesas y números";
-    if (preg_match('/^[0-9]/', $usuario)) return "Usuario: no puede comenzar por un número";
+    if ($len < 3 || $len > 15) return "Longitud incorrecta (debe ser 3-15 caracteres)";
+    if (!preg_match('/^[a-zA-Z0-9]+$/', $usuario)) return "Solo puede contener letras inglesas y números";
+    if (preg_match('/^[0-9]/', $usuario)) return "No puede comenzar por un número";
     return "";
 }
 
 function validarClave($clave) {
     if (empty($clave)) return "Debe introducir una contraseña";
     $len = strlen($clave);
-    if ($len < 6 || $len > 15) return "Contraseña: longitud incorrecta (debe ser 6-15 caracteres)";
-    if (preg_match('/[^a-zA-Z0-9_-]/', $clave)) return "Contraseña: carácter no permitido (solo letras, números, - y _)";
-    if (!preg_match('/[A-Z]/', $clave)) return "Contraseña: Debe contener al menos una mayúscula";
-    if (!preg_match('/[a-z]/', $clave)) return "Contraseña: Debe contener al menos una minúscula";
-    if (!preg_match('/[0-9]/', $clave)) return "Contraseña: Debe contener al menos un número";
+    if ($len < 6 || $len > 15) return "Longitud incorrecta (debe ser 6-15 caracteres)";
+    if (preg_match('/[^a-zA-Z0-9_-]/', $clave)) return "Carácter no permitido (solo letras, números, - y _)";
+    if (!preg_match('/[A-Z]/', $clave)) return "Debe contener al menos una mayúscula";
+    if (!preg_match('/[a-z]/', $clave)) return "Debe contener al menos una minúscula";
+    if (!preg_match('/[0-9]/', $clave)) return "Debe contener al menos un número";
     return "";
 }
-
+// ... (Otras funciones de validación) ...
+// (Tu función validarEmail) ...
 function validarEmail($email) {
     if (empty($email)) return "El correo electrónico es obligatorio";
     if (strlen($email) > 254) return "Email demasiado largo (máx 254)";
@@ -50,6 +57,7 @@ function validarEmail($email) {
     return "";
 }
 
+// (Tu función validarFechaNacimiento) ...
 function validarFechaNacimiento($dia, $mes, $anyo) {
     if (empty($dia) || empty($mes) || empty($anyo)) return "La fecha de nacimiento es obligatoria";
     $diaInt = (int)$dia; $mesInt = (int)$mes; $anyoInt = (int)$anyo;
@@ -65,10 +73,12 @@ function validarFechaNacimiento($dia, $mes, $anyo) {
     }
     return "";
 }
+// ----------------------------------------------------------------------
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // Recoge y elimina los espacios de todos los datos del formulario
+    // Recoge y sanea todos los datos del formulario
     $usuario = trim($_POST['usuario'] ?? '');
     $clave1 = $_POST['clave'] ?? '';
     $clave2 = $_POST['clave2'] ?? '';
@@ -78,7 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mesNac = trim($_POST['mesNacimiento'] ?? '');
     $anyoNac = trim($_POST['anyoNacimiento'] ?? '');
     $ciudad = trim($_POST['ciudad'] ?? '');
-    // Asumimos que $val_pais es el ID 
     $pais_id = (int)($_POST['pais'] ?? 0); 
     
     // Ejecuta validaciones una por una
@@ -91,46 +100,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     elseif (($msg = validarEmail($email)) !== "") $error_mensaje = $msg;
     elseif (empty($sexo)) $error_mensaje = "Debe seleccionar un sexo";
     elseif (($msg = validarFechaNacimiento($diaNac, $mesNac, $anyoNac)) !== "") $error_mensaje = $msg;
-    // Agregamos la validación del país 
     elseif ($pais_id === 0) $error_mensaje = "Debe seleccionar un país válido";
     
     // --- MANEJO DE ERRORES DE VALIDACIÓN ---
     if ($error_mensaje !== "") {
-        // Usar set_flashdata() para guardar el error
         set_flashdata('error', $error_mensaje); 
-        
-        // Devuelve los datos del formulario para repoblar los campos
         $datos_previos = http_build_query($_POST); 
-        
-        // Redirige al formulario de registro
         header("Location: registro.php?{$datos_previos}");
         exit();
     }
     
-    // --- LÓGICA DE ÉXITO ---
+    // --- LÓGICA DE ÉXITO: INSERCIÓN EN BASE DE DATOS (Práctica 9) ---
     
     $mysqli = conectar_bd();
 
-    // Preparación de datos para la base de datos
+    // 1. Mapeo y preparación de datos para la base de datos
     $foto_ruta = "img/default_user.jpg"; 
-    $estilo_id = 1; // Asignamos el estilo por defecto 
+    $estilo_id = 1; // Asignamos el estilo por defecto (ID 1)
 
     $sexo_map = ['Hombre' => 1, 'Mujer' => 0, 'Otro' => 2]; 
     $sexo_db = $sexo_map[$sexo] ?? 2; 
 
-    // Formato de fecha para MySQL 
     $fecha_nacimiento_db = "{$anyoNac}-{$mesNac}-{$diaNac}"; 
 
-    // Sentencia preparada para la inserción
+    // -------------------------------------------------------------
+    // MODIFICACIÓN CRUCIAL: HASHING DE LA CONTRASEÑA
+    // -------------------------------------------------------------
+    $clave_hash = password_hash($clave1, PASSWORD_DEFAULT);
+    // -------------------------------------------------------------
+
+    // 2. Sentencia preparada para la inserción
     $sql = "
-        INSERT INTO USUARIOS 
+        INSERT INTO usuarios 
         (NomUsuario, Clave, Email, Sexo, FNacimiento, Ciudad, Pais, Foto, Estilo) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ";
     
     $stmt = $mysqli->prepare($sql);
 
-    // Si hay un error al preparar la consulta
     if ($stmt === false) {
         set_flashdata('error', 'Error interno del servidor al preparar el registro.');
         $mysqli->close();
@@ -138,10 +145,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Vinculación y ejecución
+    // 3. Vinculación y ejecución
+    // Usamos $clave_hash en lugar de $clave1
     $stmt->bind_param("sssissssi", 
         $usuario, 
-        $clave1, 
+        $clave_hash, // <-- USAMOS EL HASH AQUI
         $email, 
         $sexo_db, 
         $fecha_nacimiento_db, 
@@ -152,28 +160,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     if ($stmt->execute()) {
-        // Registro completado
+        // Éxito: Registro completado
         set_flashdata('success', "¡Registro completado para el usuario '{$usuario}'! Ya puedes iniciar sesión.");
-        
-        // Redirigir a la página de acceso
         header("Location: index.php");
 
     } else {
-        // Error de BD 
+        // Fallo: Manejo de errores de BD
         $error_msg = "Error desconocido al registrar. Código: {$stmt->errno}";
         
-        // Captura de error de clave única 
         if ($stmt->errno === 1062) { 
             $error_msg = "El nombre de usuario '{$usuario}' ya está registrado. Por favor, elige otro.";
         } 
-        // Captura de error de clave ajena 
         elseif ($stmt->errno === 1452) {
             $error_msg = "Error al asignar un país. Por favor, inténtalo de nuevo.";
         }
 
         set_flashdata('error', "Error al completar el registro: {$error_msg}");
         
-        // Redirigir de vuelta al formulario, repoblando los campos
         $datos_previos = http_build_query($_POST); 
         header("Location: registro.php?{$datos_previos}");
     }
@@ -183,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 
 } else {
+    // Si se accede directamente sin post, redirige al formulario
     header("Location: registro.php");
     exit();
 }
-?>

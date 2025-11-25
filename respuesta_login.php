@@ -1,114 +1,86 @@
 <?php
+// /respuesta_login.php
+
+// 1. INCLUSIONES ESENCIALES
 require_once 'include/sesion.php'; 
-require_once 'include/db_connect.php'; 
 require_once 'include/flashdata.inc.php'; 
+require_once 'include/db_connect.php';      
 
-// Las redirecciones deben ejecutarse antes de que cargue el html
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
-    // Recoge y elimina los espacios de los datos de acceso
-    $usuario_ingresado = trim($_POST['usuario'] ?? '');
-    $clave_ingresada = $_POST['clave'] ?? ''; 
-    $recordarme = isset($_POST['recordarme']);
-
-    // --- Validación de campos vacíos ---
-    if (empty($usuario_ingresado) || empty($clave_ingresada)) {
-        set_flashdata('error', "El usuario y la contraseña no pueden estar vacíos");
-        header("Location: index.php");
-        exit();
-    }
-    
-    // -----------------------------------------------------------
-    // VERIFICAR CREDENCIALES EN LA BASE DE DATOS
-    // -----------------------------------------------------------
-    $mysqli = conectar_bd();
-
-    // Consulta que valida las credenciales Y obtiene el fichero CSS del usuario
-    $sql = "
-        SELECT U.NomUsuario, U.Clave, E.Fichero AS EstiloFichero 
-        FROM USUARIOS U
-        JOIN ESTILOS E ON U.Estilo = E.IdEstilo
-        WHERE U.NomUsuario = ?
-    ";
-    
-    $stmt = $mysqli->prepare($sql);
-
-    if ($stmt === false) {
-        set_flashdata('error', 'Error interno del servidor al verificar credenciales.');
-        header('Location: index.php');
-        $mysqli->close();
-        exit;
-    }
-    
-    // Vinculación de parámetros 
-    $stmt->bind_param("s", $usuario_ingresado);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-    $usuario_db = $resultado->fetch_assoc();
-    
-    $autenticado = false;
-    $estilo_fichero = 'css/styles.css'; 
-
-    // Comprobación de credenciales 
-    if ($usuario_db && $usuario_db['Clave'] === $clave_ingresada) {
-        $autenticado = true;
-        $estilo_fichero = $usuario_db['EstiloFichero'];
-    }
-
-    $stmt->close();
-    $mysqli->close();
-    
-    // -----------------------------------------------------------
-    // MANEJO DE ÉXITO O FALLO
-    // -----------------------------------------------------------
-    
-    if ($autenticado) {
-        // Guarda el usuario en la sesión
-        $_SESSION['usuario'] = $usuario_ingresado;
-        
-        // Asigna el estilo obtenido de la BD
-        $_SESSION['estilo_css'] = $estilo_fichero;
-        
-        // Gestiona la cookie "recordarme"
-        if ($recordarme) {
-            // Establece parámetros de cookie 
-            $expiracion = time() + (90 * 24 * 60 * 60);
-            $path = '/';
-            $domain = '';
-            $secure = false;
-            $httponly = true; 
-            
-            // Establece las cookies de auto-login 
-            setcookie('recordar_usuario', $usuario_ingresado, $expiracion, $path, $domain, $secure, $httponly);
-            setcookie('recordar_clave', $clave_ingresada, $expiracion, $path, $domain, $secure, $httponly);
-            
-            // Guarda la cookie de "última visita real"
-            setcookie('ultima_visita_real', date('d/m/Y \a \l\a\s H:i:s'), $expiracion, $path, $domain, $secure, $httponly);
-            
-            // Borra la variable de sesión para que sesion.php use la cookie en el próximo acceso
-            unset($_SESSION['ultima_visita']);
-
-        } else {
-            // Si el usuario no marca "recordarme", borra las cookies antiguas
-            $expira_pasado = time() - 3600;
-            setcookie('recordar_usuario', '', $expira_pasado, '/', '', false, true);
-            setcookie('recordar_clave', '', $expira_pasado, '/', '', false, true);
-            setcookie('ultima_visita_real', '', $expira_pasado, '/', '', false, true);
-        }
-    
-        // Redirección final a la página de usuario logueado
-        header("Location: index_logueado.php");
-        exit();
-        
-    } else {
-        // Fallo en credenciales: establece el mensaje de error y redirige
-        set_flashdata('error', "Usuario o contraseña incorrectos");
-        header("Location: index.php");
-        exit();
-    }
-} else {
-    // Acceso directo sin post: redirige al inicio
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: index.php");
     exit();
 }
-?>
+
+// 2. RECUPERACIÓN Y SANEAMIENTO DE DATOS
+$usuario = trim($_POST['usuario'] ?? '');
+$clave = $_POST['clave'] ?? ''; 
+$recuerdame = isset($_POST['recuerdame']); // Booleano
+
+// Validaciones mínimas de presencia
+if (empty($usuario) || empty($clave)) {
+    set_flashdata('error', 'El nombre de usuario y la contraseña son obligatorios.');
+    header("Location: index.php");
+    exit();
+}
+
+$mysqli = conectar_bd();
+$user = null;
+
+// 3. CONSULTA Y VERIFICACIÓN DE CONTRASEÑA (MODIFICADO)
+
+$sql = "SELECT IdUsuario, Clave, NomUsuario, Estilo FROM usuarios WHERE NomUsuario = ?";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("s", $usuario);
+$stmt->execute();
+$resultado = $stmt->get_result();
+
+if ($resultado->num_rows === 1) {
+    $user = $resultado->fetch_assoc();
+    
+    // -----------------------------------------------------------------
+    // MODIFICACIÓN CRUCIAL: USAR password_verify()
+    // -----------------------------------------------------------------
+    if (password_verify($clave, $user['Clave'])) {
+        
+        // 4. ÉXITO DE LOGIN: INICIAR SESIÓN
+
+        // 4.1. Crear variables de sesión
+        $_SESSION['usuario'] = $user['NomUsuario'];
+        $_SESSION['id_usuario'] = $user['IdUsuario'];
+        $_SESSION['estilo'] = $user['Estilo'];
+        
+        // 4.2. Registrar la última visita si existe la cookie (Lógica Práctica 8)
+        if (isset($_COOKIE['ultima_visita_pi'])) {
+             // La cookie almacena el valor de la última visita.
+             $_SESSION['ultima_visita'] = $_COOKIE['ultima_visita_pi'];
+        }
+
+        // 4.3. Crear cookie "Recuérdame" si se ha marcado la opción (Lógica Práctica 8)
+        if ($recuerdame) {
+            $dias = 90;
+            $expire = time() + ($dias * 24 * 60 * 60); 
+            
+            // WARNING: Por requisito de la Práctica 8, se almacena la clave en PLAIN TEXT.
+            // En un entorno real, esta cookie almacenaría un token seguro, NUNCA la clave.
+            setcookie('usuario_pi', $usuario, $expire);
+            setcookie('clave_pi', $clave, $expire); // <-- Aquí se usa la clave en PLAIN TEXT para la cookie
+        }
+        
+        // 4.4. Redirigir al menú privado
+        set_flashdata('success', "Bienvenido, {$user['NomUsuario']}.");
+        header("Location: index_logueado.php");
+
+    } else {
+        // Fallo: Contraseña incorrecta
+        set_flashdata('error', 'Credenciales incorrectas. Contraseña no válida.');
+        header("Location: index.php");
+    }
+} else {
+    // Fallo: Usuario no encontrado
+    set_flashdata('error', 'Credenciales incorrectas. Usuario no existe.');
+    header("Location: index.php");
+}
+
+$stmt->close();
+$mysqli->close();
+exit();

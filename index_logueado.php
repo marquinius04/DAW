@@ -7,13 +7,13 @@ require_once 'include/db_connect.php';
 
 controlar_acceso_privado();
 
-// LÓGICA DE ÚLTIMOS ANUNCIOS 
+// LÓGICA DE ÚLTIMOS anuncios 
 $mysqli = conectar_bd();
 $sql_anuncios = "
     SELECT 
         A.IdAnuncio, A.FPrincipal, A.Titulo, A.Precio 
     FROM 
-        ANUNCIOS A
+        anuncios A
     ORDER BY 
         A.FRegistro DESC 
     LIMIT 5

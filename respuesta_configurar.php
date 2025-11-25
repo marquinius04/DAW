@@ -12,13 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mysqli = conectar_bd();
     
     // Actualizar en la base de datos
-    $stmt = $mysqli->prepare("UPDATE USUARIOS SET Estilo = ? WHERE NomUsuario = ?");
+    $stmt = $mysqli->prepare("UPDATE usuarios SET Estilo = ? WHERE NomUsuario = ?");
     $stmt->bind_param("is", $nuevo_estilo, $usuario);
     
     if ($stmt->execute()) {
         // Actualizar la sesión actual para ver el cambio inmediatamente
         // Buscamos el nombre del fichero CSS asociado al ID seleccionado
-        $res = $mysqli->query("SELECT Fichero FROM ESTILOS WHERE IdEstilo = $nuevo_estilo");
+        $res = $mysqli->query("SELECT Fichero FROM estilos WHERE IdEstilo = $nuevo_estilo");
         if ($row = $res->fetch_assoc()) {
             $_SESSION['estilo_css'] = $row['Fichero'];
         }

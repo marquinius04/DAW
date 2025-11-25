@@ -8,7 +8,7 @@ $mysqli = conectar_bd();
 
 // Obtener ID del usuario actual por su nombre de sesión
 $usuario_nom = $_SESSION['usuario'];
-$stmt_u = $mysqli->prepare("SELECT IdUsuario FROM USUARIOS WHERE NomUsuario = ?");
+$stmt_u = $mysqli->prepare("SELECT IdUsuario FROM usuarios WHERE NomUsuario = ?");
 $stmt_u->bind_param("s", $usuario_nom);
 $stmt_u->execute();
 $res_u = $stmt_u->get_result();
@@ -17,7 +17,7 @@ $id_usuario = $fila_u['IdUsuario'];
 $stmt_u->close();
 
 // Consultar anuncios de este usuario
-$sql = "SELECT A.*, P.NomPais FROM ANUNCIOS A JOIN PAISES P ON A.Pais = P.IdPais WHERE Usuario = ?";
+$sql = "SELECT A.*, P.NomPais FROM anuncios A JOIN paises P ON A.Pais = P.IdPais WHERE Usuario = ?";
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param("i", $id_usuario);
 $stmt->execute();

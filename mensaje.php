@@ -17,7 +17,7 @@ $mysqli = conectar_bd();
       <select id="tipo" name="tipo_mensaje" required>
         <option value="" disabled selected>Selecciona el tipo de mensaje</option>
         <?php
-            generar_select_options($mysqli, 'TIPOSMENSAJES', 'NomTMensaje', 'NomTMensaje');
+            generar_select_options($mysqli, 'tiposmensajes', 'NomTMensaje', 'NomTMensaje');
         ?>
       </select>
 

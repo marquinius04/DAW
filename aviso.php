@@ -12,21 +12,21 @@ if ($anuncio_id > 0) {
     // Buscamos el anuncio específico por su ID y unimos las tablas
     $sql_anuncio = "
         SELECT 
-            A.*, -- Todos los campos de ANUNCIOS
+            A.*, -- Todos los campos de anuncios
             P.NomPais,
             TA.NomTAnuncio,
             TV.NomTVivienda,
             U.NomUsuario -- Nombre del usuario que lo publicó
         FROM 
-            ANUNCIOS A
+            anuncios A
         JOIN 
-            PAISES P ON A.Pais = P.IdPais
+            paises P ON A.Pais = P.IdPais
         JOIN 
-            TIPOSANUNCIOS TA ON A.TAnuncio = TA.IdTAnuncio
+            tiposanuncios TA ON A.TAnuncio = TA.IdTAnuncio
         JOIN 
-            TIPOSVIVIENDAS TV ON A.TVivienda = TV.IdTVivienda
+            tiposviviendas TV ON A.TVivienda = TV.IdTVivienda
         JOIN 
-            USUARIOS U ON A.Usuario = U.IdUsuario
+            usuarios U ON A.Usuario = U.IdUsuario
         WHERE 
             A.IdAnuncio = ?
     ";
@@ -44,10 +44,10 @@ if ($anuncio) {
     add_anuncio_visitado($mysqli, $anuncio_id);
 }
 
-// CONSULTA DE FOTOS SECUNDARIAS 
+// CONSULTA DE fotos SECUNDARIAS 
 $fotos_secundarias = [];
 if ($anuncio) {
-    $sql_fotos = "SELECT Foto, Titulo, Alternativo FROM FOTOS WHERE Anuncio = ?";
+    $sql_fotos = "SELECT Foto, Titulo, Alternativo FROM fotos WHERE Anuncio = ?";
     $stmt_fotos = $mysqli->prepare($sql_fotos);
     $stmt_fotos->bind_param("i", $anuncio_id);
     $stmt_fotos->execute();
@@ -101,7 +101,7 @@ if ($anuncio) {
                 <h3>Más fotos</h3>
                 <div class="galeria-extra">
                     <?php 
-                    // Muestra las fotos secundarias de la tabla FOTOS
+                    // Muestra las fotos secundarias de la tabla fotos
                     if (empty($fotos_secundarias)):
                         echo "<p>No hay más fotos disponibles.</p>";
                     else:

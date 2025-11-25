@@ -7,22 +7,22 @@ $mysqli = conectar_bd();
 
 $usuario_nom = $_SESSION['usuario'];
 // Obtener ID
-$res_u = $mysqli->query("SELECT IdUsuario FROM USUARIOS WHERE NomUsuario = '$usuario_nom'");
+$res_u = $mysqli->query("SELECT IdUsuario FROM usuarios WHERE NomUsuario = '$usuario_nom'");
 $id_usuario = $res_u->fetch_assoc()['IdUsuario'];
 
 // Consultar RECIBIDOS
 $sql_rec = "SELECT M.*, U.NomUsuario as Remitente, TM.NomTMensaje 
-            FROM MENSAJES M 
-            JOIN USUARIOS U ON M.UsuOrigen = U.IdUsuario 
-            JOIN TIPOSMENSAJES TM ON M.TMensaje = TM.IdTMensaje
+            FROM mensajes M 
+            JOIN usuarios U ON M.UsuOrigen = U.IdUsuario 
+            JOIN tiposmensajes TM ON M.TMensaje = TM.IdTMensaje
             WHERE UsuDestino = $id_usuario";
 $res_rec = $mysqli->query($sql_rec);
 
 // Consultar ENVIADOS
 $sql_env = "SELECT M.*, U.NomUsuario as Destinatario, TM.NomTMensaje 
-            FROM MENSAJES M 
-            JOIN USUARIOS U ON M.UsuDestino = U.IdUsuario 
-            JOIN TIPOSMENSAJES TM ON M.TMensaje = TM.IdTMensaje
+            FROM mensajes M 
+            JOIN usuarios U ON M.UsuDestino = U.IdUsuario 
+            JOIN tiposmensajes TM ON M.TMensaje = TM.IdTMensaje
             WHERE UsuOrigen = $id_usuario";
 $res_env = $mysqli->query($sql_env);
 ?>

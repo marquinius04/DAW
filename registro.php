@@ -79,9 +79,9 @@ $val_pais = (int)($_GET['pais'] ?? 0);
       <select id="pais" name="pais">
         <option value="">-- Seleccione una opción --</option>
         <?php
-        // Llama a la función para generar las opciones de la tabla PAISES
+        // Llama a la función para generar las opciones de la tabla paises
         // Pasa $val_pais como el ID seleccionado 
-        generar_select_options($mysqli, 'PAISES', 'IdPais', 'NomPais', $val_pais);
+        generar_select_options($mysqli, 'paises', 'IdPais', 'NomPais', $val_pais);
         ?>
         </select>
       <span id="paisError" class="error"></span> 

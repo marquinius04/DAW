@@ -9,12 +9,12 @@ if ($id_anuncio === 0 && isset($_GET['anuncio_id'])) $id_anuncio = (int)$_GET['a
 $mysqli = conectar_bd();
 
 // Datos básicos del anuncio
-$sql_info = "SELECT Titulo FROM ANUNCIOS WHERE IdAnuncio = $id_anuncio";
+$sql_info = "SELECT Titulo FROM anuncios WHERE IdAnuncio = $id_anuncio";
 $res_info = $mysqli->query($sql_info);
 $anuncio = $res_info->fetch_assoc();
 
 // Fotos secundarias
-$sql_fotos = "SELECT Foto, Titulo, Alternativo FROM FOTOS WHERE Anuncio = $id_anuncio";
+$sql_fotos = "SELECT Foto, Titulo, Alternativo FROM fotos WHERE Anuncio = $id_anuncio";
 $res_fotos = $mysqli->query($sql_fotos);
 $num_fotos = $res_fotos->num_rows;
 ?>

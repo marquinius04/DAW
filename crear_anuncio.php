@@ -16,17 +16,17 @@ $mysqli = conectar_bd();
 
         <label for="tanuncio">Tipo de Anuncio:</label>
         <select id="tanuncio" name="tanuncio" required>
-            <?php generar_select_options($mysqli, 'TIPOSANUNCIOS', 'IdTAnuncio', 'NomTAnuncio'); ?>
+            <?php generar_select_options($mysqli, 'tiposanuncios', 'IdTAnuncio', 'NomTAnuncio'); ?>
         </select>
 
         <label for="tvivienda">Tipo de Vivienda:</label>
         <select id="tvivienda" name="tvivienda" required>
-            <?php generar_select_options($mysqli, 'TIPOSVIVIENDAS', 'IdTVivienda', 'NomTVivienda'); ?>
+            <?php generar_select_options($mysqli, 'tiposviviendas', 'IdTVivienda', 'NomTVivienda'); ?>
         </select>
 
         <label for="pais">País:</label>
         <select id="pais" name="pais" required>
-             <?php generar_select_options($mysqli, 'PAISES', 'IdPais', 'NomPais'); ?>
+             <?php generar_select_options($mysqli, 'paises', 'IdPais', 'NomPais'); ?>
         </select>
 
         <label for="ciudad">Ciudad:</label>

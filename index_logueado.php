@@ -1,14 +1,22 @@
 <?php
-$titulo_pagina = "PI - Menú Principal (Logueado)";
+// /index_logueado.php
+
+$titulo_pagina = "PI - Menú principal (Logueado)";
 $menu_tipo = 'privado';
 
+// 1. INCLUSIONES (Añadimos db_connect para la consulta de anuncios)
 require_once 'include/head.php'; 
 require_once 'include/db_connect.php'; 
 
+// Controla que el usuario esté logueado para ver esta página
 controlar_acceso_privado();
 
-// LÓGICA DE ÚLTIMOS anuncios 
+// -----------------------------------------------------------------
+// 2. LÓGICA DE ÚLTIMOS ANUNCIOS (Migrado a Sentencia Preparada)
+// -----------------------------------------------------------------
 $mysqli = conectar_bd();
+
+// Consulta estática (no hay input de usuario, pero usamos prepare por seguridad uniforme)
 $sql_anuncios = "
     SELECT 
         A.IdAnuncio, A.FPrincipal, A.Titulo, A.Precio 
@@ -19,10 +27,18 @@ $sql_anuncios = "
     LIMIT 5
 "; // Obtenemos los 5 más nuevos
 
-if (!$resultado_anuncios = $mysqli->query($sql_anuncios)) {
+// 1. PREPARAR la sentencia
+$stmt = $mysqli->prepare($sql_anuncios);
+
+if ($stmt === false) {
     // Manejo de error si la consulta falla
-    $error_anuncios = "Error al cargar los últimos anuncios: " . $mysqli->error;
+    $error_anuncios = "Error al preparar la consulta de últimos anuncios: " . $mysqli->error;
+    $resultado_anuncios = null;
 } else {
+    // 2. EJECUTAR la sentencia
+    $stmt->execute();
+    // 3. OBTENER el resultado
+    $resultado_anuncios = $stmt->get_result();
     $error_anuncios = null;
 }
 ?>
@@ -32,6 +48,7 @@ if (!$resultado_anuncios = $mysqli->query($sql_anuncios)) {
         <h2><?php echo get_saludo(); ?></h2> 
         
         <?php 
+        // Mensaje de última visita 
         if (isset($_SESSION['ultima_visita'])): 
         ?>
             <p>Tu última visita (registrada por la cookie) fue el <?php echo htmlspecialchars($_SESSION['ultima_visita']); ?>.</p>
@@ -54,9 +71,9 @@ if (!$resultado_anuncios = $mysqli->query($sql_anuncios)) {
       <h2>Últimos anuncios</h2>
       
       <?php if ($error_anuncios): ?>
-          <p style="color: red;"><?= $error_anuncios ?></p>
+          <p style="color: red;"><?= htmlspecialchars($error_anuncios) ?></p>
           
-      <?php elseif ($resultado_anuncios->num_rows > 0): ?>
+      <?php elseif ($resultado_anuncios && $resultado_anuncios->num_rows > 0): ?>
           <ul>
               <?php while ($anuncio = $resultado_anuncios->fetch_assoc()): ?>
                   <li>
@@ -70,7 +87,6 @@ if (!$resultado_anuncios = $mysqli->query($sql_anuncios)) {
                   </li>
               <?php endwhile; ?>
           </ul>
-          <?php $resultado_anuncios->close(); // Muestra resultados ?>
       <?php else: ?>
           <p>No hay anuncios publicados actualmente.</p>
       <?php endif; ?>
@@ -78,6 +94,8 @@ if (!$resultado_anuncios = $mysqli->query($sql_anuncios)) {
     </section>
 
 <?php
-$mysqli->close(); 
+// 4. CIERRE DE RECURSOS Y FOOTER
+if (isset($stmt)) $stmt->close();
+$mysqli->close(); // Cierra la conexión a la BD
 require_once 'include/footer.php';
 ?>

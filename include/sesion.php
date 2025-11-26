@@ -22,7 +22,7 @@ if (!isset($_SESSION['usuario']) && isset($_COOKIE['usuario_pi']) && isset($_COO
     $clave_cookie_plano = $_COOKIE['clave_pi']; // Contraseña en texto plano de la cookie
 
     // Consulta para obtener el hash de la clave y otros datos
-    $sql = "SELECT IdUsuario, Clave, NomUsuario, Estilo FROM USUARIOS WHERE NomUsuario = ?";
+    $sql = "SELECT IdUsuario, Clave, NomUsuario, Estilo FROM usuarios WHERE NomUsuario = ?";
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param("s", $usuario_cookie);
     $stmt->execute();
@@ -136,8 +136,8 @@ function add_anuncio_visitado($mysqli, $id) {
     // 1. Obtener datos del anuncio de la BD (solo lo necesario para la cookie)
     $sql_anuncio = "
         SELECT A.Titulo, A.Ciudad, A.Precio, P.NomPais, A.FPrincipal
-        FROM ANUNCIOS A
-        JOIN PAISES P ON A.Pais = P.IdPais
+        FROM anuncios A
+        JOIN paises P ON A.Pais = P.IdPais
         WHERE A.IdAnuncio = ?
     ";
     

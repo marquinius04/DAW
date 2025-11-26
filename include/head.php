@@ -2,23 +2,52 @@
 // Incluye la lógica de sesión antes de que cargue el html
 require_once __DIR__ . '/sesion.php';
 
+// --- CRUCIAL: Incluimos la conexión a BD ---
+// Es necesario para convertir el ID de estilo a la URL del fichero
+require_once __DIR__ . '/db_connect.php'; 
+// ------------------------------------------
+
 // --- Variables de configuración de la página ---
 $titulo_pagina = $titulo_pagina ?? "PI - Pisos & Inmuebles"; 
 $body_id = $body_id ?? "";
-// Define si se muestra el menú público (no logueado) o privado (logueado)
 $menu_tipo = $menu_tipo ?? 'privado';
 
-// --- Lógica de estilos css ---
-// Carga el estilo definido por el usuario en la sesión, o el predeterminado
-$estilo_seleccionado = $_SESSION['estilo_css'] ?? 'css/styles.css';
-$estilo_principal = 'css/styles.css';
+// --- Lógica de estilos CSS (CORREGIDA) ---
+
+// 1. Obtener el ID de estilo de la sesión
+$estilo_id_sesion = $_SESSION['estilo'] ?? 0;
+$estilo_principal = 'css/styles.css'; // El path del estilo por defecto
+
+// 2. Definir la variable que se usará para el enlace HTML (por defecto, el principal)
+$estilo_seleccionado_url = $estilo_principal;
+
+// 3. CONSULTA SEGURA A LA BD para obtener la URL del fichero
+if ($estilo_id_sesion > 0) {
+    $mysqli = conectar_bd();
+    
+    $sql_estilo = "SELECT Fichero FROM estilos WHERE IdEstilo = ?";
+    $stmt = $mysqli->prepare($sql_estilo);
+    
+    if ($stmt) {
+        $stmt->bind_param("i", $estilo_id_sesion);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        
+        if ($fila = $resultado->fetch_assoc()) {
+            $estilo_seleccionado_url = htmlspecialchars($fila['Fichero']);
+        }
+        $stmt->close();
+    }
+    $mysqli->close();
+}
+
+// 4. Asignamos la URL final a la variable que se usará en el HTML
+$estilo_seleccionado = $estilo_seleccionado_url;
 
 // --- CRUCIAL: INCLUIR FLASH DATA ANTES DE USARLO ---
-// (Si no lo incluyes en registro.php, get_flashdata() no existe)
 require_once 'include/flashdata.inc.php'; 
 
 // --- CRUCIAL: Leer el flashdata y guardarlo en una variable ---
-// Usaremos $flash_error para ser compatible con head.php, aunque lo estamos leyendo del sistema flashdata.
 $flash_error = get_flashdata('error');
 
 ?>
@@ -31,8 +60,7 @@ $flash_error = get_flashdata('error');
   
   <?php
     // --- Gestión dinámica del estilo principal ---
-    // Carga el estilo seleccionado como principal
-    // Si el usuario elige un estilo alternativo, el estilo por defecto se carga como alternativo
+    // Ahora $estilo_seleccionado es la URL real del CSS (ej: css/night.css)
     if ($estilo_seleccionado !== $estilo_principal) {
         echo '<link rel="stylesheet" type="text/css" href="' . htmlspecialchars($estilo_seleccionado) . '" title="Estilo principal">' . "\n";
         echo '  <link rel="alternate stylesheet" type="text/css" href="' . htmlspecialchars($estilo_principal) . '" title="Estilo por defecto">' . "\n";
@@ -67,7 +95,7 @@ $flash_error = get_flashdata('error');
             <ul class="menu">
                 <li><a href="index_logueado.php"><span class="icono">home</span>Inicio</a></li>
                 <li class="submenu">
-                <a href="perfil.php"><span class="icono">person</span>Perfil</a>
+                <a href="modificar_datos.php"><span class="icono">person</span>Perfil</a>
                 <ul>
                     <li><a href="crear_anuncio.php"><span class="icono">add_circle</span>Crear anuncio</a></li>
                     <li><a href="mis_mensajes.php"><span class="icono">mail</span>Mis mensajes</a></li>

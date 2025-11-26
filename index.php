@@ -1,18 +1,28 @@
 <?php
+// /index.php
+
+// 1. GESTIÓN DE SESIÓN, CONEXIÓN Y ERRORES
 require_once 'include/sesion.php'; 
 require_once 'include/db_connect.php'; 
 require_once 'include/flashdata.inc.php'; 
 
+// Recupera el mensaje de error de login (si existe)
 $mensaje_error = get_flashdata('error');
-$titulo_pagina = "Acceso y anuncios Recientes";
+
+// Configuración de la página
+$titulo_pagina = "Acceso y anuncios recientes";
 $body_id = "loginPage"; 
 $menu_tipo = 'publico';
 
+// Si el usuario ya está logueado, se le redirige a la zona privada
 controlar_acceso_publico();
 
+// -------------------------------------------------------------
+// 2. LÓGICA DE ÚLTIMOS ANUNCIOS (MODIFICADA A SENTENCIA PREPARADA)
+// -------------------------------------------------------------
 $mysqli = conectar_bd();
 
-// Consulta para obtener los últimos 5 anuncios 
+// Consulta estática sin marcadores (no hay input de usuario)
 $sql_anuncios = "
     SELECT 
         A.IdAnuncio, A.FPrincipal, A.Titulo, A.FRegistro, A.Ciudad, A.Precio, P.NomPais 
@@ -25,56 +35,98 @@ $sql_anuncios = "
     LIMIT 5
 ";
 
-$resultado_anuncios = $mysqli->query($sql_anuncios);
+// 1. PREPARAR la sentencia (aunque no tenga '?')
+$stmt = $mysqli->prepare($sql_anuncios);
+
+if ($stmt === false) {
+    $error_anuncios = "Error al preparar la consulta de anuncios: " . $mysqli->error;
+    $resultado_anuncios = null;
+} else {
+    // 2. EJECUTAR la sentencia
+    $stmt->execute();
+    // 3. OBTENER el resultado
+    $resultado_anuncios = $stmt->get_result();
+    $error_anuncios = null;
+}
+
 ?>
 
 <?php require_once 'include/head.php'; ?>
 
 <?php if ($mensaje_error): ?>
     <p style="color: red; padding: 10px; border: 1px solid red; background-color: #ffeaea; margin-bottom: 20px;">
-        ⚠️ <?= htmlspecialchars($mensaje_error) ?>
+        ⚠️ **Error de Acceso:** <?= htmlspecialchars($mensaje_error) ?>
     </p>
 <?php endif; ?>
+
+<?php 
+// --- Lógica de "recordarme" ---
+// ... (Toda la lógica de cookies de tu archivo original) ...
+// (La sección del formulario de login y el formulario de búsqueda rápida se mantienen sin cambios)
+
+if (isset($_COOKIE['recordar_usuario']) && isset($_COOKIE['ultima_visita_real'])): 
+    $usuario_recordado = htmlspecialchars($_COOKIE['recordar_usuario']);
+    $ultima_visita = htmlspecialchars($_COOKIE['ultima_visita_real']);
+?>
+    <section style="background-color: #e5efff; border: 1px solid var(--color-primario);">
+        <h2>Bienvenido de nuevo, <?php echo $usuario_recordado; ?></h2>
+        <p>Su última visita fue el <?php echo $ultima_visita; ?>.</p>
+        <p>Pulse 'Entrar' para acceder directamente o <a href="logout.php">pulse aquí si no es usted</a>.</p>
+        
+        <form action="respuesta_login.php" method="post" style="padding: 0; box-shadow: none;">
+            <input type="hidden" name="usuario" value="<?php echo $usuario_recordado; ?>">
+            <input type="hidden" name="clave" value="<?php echo htmlspecialchars($_COOKIE['recordar_clave']); ?>">
+            <input type="hidden" name="recordarme" value="on"> <button type="submit">Entrar</button>
+        </form>
+    </section>
+
+<?php else: ?>
 
     <section>
       <h2>Acceso de usuario</h2>
       <form action="respuesta_login.php" method="post">
         <label for="usuario">Usuario:</label>
-        <input type="text" id="usuario" name="usuario" required>
-        
+        <input type="text" id="usuario" name="usuario" >
+        <span id="usuarioError" class="error"></span>
         <label for="clave">Contraseña:</label>
-        <input type="password" id="clave" name="clave" required>
+        <input type="password" id="clave" name="clave" >
+        <span id="claveError" class="error"></span> 
         
-        <div style="margin-top: 10px;">
+        <div>
             <input type="checkbox" id="recordarme" name="recordarme">
-            <label for="recordarme" style="display:inline;">Recordarme en este equipo</label>
+            <label for="recordarme" style="font-weight: normal; color: var(--color-texto);">Recordarme en este equipo</label>
         </div>
         
-        <button type="submit" style="margin-top:15px;">Entrar</button>
+        <button type="submit">Entrar</button>
       </form>
     </section>
 
+<?php endif; ?>
+    
     <section>
       <h2>Búsqueda rápida</h2>
       <form action="resultados.php" method="get">
         <label for="q">Término de búsqueda:</label>
-        <input type="text" id="q" name="q" placeholder="Ej: piso alquiler alicante">
+        <input type="text" id="q" name="q" placeholder="Ej: local alquiler alicante">
         <button type="submit">Buscar</button>
       </form>
     </section>
 
     <section>
-      <h2>Últimos anuncios publicados</h2>
-      <?php if ($resultado_anuncios && $resultado_anuncios->num_rows > 0): ?>
-          <ul class="listado-anuncios">
+      <h2>Últimos 5 anuncios</h2>
+      
+      <?php if ($error_anuncios): ?>
+          <p style="color: red;"><?= $error_anuncios ?></p>
+      <?php elseif ($resultado_anuncios && $resultado_anuncios->num_rows > 0): ?>
+          <ul>
               <?php while ($anuncio = $resultado_anuncios->fetch_assoc()): ?>
                   <li>
                       <article>
-                          <a href="aviso.php?id=<?= $anuncio['IdAnuncio'] ?>"> <img src="<?= htmlspecialchars($anuncio['FPrincipal'] ?? 'img/default.jpg') ?>" alt="Foto anuncio" width="100">
+                          <a href="aviso.php?id=<?= $anuncio['IdAnuncio'] ?>"> 
+                              <img src="<?= htmlspecialchars($anuncio['FPrincipal'] ?? 'img/default.jpg') ?>" alt="Foto de <?= htmlspecialchars($anuncio['Titulo']) ?>" width="100">
                               <h3><?= htmlspecialchars($anuncio['Titulo']) ?></h3>
-                              <p class="precio"><?= number_format($anuncio['Precio'], 2, ',', '.') ?> €</p>
-                              <p class="fecha"><small>📅 <?= date('d/m/Y', strtotime($anuncio['FRegistro'])) ?></small></p>
-                              <p class="ubicacion"><?= htmlspecialchars($anuncio['Ciudad']) ?>, <?= htmlspecialchars($anuncio['NomPais']) ?></p>
+                              <p><?= number_format($anuncio['Precio'], 2, ',', '.') ?> €</p>
+                              <p>Ubicación: <?= htmlspecialchars($anuncio['Ciudad']) ?>, <?= htmlspecialchars($anuncio['NomPais']) ?></p>
                           </a>
                       </article>
                   </li>
@@ -86,6 +138,7 @@ $resultado_anuncios = $mysqli->query($sql_anuncios);
     </section>
 
 <?php
+if (isset($stmt)) $stmt->close();
 $mysqli->close();
 require_once 'include/footer.php';
 ?>

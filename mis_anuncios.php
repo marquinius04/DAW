@@ -5,54 +5,54 @@ require_once 'include/db_connect.php';
 controlar_acceso_privado(); 
 
 $mysqli = conectar_bd();
+$uid = $_SESSION['id_usuario'];
 
-// Obtener ID del usuario actual por su nombre de sesión
-$usuario_nom = $_SESSION['usuario'];
-$stmt_u = $mysqli->prepare("SELECT IdUsuario FROM usuarios WHERE NomUsuario = ?");
-$stmt_u->bind_param("s", $usuario_nom);
-$stmt_u->execute();
-$res_u = $stmt_u->get_result();
-$fila_u = $res_u->fetch_assoc();
-$id_usuario = $fila_u['IdUsuario'];
-$stmt_u->close();
-
-// Consultar anuncios de este usuario
-$sql = "SELECT A.*, P.NomPais FROM anuncios A JOIN paises P ON A.Pais = P.IdPais WHERE Usuario = ?";
+$sql = "SELECT IdAnuncio, Titulo, Precio, FPrincipal FROM anuncios WHERE Usuario = ?";
 $stmt = $mysqli->prepare($sql);
-$stmt->bind_param("i", $id_usuario);
+$stmt->bind_param("i", $uid);
 $stmt->execute();
 $resultado = $stmt->get_result();
-$total_anuncios = $resultado->num_rows;
 ?>
 
-    <h2>Mis anuncios</h2>
+    <h2>Mis anuncios publicados</h2>
     
-    <table style="width: 100%; border-collapse: collapse;">
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
       <thead>
-        <tr>
+        <tr style="background: var(--color-primario); color: white;">
           <th>Foto</th> <th>Título</th> <th>Precio</th> <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <?php if ($total_anuncios > 0): ?>
+        <?php if ($resultado->num_rows > 0): ?>
             <?php while ($anuncio = $resultado->fetch_assoc()): ?>
-                <tr>
-                    <td><img src="<?= htmlspecialchars($anuncio['FPrincipal']) ?>" width="60"></td>
-                    <td><a href="aviso.php?id=<?= $anuncio['IdAnuncio'] ?>"><?= htmlspecialchars($anuncio['Titulo']) ?></a></td>
-                    <td><?= $anuncio['Precio'] ?> €</td>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px;">
+                        <img src="<?= htmlspecialchars($anuncio['FPrincipal']) ?>" width="80" style="border-radius:4px;">
+                    </td>
                     <td>
-                        <a href="ver_mensajes_anuncio.php?id=<?= $anuncio['IdAnuncio'] ?>">Ver mensajes</a> | 
-                        <a href="ver_fotos.php?id=<?= $anuncio['IdAnuncio'] ?>&modo=privado">Gestionar fotos</a>
+                        <strong><?= htmlspecialchars($anuncio['Titulo']) ?></strong>
+                    </td>
+                    <td><?= number_format($anuncio['Precio'], 2) ?> €</td>
+                    <td>
+                        <a href="aviso.php?id=<?= $anuncio['IdAnuncio'] ?>" class="btn-small"><span class="icono">visibility</span></a>
+                        
+                        <a href="modificar_anuncio.php?id=<?= $anuncio['IdAnuncio'] ?>" class="btn-small" title="Editar"><span class="icono">edit</span></a>
+                        
+                        <a href="eliminar_anuncio.php?id=<?= $anuncio['IdAnuncio'] ?>" class="btn-small" style="color: red;" title="Eliminar"><span class="icono">delete</span></a>
+                        
+                        <br><br>
+                        <a href="anyadir_foto.php?anuncio_id=<?= $anuncio['IdAnuncio'] ?>" style="font-size: 0.8em;">+ Foto</a>
                     </td>
                 </tr>
             <?php endwhile; ?>
         <?php else: ?>
-            <tr><td colspan="4">No tienes anuncios publicados.</td></tr>
+            <tr><td colspan="4" style="padding: 20px; text-align: center;">No tienes anuncios publicados.</td></tr>
         <?php endif; ?>
       </tbody>
     </table>
+    
     <br>
-    <button><a href="crear_anuncio.php" style="color:white; text-decoration:none;">Crear nuevo anuncio</a></button>
+    <a href="crear_anuncio.php" class="btn-contacto" style="width: 200px; text-align: center;">Crear nuevo anuncio</a>
 
 <?php
 $mysqli->close();

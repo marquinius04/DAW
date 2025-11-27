@@ -9,9 +9,9 @@ $mysqli = conectar_bd();
 
     <h2>Crear un nuevo anuncio</h2>
     
-    <form action="index_logueado.php" method="post" enctype="multipart/form-data">
+    <form action="respuesta_crear_anuncio.php" method="post" enctype="multipart/form-data">
         
-        <label for="titulo">Título del anuncio:</label>
+        <label for="titulo">(*) Título del anuncio:</label>
         <input type="text" id="titulo" name="titulo" required>
 
         <label for="tanuncio">Tipo de Anuncio:</label>
@@ -29,19 +29,16 @@ $mysqli = conectar_bd();
              <?php generar_select_options($mysqli, 'paises', 'IdPais', 'NomPais'); ?>
         </select>
 
-        <label for="ciudad">Ciudad:</label>
+        <label for="ciudad">(*) Ciudad:</label>
         <input type="text" id="ciudad" name="ciudad" required>
 
-        <label for="descripcion">Descripción:</label>
-        <textarea id="descripcion" name="descripcion" rows="5" cols="40"></textarea>
+        <label for="descripcion">(*) Descripción:</label>
+        <textarea id="descripcion" name="descripcion" rows="5" cols="40" required></textarea>
 
         <label for="precio">Precio (€):</label>
-        <input type="number" id="precio" name="precio" min="0" required>
+        <input type="number" id="precio" name="precio" min="0" step="0.01">
 
-        <label for="foto_principal">Foto Principal:</label>
-        <input type="file" id="foto_principal" name="foto_principal" accept="image/*">
-
-        <input type="submit" value="Publicar anuncio">
+        <button type="submit">Crear anuncio y añadir fotos</button>
     </form>
 
 <?php

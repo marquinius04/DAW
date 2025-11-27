@@ -1,100 +1,83 @@
 <?php
-// Incluye el gestor de sesión
 require_once 'include/sesion.php';
+require_once 'include/db_connect.php';
+require_once 'include/flashdata.inc.php';
+
+controlar_acceso_privado();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    
-    // Controla que solo usuarios logueados puedan acceder a esta página
-    controlar_acceso_privado();
+    $mysqli = conectar_bd();
 
-    // Recoge y sanea todos los datos del formulario
-    $tipo_mensaje = trim($_POST['tipo_mensaje'] ?? ''); 
+    $tipo_mensaje_str = trim($_POST['tipo_mensaje'] ?? ''); 
     $mensaje_texto = trim($_POST['mensaje_texto'] ?? ''); 
     $email_remitente = trim($_POST['email_remitente'] ?? '');
-    $anuncio_id = htmlspecialchars($_POST['anuncio_id'] ?? 'N/A');
+    $anuncio_id = (int)($_POST['anuncio_id'] ?? 0);
+    $usu_origen = $_SESSION['id_usuario'];
 
-    $error_mensaje = "";
-
-    // --- Validación php ---
-    // Comprueba que el email no esté vacío
-    if (empty($email_remitente)) {
-        $error_mensaje = "Debe introducir su correo electrónico";
-    } 
-    // Comprueba el formato básico del email
-    elseif (!filter_var($email_remitente, FILTER_VALIDATE_EMAIL)) {
-        $error_mensaje = "El formato del correo electrónico no es válido";
-    } 
-    // Comprueba que se haya seleccionado un tipo de mensaje válido
-    elseif (!in_array($tipo_mensaje, ['info', 'cita', 'oferta'])) {
-        $error_mensaje = "Debe seleccionar un tipo de mensaje válido";
-    } 
-    // Comprueba que el cuerpo del mensaje no esté vacío
-    elseif (empty($mensaje_texto)) {
-        $error_mensaje = "El cuerpo del mensaje no puede estar vacío";
-    }
-
-    // Si hay un error, redirige al formulario de mensaje
-    if ($error_mensaje !== "") {
-        // Muestra el error al redirigir
-        $_SESSION['flash_error'] = $error_mensaje;
-        // Devuelve el id del anuncio para mantener el contexto
-        $id_param = isset($_POST['anuncio_id']) ? "anuncio_id=" . urlencode($_POST['anuncio_id']) : "";
-        header("Location: mensaje.php?{$id_param}");
+    // --- Validaciones ---
+    if (empty($email_remitente) || empty($mensaje_texto) || $anuncio_id <= 0) {
+        set_flashdata('error', "Todos los campos son obligatorios.");
+        header("Location: mensaje.php?anuncio_id=$anuncio_id");
         exit();
     }
+
+    // 1. Obtener ID del Usuario Destino (Dueño del anuncio)
+    $sql_dest = "SELECT Usuario FROM anuncios WHERE IdAnuncio = $anuncio_id";
+    $res_dest = $mysqli->query($sql_dest);
+    if ($res_dest->num_rows === 0) {
+        set_flashdata('error', "El anuncio no existe.");
+        header("Location: index.php");
+        exit();
+    }
+    $usu_destino = $res_dest->fetch_assoc()['Usuario'];
+
+    // 2. Mapear string del select a ID de tiposmensajes (según pibd.sql)
+    // El select envía strings 'Más información', 'Solicitar una cita', etc.
+    // OJO: En tu pibd.sql los valores son: 1='Más información', 2='Solicitar una cita', 3='Comunicar una oferta'
+    // Asumiremos que el select en mensaje.php envía el NOMBRE EXACTO o ajustamos aquí.
     
-    // --- Lógica de éxito: mostrar resumen ---
+    // Buscamos el ID en la BD basado en el nombre enviado
+    $stmt_tipo = $mysqli->prepare("SELECT IdTMensaje FROM tiposmensajes WHERE NomTMensaje = ?");
+    $stmt_tipo->bind_param("s", $tipo_mensaje_str);
+    $stmt_tipo->execute();
+    $res_tipo = $stmt_tipo->get_result();
     
-    // Incluye la plantilla después de las redirecciones de error
-    $titulo_pagina = "Mensaje enviado";
-    require_once 'include/head.php'; 
-    ?>
-    
-    <main>
-        <h2><span class="icono">check_circle</span> Mensaje enviado correctamente</h2>
-        <p>Tu mensaje ha sido enviado al anunciante. A continuación, el resumen de lo que enviaste:</p>
-        
-        <section class="caja-lateral" style="background-color: #f0f7ff; border: 1px solid var(--color-primario); text-align: center; padding-bottom: 20px;">
-            
-            <h3>Resumen del envío:</h3>
-            
-            <p style="margin-bottom: 0.75em;">ID del anuncio: <strong><?php echo $anuncio_id; ?></strong></p>
-            
-            <p style="margin-bottom: 0.75em;">Tu email: <strong><?php echo htmlspecialchars($email_remitente); ?></strong></p>
-            
-            <p style="margin-bottom: 1.5em;">Tipo de mensaje: <strong><?php echo htmlspecialchars($tipo_mensaje); ?></strong></p>
-            
-            <p style="margin-bottom: 0.5em;">Contenido del mensaje:</p>
-            
-            <div style="white-space: pre-wrap; 
-                        background-color: #f8f9fa; 
-                        border: 1px solid #ddd; 
-                        padding: 12px; 
-                        border-radius: 4px; 
-                        font-weight: bold;   /* Tu petición de negrita */
-                        text-align: left;    /* El texto del mensaje empieza a la izquierda */
-                        display: block;      /* Lo tratamos como un bloque */
-                        margin: 0 auto;    /* Lo centramos con márgenes automáticos */
-                        min-width: 300px;
-                        max-width: 90%;">
-                <?php echo htmlspecialchars($mensaje_texto); ?>
+    if ($row = $res_tipo->fetch_assoc()) {
+        $id_tmensaje = $row['IdTMensaje'];
+    } else {
+        // Fallback por defecto si no coincide
+        $id_tmensaje = 1; 
+    }
+    $stmt_tipo->close();
+
+    // 3. INSERTAR MENSAJE
+    $sql_insert = "INSERT INTO mensajes (TMensaje, Texto, Anuncio, UsuOrigen, UsuDestino) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $mysqli->prepare($sql_insert);
+    $stmt->bind_param("isiii", $id_tmensaje, $mensaje_texto, $anuncio_id, $usu_origen, $usu_destino);
+
+    if ($stmt->execute()) {
+        $titulo_pagina = "Mensaje Enviado";
+        require_once 'include/head.php'; 
+        ?>
+        <main>
+            <h2><span class="icono">send</span> Mensaje enviado con éxito</h2>
+            <p>El propietario del anuncio recibirá tu mensaje en su buzón privado.</p>
+            <div style="background: #f0f0f0; padding: 15px; border-radius: 5px;">
+                <p><strong>Para:</strong> Usuario #<?= $usu_destino ?></p>
+                <p><strong>Mensaje:</strong> <?= htmlspecialchars($mensaje_texto) ?></p>
             </div>
+            <br>
+            <a href="aviso.php?id=<?= $anuncio_id ?>" class="btn-contacto" style="width: auto; display: inline-block;">Volver al anuncio</a>
+        </main>
+        <?php
+        require_once 'include/footer.php';
+    } else {
+        set_flashdata('error', "Error al enviar mensaje: " . $stmt->error);
+        header("Location: mensaje.php?anuncio_id=$anuncio_id");
+    }
 
-        </section>
-
-        <p>Gracias por tu mensaje, el anunciante se pondrá en contacto contigo pronto.</p>
-        
-        <a href="index_logueado.php" style="display: inline-block; background-color: var(--color-primario); color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-top: 15px; font-weight: bold;">
-            <span class="icono">home</span> Volver al inicio
-        </a>
-    </main>
-    
-    <?php
-    require_once 'include/footer.php';
-    exit();
-} else {
-    // Si se accede directamente sin post, redirige al formulario
-    header("Location: mensaje.php");
+    $stmt->close();
+    $mysqli->close();
     exit();
 }
 ?>

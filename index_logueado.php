@@ -1,10 +1,8 @@
 <?php
-// /index_logueado.php
 
 $titulo_pagina = "PI - Menú principal (Logueado)";
 $menu_tipo = 'privado';
 
-// 1. INCLUSIONES (Añadimos db_connect para la consulta de anuncios)
 require_once 'include/head.php'; 
 require_once 'include/db_connect.php'; 
 
@@ -12,11 +10,11 @@ require_once 'include/db_connect.php';
 controlar_acceso_privado();
 
 // -----------------------------------------------------------------
-// 2. LÓGICA DE ÚLTIMOS ANUNCIOS (Migrado a Sentencia Preparada)
+// LÓGICA DE ÚLTIMOS ANUNCIOS
 // -----------------------------------------------------------------
 $mysqli = conectar_bd();
 
-// Consulta estática (no hay input de usuario, pero usamos prepare por seguridad uniforme)
+// Consulta estática 
 $sql_anuncios = "
     SELECT 
         A.IdAnuncio, A.FPrincipal, A.Titulo, A.Precio 
@@ -27,7 +25,7 @@ $sql_anuncios = "
     LIMIT 5
 "; // Obtenemos los 5 más nuevos
 
-// 1. PREPARAR la sentencia
+// PREPARAR la sentencia
 $stmt = $mysqli->prepare($sql_anuncios);
 
 if ($stmt === false) {
@@ -35,9 +33,9 @@ if ($stmt === false) {
     $error_anuncios = "Error al preparar la consulta de últimos anuncios: " . $mysqli->error;
     $resultado_anuncios = null;
 } else {
-    // 2. EJECUTAR la sentencia
+    // EJECUTAR la sentencia
     $stmt->execute();
-    // 3. OBTENER el resultado
+    // OBTENER el resultado
     $resultado_anuncios = $stmt->get_result();
     $error_anuncios = null;
 }
@@ -94,7 +92,7 @@ if ($stmt === false) {
     </section>
 
 <?php
-// 4. CIERRE DE RECURSOS Y FOOTER
+// CIERRE DE RECURSOS Y FOOTER
 if (isset($stmt)) $stmt->close();
 $mysqli->close(); // Cierra la conexión a la BD
 require_once 'include/footer.php';

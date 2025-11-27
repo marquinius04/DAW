@@ -10,14 +10,13 @@ $mysqli = conectar_bd();
 // Obtener ID usuario logueado
 $uid = $_SESSION['id_usuario'];
 
-// Obtener solo LOS ANUNCIOS DEL USUARIO (porque el PDF dice imprimir "un anuncio del usuario")
+// Obtener solo LOS ANUNCIOS DEL USUARIO 
 $sql_ads = "SELECT IdAnuncio, Titulo FROM anuncios WHERE Usuario = $uid";
 $res_ads = $mysqli->query($sql_ads);
 
 // Variables para repoblar en caso de error
 $val_nombre = htmlspecialchars($_GET['nombre'] ?? '');
 $val_email = htmlspecialchars($_GET['email'] ?? '');
-// ... puedes añadir más si quieres repoblar todo
 ?>
 
     <h2>Solicitar folleto publicitario</h2>

@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pais = (int)$_POST['pais'];
     $usuario = $_SESSION['id_usuario'];
 
-    // Validaciones básicas según PDF [cite: 87]
     if (empty($titulo) || empty($texto)) {
         set_flashdata('error', "El título y la descripción son obligatorios.");
         header("Location: crear_anuncio.php");
@@ -29,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("sssdiiii", $titulo, $texto, $ciudad, $precio, $tanuncio, $tvivienda, $pais, $usuario);
 
     if ($stmt->execute()) {
-        $id_anuncio = $mysqli->insert_id; // Obtener ID generado [cite: 583]
+        $id_anuncio = $mysqli->insert_id; // Obtener ID generado
         set_flashdata('success', "Anuncio creado. Ahora añade la primera foto.");
         // Redirección obligatoria a añadir foto 
         header("Location: anyadir_foto.php?anuncio_id=" . $id_anuncio);

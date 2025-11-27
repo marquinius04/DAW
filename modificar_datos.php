@@ -1,20 +1,18 @@
 <?php
-// /modificar_datos.php
 
 $titulo_pagina = "Mis datos - PI";
 $body_id = "modificarDatosPage"; 
 $menu_tipo = 'privado'; 
 
-// 1. INCLUSIONES Y CONTROL DE ACCESO
+// INCLUSIONES Y CONTROL DE ACCESO
 require_once 'include/head.php'; 
 require_once 'include/db_connect.php';
-require_once 'include/select_options.inc.php'; // Para rellenar País y Estilo
-require_once 'include/flashdata.inc.php'; // Para mostrar mensajes
+require_once 'include/select_options.inc.php';
+require_once 'include/flashdata.inc.php'; 
 
-// Controla que el usuario esté logueado [cite: 62]
 controlar_acceso_privado();
 
-// 2. OBTENER DATOS DEL USUARIO LOGUEADO
+// OBTENER DATOS DEL USUARIO LOGUEADO
 $mysqli = conectar_bd();
 $id_usuario = $_SESSION['id_usuario']; // Obtenemos el ID de sesión
 
@@ -42,20 +40,19 @@ $resultado = $stmt->get_result();
 $datos_usuario = $resultado->fetch_assoc();
 
 if (!$datos_usuario) {
-    // Si el usuario no existe en la BD (caso muy raro), cerramos sesión
     header("Location: logout.php");
     exit();
 }
 
 $stmt->close();
 
-// 3. PREPARACIÓN DE VARIABLES PARA EL FORMULARIO
+// PREPARACIÓN DE VARIABLES PARA EL FORMULARIO
 $val_usuario = htmlspecialchars($datos_usuario['NomUsuario']);
 $val_email = htmlspecialchars($datos_usuario['Email']);
-$val_sexo = $datos_usuario['Sexo']; // 1=Hombre, 0=Mujer, 2=Otro (TINYINT)
+$val_sexo = $datos_usuario['Sexo']; // 1=Hombre, 0=Mujer, 2=Otro 
 $val_ciudad = htmlspecialchars($datos_usuario['Ciudad']);
-$val_pais = $datos_usuario['Pais']; // ID numérico (Clave Ajena)
-$val_estilo = $datos_usuario['Estilo']; // ID numérico (Clave Ajena)
+$val_pais = $datos_usuario['Pais']; 
+$val_estilo = $datos_usuario['Estilo'];
 
 // Formato de fecha para repoblar los campos DD, MM, AAAA
 $fecha_nacimiento = new DateTime($datos_usuario['FNacimiento']);

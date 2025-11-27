@@ -1,19 +1,14 @@
 <?php
-// /respuesta_registro.php
-
-// 1. INCLUSIONES ESENCIALES (El orden es CRÍTICO)
 require_once 'include/sesion.php';
 require_once 'include/flashdata.inc.php';
 require_once 'include/db_connect.php';
-require_once 'include/validaciones.inc.php'; // <-- CRÍTICO: Asegura que las funciones de validación existan
+require_once 'include/validaciones.inc.php'; 
 
 $menu_tipo = 'publico'; 
 
-// Las funciones de validación (validarUsuario, validarClave, etc.) se asumen cargadas desde validaciones.inc.php
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // 2. RECOGIDA Y SANEAMIENTO DE DATOS
+    // Recuperación y saneamiento de datos
     $usuario = trim($_POST['usuario'] ?? '');
     $clave1 = $_POST['clave'] ?? '';
     $clave2 = $_POST['clave2'] ?? '';
@@ -25,10 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ciudad = trim($_POST['ciudad'] ?? '');
     $pais_id = (int)($_POST['pais'] ?? 0); 
     
-    // 3. EJECUCIÓN DE VALIDACIONES (LADO SERVIDOR)
+    // Ejecución de validaciones
     $error_mensaje = "";
 
-    // Las funciones de validación (validarUsuario, validarClave, etc.) son las que definimos en P10
     if (($msg = validarUsuario($usuario)) !== "") $error_mensaje = $msg;
     elseif (($msg = validarClave($clave1)) !== "") $error_mensaje = $msg;
     elseif (empty($clave2)) $error_mensaje = "Debe repetir la contraseña";
@@ -38,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     elseif (($msg = validarFechaNacimiento($diaNac, $mesNac, $anyoNac)) !== "") $error_mensaje = $msg;
     elseif ($pais_id === 0) $error_mensaje = "Debe seleccionar un país válido";
     
-    // 4. MANEJO DE ERRORES DE VALIDACIÓN
+    // MANEJO DE ERRORES DE VALIDACIÓN
     if ($error_mensaje !== "") {
         // Usa set_flashdata() para guardar el error
         set_flashdata('error', $error_mensaje); 

@@ -1,12 +1,11 @@
 <?php
-// /index.php
 
-// 1. GESTIÓN DE SESIÓN, CONEXIÓN Y ERRORES
+// GESTIÓN DE SESIÓN, CONEXIÓN Y ERRORES
 require_once 'include/sesion.php'; 
 require_once 'include/db_connect.php'; 
 require_once 'include/flashdata.inc.php'; 
 
-// Recupera el mensaje de error de login (si existe)
+// Recupera el mensaje de error de login 
 $mensaje_error = get_flashdata('error');
 
 // Configuración de la página
@@ -18,11 +17,11 @@ $menu_tipo = 'publico';
 controlar_acceso_publico();
 
 // -------------------------------------------------------------
-// 2. LÓGICA DE ÚLTIMOS ANUNCIOS (MODIFICADA A SENTENCIA PREPARADA)
+// LÓGICA DE ÚLTIMOS ANUNCIOS 
 // -------------------------------------------------------------
 $mysqli = conectar_bd();
 
-// Consulta estática sin marcadores (no hay input de usuario)
+// Consulta estática sin marcadores 
 $sql_anuncios = "
     SELECT 
         A.IdAnuncio, A.FPrincipal, A.Titulo, A.FRegistro, A.Ciudad, A.Precio, P.NomPais 
@@ -35,16 +34,16 @@ $sql_anuncios = "
     LIMIT 5
 ";
 
-// 1. PREPARAR la sentencia (aunque no tenga '?')
+// PREPARA la sentencia 
 $stmt = $mysqli->prepare($sql_anuncios);
 
 if ($stmt === false) {
     $error_anuncios = "Error al preparar la consulta de anuncios: " . $mysqli->error;
     $resultado_anuncios = null;
 } else {
-    // 2. EJECUTAR la sentencia
+    // EJECUTA la sentencia
     $stmt->execute();
-    // 3. OBTENER el resultado
+    // OBTIENE el resultado
     $resultado_anuncios = $stmt->get_result();
     $error_anuncios = null;
 }
@@ -60,9 +59,6 @@ if ($stmt === false) {
 <?php endif; ?>
 
 <?php 
-// --- Lógica de "recordarme" ---
-// ... (Toda la lógica de cookies de tu archivo original) ...
-// (La sección del formulario de login y el formulario de búsqueda rápida se mantienen sin cambios)
 
 if (isset($_COOKIE['recordar_usuario']) && isset($_COOKIE['ultima_visita_real'])): 
     $usuario_recordado = htmlspecialchars($_COOKIE['recordar_usuario']);

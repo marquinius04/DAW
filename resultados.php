@@ -1,23 +1,19 @@
 <?php
-// /resultados.php
-
-// 1. INCLUSIONES ESENCIALES
 require_once 'include/sesion.php'; 
 require_once 'include/db_connect.php'; 
-// No incluimos 'search_parser.inc.php'
 require_once 'include/head.php'; 
 
 $mysqli = conectar_bd();
 
-// 2. INICIALIZACIÓN DE LA CONSULTA
+// Inicializar variables para la construcción de la consulta
 $where_clauses = [];
 $bind_types = ''; 
 $bind_params = []; 
 $search_type = "avanzada"; 
 
-// 3. DETERMINAR EL TIPO DE BÚSQUEDA (RÁPIDA O DETALLADA)
+// Determinar el tipo de búsqueda y construir las cláusulas WHERE
 
-// A. BÚSQUEDA RÁPIDA (desde index.php, usa GET y el campo 'q')
+// Búsqueda RÁPIDA 
 if (isset($_GET['q']) && !empty(trim($_GET['q']))) {
     
     $search_type = "rápida";
@@ -35,26 +31,26 @@ if (isset($_GET['q']) && !empty(trim($_GET['q']))) {
     $bind_params[] = $search_string;
 
 } 
-// B. BÚSQUEDA DETALLADA (desde busqueda.php, usa POST y campos ID)
+// Búsqueda DETALLADA
 elseif (isset($_POST['search_submit'])) {
     
     $search_type = "detallada";
 
-    // Tipo de Anuncio (ID numérico)
+ 
     if (!empty($_POST['tipo_anuncio'])) {
         $where_clauses[] = "A.TAnuncio = ?";
         $bind_types .= 'i'; // i = integer
         $bind_params[] = (int)$_POST['tipo_anuncio'];
     }
 
-    // Tipo de Vivienda (ID numérico)
+    
     if (!empty($_POST['tipo_vivienda'])) {
         $where_clauses[] = "A.TVivienda = ?";
         $bind_types .= 'i'; 
         $bind_params[] = (int)$_POST['tipo_vivienda'];
     }
     
-    // Ciudad (String, insensible a mayúsculas)
+   
     if (!empty($_POST['ciudad'])) {
         $ciudad_input = '%' . mb_strtolower(trim($_POST['ciudad']), 'UTF-8') . '%';
         $where_clauses[] = "LOWER(A.Ciudad) LIKE ?";
@@ -62,21 +58,19 @@ elseif (isset($_POST['search_submit'])) {
         $bind_params[] = $ciudad_input;
     }
     
-    // País (ID numérico)
     if (!empty($_POST['pais'])) {
         $where_clauses[] = "A.Pais = ?";
         $bind_types .= 'i'; 
         $bind_params[] = (int)$_POST['pais'];
     }
 
-    // Precio Máximo (Número)
     if (!empty($_POST['precio'])) {
         $where_clauses[] = "A.Precio <= ?";
-        $bind_types .= 'd'; // d = double (para campos DECIMAL o REAL)
+        $bind_types .= 'd'; // d = double 
         $bind_params[] = (float)$_POST['precio'];
     }
     
-    // Aquí se añadirían las condiciones para Precio Mínimo, Fecha, etc.
+
 
 } else {
     // Si se llega sin parámetros
@@ -85,7 +79,7 @@ elseif (isset($_POST['search_submit'])) {
 }
 
 
-// 4. CONSTRUIR LA CONSULTA SQL FINAL
+// Construcción de la consulta SQL
 $sql_query = "
     SELECT 
         A.IdAnuncio, A.FPrincipal, A.Titulo, A.FRegistro, A.Ciudad, A.Precio, P.NomPais 
@@ -106,10 +100,10 @@ if (!empty($where_clauses)) {
 $sql_query .= " ORDER BY A.FRegistro DESC";
 
 
-// 5. PREPARAR Y EJECUTAR LA CONSULTA (Sentencia Preparada)
+// Preparación y ejecución de la consulta
 $stmt = $mysqli->prepare($sql_query);
 
-// Función auxiliar para bind_param por referencia (necesaria para arrays dinámicos)
+// Función auxiliar para bind_param por referencia 
 function array_by_ref(&$array) {
     $refs = [];
     foreach ($array as $key => $value) {
@@ -161,7 +155,7 @@ if ($stmt) {
 </section>
 
 <?php
-// 7. CIERRE DE RECURSOS
+
 if ($resultado_anuncios) $resultado_anuncios->close();
 if ($stmt) $stmt->close();
 $mysqli->close();

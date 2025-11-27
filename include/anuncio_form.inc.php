@@ -1,6 +1,4 @@
 <?php
-// DAW/include/anuncio_form.inc.php
-// Requiere: $mysqli, $anuncio (array asociativo con datos, o null/vacío para nuevo)
 
 // Asignar valores por defecto para nuevo anuncio
 $val_titulo = $anuncio['Titulo'] ?? '';

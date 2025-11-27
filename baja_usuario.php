@@ -7,16 +7,14 @@ controlar_acceso_privado();
 $mysqli = conectar_bd();
 $uid = $_SESSION['id_usuario'];
 
-// --- OBTENER RESUMEN DE DATOS [cite: 78] ---
-// 1. Total Anuncios
+// --- OBTENER RESUMEN DE DATOS ---
 $res_anuncios = $mysqli->query("SELECT COUNT(*) as Total FROM anuncios WHERE Usuario = $uid");
 $total_anuncios = $res_anuncios->fetch_assoc()['Total'];
 
-// 2. Total Fotos (Join con anuncios del usuario)
 $res_fotos = $mysqli->query("SELECT COUNT(*) as Total FROM fotos F JOIN anuncios A ON F.Anuncio = A.IdAnuncio WHERE A.Usuario = $uid");
 $total_fotos = $res_fotos->fetch_assoc()['Total'];
 
-// 3. Detalle por anuncio
+// Detalle por anuncio
 $sql_detalle = "SELECT A.Titulo, COUNT(F.IdFoto) as NumFotos FROM anuncios A LEFT JOIN fotos F ON A.IdAnuncio = F.Anuncio WHERE A.Usuario = $uid GROUP BY A.IdAnuncio";
 $res_detalle = $mysqli->query($sql_detalle);
 ?>

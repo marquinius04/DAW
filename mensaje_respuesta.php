@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // 1. Obtener ID del Usuario Destino (Dueño del anuncio)
+    // Obtener ID del Usuario Destino 
     $sql_dest = "SELECT Usuario FROM anuncios WHERE IdAnuncio = $anuncio_id";
     $res_dest = $mysqli->query($sql_dest);
     if ($res_dest->num_rows === 0) {
@@ -31,10 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $usu_destino = $res_dest->fetch_assoc()['Usuario'];
 
-    // 2. Mapear string del select a ID de tiposmensajes (según pibd.sql)
-    // El select envía strings 'Más información', 'Solicitar una cita', etc.
-    // OJO: En tu pibd.sql los valores son: 1='Más información', 2='Solicitar una cita', 3='Comunicar una oferta'
-    // Asumiremos que el select en mensaje.php envía el NOMBRE EXACTO o ajustamos aquí.
     
     // Buscamos el ID en la BD basado en el nombre enviado
     $stmt_tipo = $mysqli->prepare("SELECT IdTMensaje FROM tiposmensajes WHERE NomTMensaje = ?");
@@ -50,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $stmt_tipo->close();
 
-    // 3. INSERTAR MENSAJE
+    // INSERTAR MENSAJE
     $sql_insert = "INSERT INTO mensajes (TMensaje, Texto, Anuncio, UsuOrigen, UsuDestino) VALUES (?, ?, ?, ?, ?)";
     $stmt = $mysqli->prepare($sql_insert);
     $stmt->bind_param("isiii", $id_tmensaje, $mensaje_texto, $anuncio_id, $usu_origen, $usu_destino);

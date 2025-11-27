@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $uid = $_SESSION['id_usuario'];
     $clave_input = $_POST['clave_confirmacion'] ?? '';
 
-    // 1. Verificar contraseña
+    // Verificar contraseña
     $stmt = $mysqli->prepare("SELECT Clave FROM usuarios WHERE IdUsuario = ?");
     $stmt->bind_param("i", $uid);
     $stmt->execute();
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // 2. Borrado manual en cascada (Limpieza completa)
+    // Borrado manual en cascada de datos relacionados
     
     // a) Borrar fotos de los anuncios del usuario
     $sql_del_fotos = "DELETE F FROM fotos F JOIN anuncios A ON F.Anuncio = A.IdAnuncio WHERE A.Usuario = ?";
@@ -33,15 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->close();
 
-    // b) Borrar mensajes relacionados (Origen o Destino)
+    // b) Borrar mensajes relacionados 
     $sql_del_msj = "DELETE FROM mensajes WHERE UsuOrigen = ? OR UsuDestino = ?";
     $stmt = $mysqli->prepare($sql_del_msj);
     $stmt->bind_param("ii", $uid, $uid);
     $stmt->execute();
     $stmt->close();
 
-    // --- NUEVO PASO: c) Borrar SOLICITUDES DE FOLLETOS relacionadas con los anuncios del usuario ---
-    // Si no borramos esto, la BD bloquea el borrado del anuncio por la Foreign Key
+    // c) Borrar SOLICITUDES DE FOLLETOS relacionadas con los anuncios del usuario 
     $sql_del_solic = "DELETE S FROM solicitudes S JOIN anuncios A ON S.Anuncio = A.IdAnuncio WHERE A.Usuario = ?";
     $stmt = $mysqli->prepare($sql_del_solic);
     $stmt->bind_param("i", $uid);

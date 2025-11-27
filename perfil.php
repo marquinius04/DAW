@@ -1,6 +1,5 @@
 <?php
 $titulo_pagina = "Perfil de usuario registrado - PI";
-// Incluye la cabecera y el gestor de sesión
 require_once 'include/head.php'; 
 // Controla que solo usuarios logueados puedan acceder a la página
 controlar_acceso_privado();

@@ -1,6 +1,6 @@
 <?php
 require_once 'include/sesion.php';
-require_once 'include/db_connect.php'; // Necesario para guardar
+require_once 'include/db_connect.php'; 
 require_once 'include/flashdata.inc.php';
 
 controlar_acceso_privado();
@@ -46,10 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Construimos la dirección completa en un string para el campo 'Direccion'
     $direccion_completa = "$calle, $numero, $cp, $localidad, $provincia";
     
-    // Mapeo de booleanos a tinyint para la BD (1 o 0)
+    // Mapeo de booleanos a tinyint para la BD 
     $db_icolor = $es_color ? 1 : 0;
     $db_iprecio = $con_precio ? 1 : 0;
-    $fecha_actual = date('Y-m-d'); // Para campo Fecha (tipo date)
+    $fecha_actual = date('Y-m-d'); // Para campo Fecha 
 
     $sql = "INSERT INTO solicitudes (Anuncio, Texto, Nombre, Email, Direccion, Telefono, Color, Copias, Resolucion, Fecha, IColor, IPrecio, Coste) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

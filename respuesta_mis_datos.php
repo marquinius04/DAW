@@ -1,13 +1,9 @@
 <?php
-// /respuesta_mis_datos.php
-
-// 1. INCLUSIONES Y CONTROL DE ACCESO
 require_once 'include/sesion.php'; 
 require_once 'include/flashdata.inc.php'; 
 require_once 'include/db_connect.php';      
-require_once 'include/validaciones.inc.php'; // Para validar Email y Fecha
+require_once 'include/validaciones.inc.php'; 
 
-// Controla que el usuario esté logueado (acceso privado)
 controlar_acceso_privado();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -19,7 +15,7 @@ $mysqli = conectar_bd();
 $id_usuario = $_SESSION['id_usuario'];
 $error_mensaje = "";
 
-// 2. RECOGIDA DE DATOS DEL FORMULARIO
+// RECOGIDA DE DATOS DEL FORMULARIO
 $clave_actual_input = $_POST['clave_actual'] ?? '';
 $nueva_clave_input = $_POST['nueva_clave'] ?? '';
 $nueva_clave2_input = $_POST['nueva_clave2'] ?? '';
@@ -34,9 +30,7 @@ $ciudad = filter_var(trim($_POST['ciudad'] ?? ''), FILTER_SANITIZE_STRING);
 $pais_id = (int)($_POST['pais'] ?? 0); 
 $estilo_id = (int)($_POST['estilo'] ?? 0); 
 
-// -------------------------------------------------------------
-// 3. VERIFICACIÓN DE IDENTIDAD (Contraseña actual)
-// -------------------------------------------------------------
+
 
 if (empty($clave_actual_input)) {
     $error_mensaje = "Debe introducir su contraseña actual para confirmar cualquier cambio.";
@@ -73,9 +67,6 @@ if (!$hash_actual_db || !password_verify($clave_actual_input, $hash_actual_db)) 
     goto handle_error;
 }
 
-// -------------------------------------------------------------
-// 4. VALIDACIÓN DE DATOS MODIFICABLES
-// -------------------------------------------------------------
 
 // Validación de la Nueva Contraseña (solo si se intenta cambiar)
 $nueva_clave_hash = null;
@@ -100,16 +91,13 @@ elseif ($estilo_id === 0) $error_mensaje = "Debe seleccionar un estilo válido."
 if ($error_mensaje !== "") goto handle_error;
 
 
-// -------------------------------------------------------------
-// 5. CONSTRUCCIÓN Y EJECUCIÓN DEL UPDATE
-// -------------------------------------------------------------
 
 $fields = [];
 $types = "";
 $params = [];
 
-// Campos que siempre se actualizan (si pasaron la validación)
-// [NOTA]: En la BD, el Sexo está mapeado 1=H, 0=M, 2=Otro (se mapea en modificar_datos.php)
+// Campos que siempre se actualizan 
+// En la BD, el Sexo está mapeado 1=H, 0=M, 2=Otro (se mapea en modificar_datos.php)
 $fields[] = "Email = ?"; $types .= "s"; $params[] = $email;
 $fields[] = "Sexo = ?"; $types .= "i"; $params[] = $sexo;
 $fecha_nac = sprintf('%04d-%02d-%02d', (int)$anyoNac, (int)$mesNac, (int)$diaNac);
@@ -142,7 +130,7 @@ if ($stmt_update === false) {
     goto handle_error;
 }
 
-// Llamada dinámica a bind_param (pasando parámetros por referencia)
+// Llamada dinámica a bind_param 
 $bind_args = [];
 $bind_args[] = $types;
 foreach ($params as $key => $value) {
@@ -168,7 +156,7 @@ if ($stmt_update->execute()) {
         $mensaje_final = "Ningún dato ha sido modificado.";
     }
 
-    // 💡 CORRECCIÓN CLAVE: Actualizar la variable de sesión con el nuevo ID de estilo
+    // Actualizar la variable de sesión con el nuevo ID de estilo
     $_SESSION['estilo'] = $estilo_id;
 
     set_flashdata('success', $mensaje_final);
@@ -181,7 +169,6 @@ if ($stmt_update->execute()) {
 } else {
     $error_mensaje = "Error al ejecutar la actualización: " . $stmt_update->error;
     
-    // Captura de error de clave única (ej: si modificó el email y ya existe)
     if ($stmt_update->errno === 1062) {
          $error_mensaje = "El correo electrónico introducido ya está en uso. Por favor, utilice otro.";
     }
@@ -190,16 +177,12 @@ if ($stmt_update->execute()) {
 }
 
 
-// -------------------------------------------------------------
-// 6. MANEJO CENTRALIZADO DE ERRORES (Redirige al formulario)
-// -------------------------------------------------------------
-handle_error: // <-- CORRECCIÓN: Se añade el ':' para definir la etiqueta
+
+handle_error: 
 if ($mysqli) $mysqli->close();
 
 set_flashdata('error', $error_mensaje);
 
-// Redirigir y repoblar el formulario (útil para errores de validación)
-// Nunca enviar contraseñas en la query string
 $safe_post = $_POST;
 unset($safe_post['clave_actual'], $safe_post['nueva_clave'], $safe_post['nueva_clave2']);
 $datos_previos = http_build_query($safe_post);

@@ -1,18 +1,15 @@
 <?php
-// /include/sesion.php
 
 // Inicia la sesión de PHP
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 1. INCLUSIONES NECESARIAS
-// Se asume que db_connect.php y flashdata.inc.php existen en el mismo directorio 'include/'
 require_once __DIR__ . '/db_connect.php'; 
 require_once __DIR__ . '/flashdata.inc.php'; 
 
 // -------------------------------------------------------------
-// 2. LÓGICA DE AUTOLOGIN por COOKIE (Recuérdame)
+// 2. LÓGICA DE AUTOLOGIN por COOKIE 
 // -------------------------------------------------------------
 if (!isset($_SESSION['usuario']) && isset($_COOKIE['usuario_pi']) && isset($_COOKIE['clave_pi'])) {
 
@@ -31,7 +28,7 @@ if (!isset($_SESSION['usuario']) && isset($_COOKIE['usuario_pi']) && isset($_COO
     if ($resultado->num_rows === 1) {
         $user = $resultado->fetch_assoc();
         
-        // MODIFICACIÓN CRUCIAL: Compara la clave de la cookie (plano) con el hash de la BD
+        // Compara la clave de la cookie con el hash de la BD
         if (password_verify($clave_cookie_plano, $user['Clave'])) {
             
             // ÉXITO: Iniciar sesión automática
@@ -39,7 +36,7 @@ if (!isset($_SESSION['usuario']) && isset($_COOKIE['usuario_pi']) && isset($_COO
             $_SESSION['id_usuario'] = $user['IdUsuario'];
             $_SESSION['estilo'] = $user['Estilo'];
 
-            // Renovación de la cookie para extender la validez (90 días)
+            // Renovación de la cookie para extender la validez 
             $dias = 90;
             $expire = time() + ($dias * 24 * 60 * 60); 
             
@@ -48,13 +45,13 @@ if (!isset($_SESSION['usuario']) && isset($_COOKIE['usuario_pi']) && isset($_COO
             setcookie('ultima_visita_real', date('d/m/Y \a \l\a\s H:i:s'), $expire, '/', '', false, true);
 
         } else {
-            // Fallo: Hash no coincide (la cookie es inválida)
+            // Hash no coincide 
             setcookie('usuario_pi', '', time() - 3600, '/');
             setcookie('clave_pi', '', time() - 3600, '/');
             setcookie('ultima_visita_real', '', time() - 3600, '/');
         }
     } else {
-        // Fallo: Usuario no existe (eliminar cookies por seguridad)
+        // Usuario no existe 
         setcookie('usuario_pi', '', time() - 3600, '/');
         setcookie('clave_pi', '', time() - 3600, '/');
         setcookie('ultima_visita_real', '', time() - 3600, '/');
@@ -72,7 +69,7 @@ if (!isset($_SESSION['usuario']) && isset($_COOKIE['usuario_pi']) && isset($_COO
  */
 function controlar_acceso_privado() {
     if (!isset($_SESSION['usuario'])) {
-        // Usa set_flashdata() para el mensaje de error (Práctica 8)
+        // Usa set_flashdata() para el mensaje de error 
         require_once __DIR__ . '/flashdata.inc.php'; 
         set_flashdata('error', 'Debe iniciar sesión para acceder a esta página.');
         header('Location: index.php');
@@ -92,7 +89,7 @@ function controlar_acceso_publico() {
 }
 
 /**
- * Genera un saludo dinámico según la hora del servidor (Práctica 8).
+ * Genera un saludo dinámico según la hora del servidor 
  */
 function get_saludo() {
     if (isset($_SESSION['usuario'])) {
@@ -127,13 +124,11 @@ function get_ultimos_anuncios() {
 
 /**
  * Añade un anuncio al historial de visitas almacenado en una cookie.
- * * @param mysqli $mysqli Objeto de conexión a la base de datos.
- * @param int $id El ID del anuncio visitado.
  */
 function add_anuncio_visitado($mysqli, $id) {
     if ($id <= 0) return;
     
-    // 1. Obtener datos del anuncio de la BD (solo lo necesario para la cookie)
+    // Obtener datos del anuncio de la BD 
     $sql_anuncio = "
         SELECT A.Titulo, A.Ciudad, A.Precio, P.NomPais, A.FPrincipal
         FROM anuncios A
@@ -152,10 +147,10 @@ function add_anuncio_visitado($mysqli, $id) {
     $stmt->close();
     if (!$anuncio_data) return;
 
-    // 2. Lógica de reordenación de la cookie (Práctica 8)
+    // Lógica de reordenación de la cookie
     $lista_visitados = get_ultimos_anuncios();
     
-    // Crear el item nuevo (adaptado a la BD)
+    // Crear el item nuevo 
     $item_nuevo = [
         'id' => $id,
         'foto' => $anuncio_data['FPrincipal'] ?? 'img/default.jpg',
@@ -181,7 +176,7 @@ function add_anuncio_visitado($mysqli, $id) {
         array_shift($lista_visitados);
     }
     
-    // 3. Guardar en la cookie
+    // Guardar en la cookie
     $json_visitados = json_encode(array_values($lista_visitados)); 
     $expira = time() + (7 * 24 * 60 * 60); // 1 semana
     

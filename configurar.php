@@ -1,5 +1,5 @@
 <?php
-$titulo_pagina = "Configurar Estilo - PI";
+$titulo_pagina = "Configurar estilo - PI";
 require_once 'include/head.php'; 
 require_once 'include/db_connect.php';
 require_once 'include/select_options.inc.php'; 

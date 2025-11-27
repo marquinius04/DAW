@@ -1,5 +1,5 @@
 <?php
-$titulo_pagina = "Galería de Fotos - PI";
+$titulo_pagina = "Galería de fotos - PI";
 require_once 'include/head.php'; 
 require_once 'include/db_connect.php';
 

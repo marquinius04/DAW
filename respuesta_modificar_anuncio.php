@@ -9,8 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mysqli = conectar_bd();
     
     $id_anuncio = (int)$_POST['id_anuncio'];
-    $titulo = trim($_POST['titulo']);
-    $texto = trim($_POST['descripcion']);
+    $titulo = filter_var(trim($_POST['titulo']), FILTER_SANITIZE_STRING);
+    $texto = filter_var(trim($_POST['descripcion']), FILTER_SANITIZE_STRING);
     $ciudad = trim($_POST['ciudad']);
     $precio = (float)$_POST['precio'];
     $tanuncio = (int)$_POST['tanuncio'];

@@ -72,6 +72,8 @@ input[type="submit"]:hover {
 
 /* Fieldsets opcionales */
 fieldset {
+  display: flex;
+  flex-direction: column;
   border: 2px solid var(--color-primario);
   padding: 1em;
   border-radius: 8px;

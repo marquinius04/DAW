@@ -25,7 +25,7 @@ $val_email = htmlspecialchars($_GET['email'] ?? '');
 
     <form action="respuesta_folleto.php" method="post" style="max-width: 600px;">
         
-        <fieldset>
+        <fieldset style="display: flex; flex-direction: column;">
             <legend>Datos del Anuncio</legend>
             <label for="anuncio">Seleccione su anuncio (*):</label>
             <select id="anuncio" name="anuncio" required>
@@ -42,7 +42,7 @@ $val_email = htmlspecialchars($_GET['email'] ?? '');
             <textarea id="texto_adicional" name="texto_adicional" rows="3" placeholder="Información extra para el folleto..."></textarea>
         </fieldset>
 
-        <fieldset>
+        <fieldset style="display: flex; flex-direction: column;">
             <legend>Datos de Envío</legend>
             
             <label for="nombre">Nombre completo (*):</label>
@@ -75,7 +75,7 @@ $val_email = htmlspecialchars($_GET['email'] ?? '');
             <input type="text" id="provincia" name="provincia" required>
         </fieldset>
 
-        <fieldset>
+        <fieldset style="display: flex; flex-direction: column;">
             <legend>Opciones de Impresión</legend>
             
             <label for="color_portada">Color de portada (Hexadecimal):</label>

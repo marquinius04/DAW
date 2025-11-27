@@ -71,9 +71,15 @@ $flash_error = get_flashdata('error');
 
     <h2>Modificar mis datos de usuario</h2>
 
+    <?php if ($flash_success): ?>
+        <p style="color: green; border: 1px solid green; padding: 10px; background-color: #ffeaea; margin-top: 15px; margin-bottom: 15px;">
+            ✅ Éxito: <?php echo htmlspecialchars($flash_success); ?>
+        </p>
+    <?php endif; ?>
+    
     <?php if ($flash_error): ?>
-        <p style="color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px;">
-            ⚠️ **Error:** <?php echo htmlspecialchars($flash_error); ?>
+        <p style="color: red; border: 1px solid red; padding: 10px; background-color: #ffeaea; margin-top: 15px; margin-bottom: 15px;">
+            ⚠️ Error: <?php echo htmlspecialchars($flash_error); ?>
         </p>
     <?php endif; ?>
 

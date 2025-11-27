@@ -55,7 +55,7 @@ if ($stmt === false) {
 
 <?php if ($mensaje_error): ?>
     <p style="color: red; padding: 10px; border: 1px solid red; background-color: #ffeaea; margin-bottom: 20px;">
-        ⚠️ **Error de Acceso:** <?= htmlspecialchars($mensaje_error) ?>
+        ⚠️ Error de Acceso: <?= htmlspecialchars($mensaje_error) ?>
     </p>
 <?php endif; ?>
 

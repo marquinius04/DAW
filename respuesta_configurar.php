@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Buscamos el nombre del fichero CSS asociado al ID seleccionado
         $res = $mysqli->query("SELECT Fichero FROM estilos WHERE IdEstilo = $nuevo_estilo");
         if ($row = $res->fetch_assoc()) {
-            $_SESSION['estilo_css'] = $row['Fichero'];
+            $_SESSION['estilo'] = $row['Fichero'];
         }
         
         set_flashdata('success', "Estilo actualizado correctamente.");

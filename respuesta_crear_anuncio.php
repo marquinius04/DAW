@@ -8,8 +8,8 @@ controlar_acceso_privado();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mysqli = conectar_bd();
 
-    $titulo = trim($_POST['titulo'] ?? '');
-    $texto = trim($_POST['descripcion'] ?? '');
+    $titulo = filter_var(trim($_POST['titulo'] ?? ''), FILTER_SANITIZE_STRING);
+    $texto = filter_var(trim($_POST['descripcion'] ?? ''), FILTER_SANITIZE_STRING);
     $ciudad = trim($_POST['ciudad'] ?? '');
     $precio = (float)($_POST['precio'] ?? 0);
     $tanuncio = (int)$_POST['tanuncio'];

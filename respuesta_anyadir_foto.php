@@ -10,8 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mysqli = conectar_bd();
 
     $anuncio_id = (int)$_POST['anuncio_id'];
-    $titulo_foto = trim($_POST['titulo_foto']);
-    $alt_text = trim($_POST['alt_text']);
+    $titulo_foto = filter_var(trim($_POST['titulo_foto']), FILTER_SANITIZE_STRING);
+    $alt_text = filter_var(trim($_POST['alt_text']), FILTER_SANITIZE_STRING);
     
     // --- VALIDACIONES ---
     $error = "";
@@ -40,30 +40,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // --- PROCESAR SUBIDA (Simplificado para Práctica 10: "subir a mano", aquí movemos a carpeta img/) ---
+    // --- PROCESAR SUBIDA: USANDO RUTA ABSOLUTA PARA LA OPERACIÓN DE ARCHIVO ---
     $nombre_archivo = basename($_FILES['foto']['name']);
-    $ruta_destino = "img/" . time() . "_" . $nombre_archivo; // Evitar colisiones nombre
     
-    if (move_uploaded_file($_FILES['foto']['tmp_name'], $ruta_destino)) {
+    // 1. Ruta que usaremos para la base de datos (web/relativa)
+    $ruta_destino_web = "img/" . time() . "_" . $nombre_archivo;
+    
+    // 2. Ruta que usaremos para el sistema de archivos (absoluta)
+    // __DIR__ resuelve al directorio donde está el script (DAW/)
+    $ruta_destino_filesystem = __DIR__ . "/" . $ruta_destino_web;
+    
+    // ATENCIÓN: move_uploaded_file DEBE usar la ruta del sistema de archivos
+    if (move_uploaded_file($_FILES['foto']['tmp_name'], $ruta_destino_filesystem)) {
         
-        // INSERTAR EN BD
+        // INSERTAR EN BD (Usamos la ruta web/relativa)
         $sql = "INSERT INTO fotos (Titulo, Foto, Alternativo, Anuncio) VALUES (?, ?, ?, ?)";
         $stmt = $mysqli->prepare($sql);
-        $stmt->bind_param("sssi", $titulo_foto, $ruta_destino, $alt_text, $anuncio_id);
+        // Usar $ruta_destino_web
+        $stmt->bind_param("sssi", $titulo_foto, $ruta_destino_web, $alt_text, $anuncio_id); 
         
         if ($stmt->execute()) {
-            // Actualizar foto principal del anuncio si no tiene
-            $mysqli->query("UPDATE anuncios SET FPrincipal = '$ruta_destino' WHERE IdAnuncio = $anuncio_id AND (FPrincipal IS NULL OR FPrincipal = 'img/default.jpg')");
+            // Actualizar foto principal del anuncio si no tiene (Usar la ruta web/relativa)
+            $mysqli->query("UPDATE anuncios SET FPrincipal = '$ruta_destino_web' WHERE IdAnuncio = $anuncio_id AND (FPrincipal IS NULL OR FPrincipal = 'img/default.jpg')");
             
             set_flashdata('success', "Foto añadida correctamente.");
-            header("Location: aviso.php?id=$anuncio_id"); // Ir a ver el anuncio
+            header("Location: aviso.php?id=$anuncio_id"); 
         } else {
             set_flashdata('error', "Error BD: " . $stmt->error);
             header("Location: anyadir_foto.php?anuncio_id=$anuncio_id");
         }
         $stmt->close();
     } else {
-        set_flashdata('error', "Error al mover el archivo al servidor.");
+        // set_flashdata('error', "Error al mover el archivo al servidor.");
+        set_flashdata('error', "$ruta_destino_filesystem");
         header("Location: anyadir_foto.php?anuncio_id=$anuncio_id");
     }
 

@@ -23,41 +23,19 @@ if (!$anuncio) {
 }
 ?>
 
-<h2>Modificar Anuncio</h2>
+    <h2>Modificar Anuncio</h2>
 
-<form action="respuesta_modificar_anuncio.php" method="post">
-    <input type="hidden" name="id_anuncio" value="<?= $id_anuncio ?>">
-    
-    <label for="titulo">(*) Título:</label>
-    <input type="text" id="titulo" name="titulo" value="<?= htmlspecialchars($anuncio['Titulo']) ?>" required>
+    <form action="respuesta_modificar_anuncio.php" method="post">
+        <input type="hidden" name="id_anuncio" value="<?= $id_anuncio ?>">
+        
+        <?php 
+        // Aislamiento del formulario
+        require 'include/anuncio_form.inc.php'; 
+        ?>
 
-    <label for="tanuncio">Tipo de Anuncio:</label>
-    <select id="tanuncio" name="tanuncio" required>
-        <?php generar_select_options($mysqli, 'tiposanuncios', 'IdTAnuncio', 'NomTAnuncio', $anuncio['TAnuncio']); ?>
-    </select>
-
-    <label for="tvivienda">Tipo de Vivienda:</label>
-    <select id="tvivienda" name="tvivienda" required>
-        <?php generar_select_options($mysqli, 'tiposviviendas', 'IdTVivienda', 'NomTVivienda', $anuncio['TVivienda']); ?>
-    </select>
-
-    <label for="pais">País:</label>
-    <select id="pais" name="pais" required>
-            <?php generar_select_options($mysqli, 'paises', 'IdPais', 'NomPais', $anuncio['Pais']); ?>
-    </select>
-
-    <label for="ciudad">(*) Ciudad:</label>
-    <input type="text" id="ciudad" name="ciudad" value="<?= htmlspecialchars($anuncio['Ciudad']) ?>" required>
-
-    <label for="descripcion">(*) Descripción:</label>
-    <textarea id="descripcion" name="descripcion" rows="5" required><?= htmlspecialchars($anuncio['Texto']) ?></textarea>
-
-    <label for="precio">Precio (€):</label>
-    <input type="number" id="precio" name="precio" step="0.01" value="<?= $anuncio['Precio'] ?>">
-
-    <button type="submit">Guardar cambios</button>
-    <a href="mis_anuncios.php" style="margin-left: 10px;">Cancelar</a>
-</form>
+        <button type="submit">Guardar cambios</button>
+        <a href="mis_anuncios.php" style="margin-left: 10px;">Cancelar</a>
+    </form>
 
 <?php
 $mysqli->close();

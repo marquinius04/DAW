@@ -25,12 +25,12 @@ $nueva_clave_input = $_POST['nueva_clave'] ?? '';
 $nueva_clave2_input = $_POST['nueva_clave2'] ?? '';
 
 // Datos modificables
-$email = trim($_POST['email'] ?? '');
+$email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
 $sexo = (int)($_POST['sexo'] ?? 0);
 $diaNac = trim($_POST['diaNacimiento'] ?? '');
 $mesNac = trim($_POST['mesNacimiento'] ?? '');
 $anyoNac = trim($_POST['anyoNacimiento'] ?? '');
-$ciudad = trim($_POST['ciudad'] ?? '');
+$ciudad = filter_var(trim($_POST['ciudad'] ?? ''), FILTER_SANITIZE_STRING);
 $pais_id = (int)($_POST['pais'] ?? 0); 
 $estilo_id = (int)($_POST['estilo'] ?? 0); 
 
@@ -154,7 +154,7 @@ call_user_func_array([$stmt_update, 'bind_param'], $bind_args);
 if ($stmt_update->execute()) {
     $filas_afectadas = $stmt_update->affected_rows;
     
-    // Si la contraseña fue actualizada, invalidar la cookie Recuérdame
+    // Si la contraseña fue actualizada, se invalida la cookie de "recuerdame"
     if ($nueva_clave_hash !== null) {
         setcookie('usuario_pi', '', time() - 3600, '/');
         setcookie('clave_pi', '', time() - 3600, '/');

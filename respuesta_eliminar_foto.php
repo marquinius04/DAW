@@ -10,22 +10,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_foto = (int)$_POST['id_foto'];
     $uid = $_SESSION['id_usuario'];
 
-    // Verificar propiedad
-    $check = $mysqli->query("SELECT F.Anuncio FROM fotos F JOIN anuncios A ON F.Anuncio = A.IdAnuncio WHERE F.IdFoto = $id_foto AND A.Usuario = $uid");
+    // 1. Verificar propiedad y OBTENER LA RUTA DEL FICHERO
+    $sql = "SELECT F.Foto, F.Anuncio 
+            FROM fotos F 
+            JOIN anuncios A ON F.Anuncio = A.IdAnuncio 
+            WHERE F.IdFoto = ? AND A.Usuario = ?";
+            
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param("ii", $id_foto, $uid);
+    $stmt->execute();
+    $res = $stmt->get_result();
     
-    if ($row = $check->fetch_assoc()) {
+    if ($row = $res->fetch_assoc()) {
         $id_anuncio = $row['Anuncio'];
+        $ruta_foto = $row['Foto'];
         
-        // Borrar foto
+        // 2. BORRADO FÍSICO (Requisito PDF)
+        // Comprobamos si existe y no es una ruta por defecto (por seguridad)
+        if (!empty($ruta_foto) && file_exists(__DIR__ . '/' . $ruta_foto)) {
+            unlink(__DIR__ . '/' . $ruta_foto);
+        }
+        
+        // 3. Borrar registro de la BD
         $mysqli->query("DELETE FROM fotos WHERE IdFoto = $id_foto");
         
-        set_flashdata('success', "Foto eliminada.");
+        set_flashdata('success', "Foto eliminada correctamente (archivo y datos).");
         header("Location: ver_fotos.php?id=$id_anuncio");
     } else {
-        set_flashdata('error', "Error al eliminar foto.");
+        set_flashdata('error', "Error al eliminar foto o permisos insuficientes.");
         header("Location: mis_anuncios.php");
     }
 
+    $stmt->close();
     $mysqli->close();
     exit();
 }

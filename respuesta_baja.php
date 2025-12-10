@@ -10,8 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $uid = $_SESSION['id_usuario'];
     $clave_input = $_POST['clave_confirmacion'] ?? '';
 
-    // Verificar contraseña
-    $stmt = $mysqli->prepare("SELECT Clave FROM usuarios WHERE IdUsuario = ?");
+    // 1. Verificar contraseña
+    $stmt = $mysqli->prepare("SELECT Clave, Foto FROM usuarios WHERE IdUsuario = ?");
     $stmt->bind_param("i", $uid);
     $stmt->execute();
     $res = $stmt->get_result();
@@ -19,56 +19,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
 
     if (!$user || !password_verify($clave_input, $user['Clave'])) {
-        set_flashdata('error', "La contraseña es incorrecta. No se ha podido dar de baja.");
+        set_flashdata('error', "Contraseña incorrecta. Baja cancelada.");
         header("Location: baja_usuario.php");
         exit();
     }
 
-    // Borrado manual en cascada de datos relacionados
+    // 2. BORRADO FÍSICO DE FOTOS DE ANUNCIOS (Requisito Crítico PDF)
+    // Obtenemos todas las rutas de fotos de los anuncios de este usuario
+    $sql_fotos = "SELECT F.Foto 
+                  FROM fotos F 
+                  JOIN anuncios A ON F.Anuncio = A.IdAnuncio 
+                  WHERE A.Usuario = ?";
     
-    // a) Borrar fotos de los anuncios del usuario
-    $sql_del_fotos = "DELETE F FROM fotos F JOIN anuncios A ON F.Anuncio = A.IdAnuncio WHERE A.Usuario = ?";
-    $stmt = $mysqli->prepare($sql_del_fotos);
-    $stmt->bind_param("i", $uid);
-    $stmt->execute();
-    $stmt->close();
+    $stmt_f = $mysqli->prepare($sql_fotos);
+    $stmt_f->bind_param("i", $uid);
+    $stmt_f->execute();
+    $res_f = $stmt_f->get_result();
+    
+    while ($row = $res_f->fetch_assoc()) {
+        $ruta = $row['Foto'];
+        if (!empty($ruta) && file_exists(__DIR__ . '/' . $ruta)) {
+            unlink(__DIR__ . '/' . $ruta);
+        }
+    }
+    $stmt_f->close();
+    
+    // Borrado físico de Fotos Principales de anuncios (si son distintas a default)
+    $sql_main = "SELECT FPrincipal FROM anuncios WHERE Usuario = ?";
+    $stmt_m = $mysqli->prepare($sql_main);
+    $stmt_m->bind_param("i", $uid);
+    $stmt_m->execute();
+    $res_m = $stmt_m->get_result();
+    while ($row = $res_m->fetch_assoc()) {
+        $ruta = $row['FPrincipal'];
+        if (!empty($ruta) && $ruta !== 'img/default.jpg' && file_exists(__DIR__ . '/' . $ruta)) {
+            unlink(__DIR__ . '/' . $ruta);
+        }
+    }
+    $stmt_m->close();
 
-    // b) Borrar mensajes relacionados 
-    $sql_del_msj = "DELETE FROM mensajes WHERE UsuOrigen = ? OR UsuDestino = ?";
-    $stmt = $mysqli->prepare($sql_del_msj);
-    $stmt->bind_param("ii", $uid, $uid);
-    $stmt->execute();
-    $stmt->close();
+    // 3. BORRADO FÍSICO DE FOTO DE PERFIL
+    $foto_perfil = $user['Foto'];
+    if ($foto_perfil && $foto_perfil !== 'img/default_user.jpg' && file_exists(__DIR__ . '/' . $foto_perfil)) {
+        unlink(__DIR__ . '/' . $foto_perfil);
+    }
 
-    // c) Borrar SOLICITUDES DE FOLLETOS relacionadas con los anuncios del usuario 
-    $sql_del_solic = "DELETE S FROM solicitudes S JOIN anuncios A ON S.Anuncio = A.IdAnuncio WHERE A.Usuario = ?";
-    $stmt = $mysqli->prepare($sql_del_solic);
-    $stmt->bind_param("i", $uid);
-    $stmt->execute();
-    $stmt->close();
-    // -----------------------------------------------------------------------------------------------
+    // 4. BORRADO DE DATOS EN BD (En orden para respetar FKs)
+    
+    // a) Borrar fotos (registros)
+    $mysqli->query("DELETE F FROM fotos F JOIN anuncios A ON F.Anuncio = A.IdAnuncio WHERE A.Usuario = $uid");
+    
+    // b) Borrar mensajes (enviados y recibidos)
+    $mysqli->query("DELETE FROM mensajes WHERE UsuOrigen = $uid OR UsuDestino = $uid");
+    
+    // c) Borrar solicitudes de folletos
+    $mysqli->query("DELETE S FROM solicitudes S JOIN anuncios A ON S.Anuncio = A.IdAnuncio WHERE A.Usuario = $uid");
 
     // d) Borrar anuncios
-    $stmt = $mysqli->prepare("DELETE FROM anuncios WHERE Usuario = ?");
-    $stmt->bind_param("i", $uid);
-    $stmt->execute(); // Ejecutamos y cerramos, si falla lo sabremos al intentar borrar el usuario
-    $stmt->close();
+    $mysqli->query("DELETE FROM anuncios WHERE Usuario = $uid");
 
-    // e) Borrar usuario final
-    $stmt = $mysqli->prepare("DELETE FROM usuarios WHERE IdUsuario = ?");
-    $stmt->bind_param("i", $uid);
+    // e) Borrar usuario
+    $del_user = $mysqli->prepare("DELETE FROM usuarios WHERE IdUsuario = ?");
+    $del_user->bind_param("i", $uid);
     
-    if ($stmt->execute()) {
-        // Cerrar sesión y cookies
+    if ($del_user->execute()) {
+        // Cerrar sesión
         session_destroy();
+        // Borrar cookies
         setcookie('usuario_pi', '', time() - 3600, '/');
         setcookie('clave_pi', '', time() - 3600, '/');
         
-        // Redirigir a index con mensaje
-        header("Location: index.php?msg=cuenta_eliminada");
+        header("Location: index.php?msg=cuenta_borrada");
     } else {
-        // Si falla aquí, mostramos el error real de MySQL para depurar
-        set_flashdata('error', "Error al eliminar usuario: " . $stmt->error);
+        set_flashdata('error', "Error BD al eliminar usuario.");
         header("Location: baja_usuario.php");
     }
 

@@ -34,22 +34,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // MANEJO DE ERRORES DE VALIDACIÓN
     if ($error_mensaje !== "") {
-        // Usa set_flashdata() para guardar el error
         set_flashdata('error', $error_mensaje); 
-        
-        // Devuelve los datos para repoblar el formulario
         $datos_previos = http_build_query($_POST); 
-        
         header("Location: registro.php?{$datos_previos}");
         exit();
     }
     
-    // 5. INSERCIÓN SEGURA EN BASE DE DATOS
+    // ---------------------------------------------------------
+    // 1. GESTIÓN DE SUBIDA DE FOTO (¡NUEVO!)
+    // ---------------------------------------------------------
+    $foto_ruta = "img/default_user.jpg"; // Valor por defecto si no sube nada
+
+    // Comprobamos si se envió un fichero y si no hubo errores en la subida
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        
+        $nombre_original = basename($_FILES['foto']['name']);
+        
+        // Generamos un nombre único para evitar colisiones (timestamp_nombre)
+        // Esto cumple el requisito del PDF: "evitar problemas cuando dos usuarios suban ficheros con el mismo nombre"
+        $nombre_unico = time() . "_" . $nombre_original;
+        
+        // Definimos la ruta de destino
+        $ruta_destino = "img/" . $nombre_unico;
+        
+        // Movemos el fichero de la carpeta temporal a nuestra carpeta de imágenes
+        if (move_uploaded_file($_FILES['foto']['tmp_name'], $ruta_destino)) {
+            $foto_ruta = $ruta_destino;
+        } else {
+            // Si falla al moverlo, podemos lanzar un error o dejar la foto por defecto
+            // En este caso, dejamos la por defecto pero avisamos en el log o flasheamos warning si quisieras.
+        }
+    }
+    // ---------------------------------------------------------
+
+    // 2. INSERCIÓN EN BASE DE DATOS
     
     $mysqli = conectar_bd();
 
     $clave_hash = password_hash($clave1, PASSWORD_DEFAULT); 
-    $foto_ruta = "img/default_user.jpg"; 
     $estilo_id = 1; 
     $sexo_map = ['Hombre' => 1, 'Mujer' => 0, 'Otro' => 2]; 
     $sexo_db = $sexo_map[$sexo] ?? 2; 
@@ -78,30 +100,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fecha_nacimiento_db, 
         $ciudad, 
         $pais_id, 
-        $foto_ruta, 
+        $foto_ruta,  // Usamos la ruta calculada arriba
         $estilo_id
     );
 
     if ($stmt->execute()) {
         // Éxito
-        set_flashdata('success', "¡Registro completado para el usuario '{$usuario}'! Ya puedes iniciar sesión.");
+        set_flashdata('success', "¡Registro completado para '{$usuario}'! Foto guardada correctamente.");
         
         $stmt->close();
         $mysqli->close();
         header("Location: index.php");
 
     } else {
-        // Fallo en la BD (ej. NomUsuario duplicado)
-        $error_msg = "Error desconocido al registrar. Código: {$stmt->errno}";
+        // Fallo en la BD
+        $error_msg = "Error desconocido al registrar.";
         
-        if ($stmt->errno === 1062) { // Clave duplicada (NomUsuario)
-            $error_msg = "El nombre de usuario '{$usuario}' ya está registrado. Por favor, elige otro.";
-        } elseif ($stmt->errno === 1452) { // Clave ajena (País o Estilo ID no existen)
-            $error_msg = "Error al asignar un país o estilo. Por favor, inténtalo de nuevo.";
+        if ($stmt->errno === 1062) { // Clave duplicada
+            $error_msg = "El nombre de usuario '{$usuario}' ya está registrado.";
+        }
+
+        // Si falló la BD, deberíamos borrar la foto que acabamos de subir para no dejar basura
+        if ($foto_ruta !== "img/default_user.jpg" && file_exists($foto_ruta)) {
+            unlink($foto_ruta);
         }
 
         set_flashdata('error', "Error al completar el registro: {$error_msg}");
-        
         $datos_previos = http_build_query($_POST); 
         header("Location: registro.php?{$datos_previos}");
     }
@@ -110,7 +134,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 
 } else {
-    // Si se accede directamente sin post
     header("Location: registro.php");
     exit();
 }

@@ -15,7 +15,7 @@ $mysqli = conectar_bd();
 $id_usuario = $_SESSION['id_usuario'];
 $error_mensaje = "";
 
-// 1. Verificar contraseña actual
+// Verificar contraseña actual
 $clave_actual = $_POST['clave_actual'] ?? '';
 $sql = "SELECT Clave, Foto FROM usuarios WHERE IdUsuario = ?";
 $stmt = $mysqli->prepare($sql);
@@ -31,7 +31,7 @@ if (!$user_data || !password_verify($clave_actual, $user_data['Clave'])) {
     exit();
 }
 
-// 2. Recogida de datos generales
+// Recogida de datos generales
 $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 $sexo = (int)$_POST['sexo'];
 $fecha_nac = $_POST['anyoNacimiento'] . "-" . $_POST['mesNacimiento'] . "-" . $_POST['diaNacimiento'];
@@ -40,7 +40,7 @@ $pais = (int)$_POST['pais'];
 $estilo = (int)$_POST['estilo'];
 $nueva_clave = $_POST['nueva_clave'];
 
-// Validaciones simples (puedes ampliar con tu include de validaciones)
+// Validaciones simples 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $error_mensaje = "Email inválido.";
 
 if ($error_mensaje) {
@@ -49,11 +49,11 @@ if ($error_mensaje) {
     exit();
 }
 
-// 3. GESTIÓN DE FOTO DE PERFIL (Nueva lógica)
+// Gestión de foto de perfil 
 $nueva_ruta_foto = null; // Si se mantiene null, no se actualiza este campo
 
 if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-    // a) Subir nueva foto
+    // Subir nueva foto
     $nombre_original = basename($_FILES['foto']['name']);
     $nombre_unico = time() . "_pfp_" . $nombre_original; // Evitar colisiones
     $ruta_destino = "img/" . $nombre_unico;
@@ -61,7 +61,7 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
     if (move_uploaded_file($_FILES['foto']['tmp_name'], __DIR__ . '/' . $ruta_destino)) {
         $nueva_ruta_foto = $ruta_destino;
         
-        // b) Borrar foto antigua si existe y no es la default
+        // Borrar foto antigua si existe y no es la default
         $foto_antigua = $user_data['Foto'];
         if ($foto_antigua && $foto_antigua !== 'img/default_user.jpg' && file_exists(__DIR__ . '/' . $foto_antigua)) {
             unlink(__DIR__ . '/' . $foto_antigua);
@@ -73,7 +73,7 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-// 4. Construcción de la consulta UPDATE dinámica
+// Construcción de la consulta UPDATE dinámica
 $sql_update = "UPDATE usuarios SET Email=?, Sexo=?, FNacimiento=?, Ciudad=?, Pais=?, Estilo=?";
 $params = [$email, $sexo, $fecha_nac, $ciudad, $pais, $estilo];
 $types = "sisssi";

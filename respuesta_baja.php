@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $uid = $_SESSION['id_usuario'];
     $clave_input = $_POST['clave_confirmacion'] ?? '';
 
-    // 1. Verificar contraseña
+    // Verificar contraseña
     $stmt = $mysqli->prepare("SELECT Clave, Foto FROM usuarios WHERE IdUsuario = ?");
     $stmt->bind_param("i", $uid);
     $stmt->execute();
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // 2. BORRADO FÍSICO DE FOTOS DE ANUNCIOS (Requisito Crítico PDF)
+    // Borrado físico de fotos de anuncios
     // Obtenemos todas las rutas de fotos de los anuncios de este usuario
     $sql_fotos = "SELECT F.Foto 
                   FROM fotos F 
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $stmt_f->close();
     
-    // Borrado físico de Fotos Principales de anuncios (si son distintas a default)
+    // Borrado físico de Fotos Principales de anuncios 
     $sql_main = "SELECT FPrincipal FROM anuncios WHERE Usuario = ?";
     $stmt_m = $mysqli->prepare($sql_main);
     $stmt_m->bind_param("i", $uid);
@@ -58,27 +58,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $stmt_m->close();
 
-    // 3. BORRADO FÍSICO DE FOTO DE PERFIL
+    // Borrado físico de foto de perfil
     $foto_perfil = $user['Foto'];
     if ($foto_perfil && $foto_perfil !== 'img/default_user.jpg' && file_exists(__DIR__ . '/' . $foto_perfil)) {
         unlink(__DIR__ . '/' . $foto_perfil);
     }
 
-    // 4. BORRADO DE DATOS EN BD (En orden para respetar FKs)
+    // Borrado de datos en BD 
     
-    // a) Borrar fotos (registros)
+    // Borrar fotos de anuncios
     $mysqli->query("DELETE F FROM fotos F JOIN anuncios A ON F.Anuncio = A.IdAnuncio WHERE A.Usuario = $uid");
     
-    // b) Borrar mensajes (enviados y recibidos)
+    // Borrar mensajes (enviados y recibidos)
     $mysqli->query("DELETE FROM mensajes WHERE UsuOrigen = $uid OR UsuDestino = $uid");
     
-    // c) Borrar solicitudes de folletos
+    // Borrar solicitudes de folletos
     $mysqli->query("DELETE S FROM solicitudes S JOIN anuncios A ON S.Anuncio = A.IdAnuncio WHERE A.Usuario = $uid");
 
-    // d) Borrar anuncios
+    // Borrar anuncios
     $mysqli->query("DELETE FROM anuncios WHERE Usuario = $uid");
 
-    // e) Borrar usuario
+    // Borrar usuario
     $del_user = $mysqli->prepare("DELETE FROM usuarios WHERE IdUsuario = ?");
     $del_user->bind_param("i", $uid);
     

@@ -59,7 +59,7 @@ $flash_error = get_flashdata('error');
     <form action="respuesta_mis_datos.php" method="post" enctype="multipart/form-data">
         
       <fieldset style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
-        <legend>Foto de Perfil</legend>
+        <legend>Foto de perfil</legend>
         <div style="display: flex; align-items: center; gap: 20px;">
             <img src="<?php echo $val_foto; ?>" alt="Foto actual" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%;">
             

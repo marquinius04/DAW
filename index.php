@@ -1,6 +1,4 @@
 <?php
-
-// GESTIÓN DE SESIÓN, CONEXIÓN Y ERRORES
 require_once 'include/sesion.php'; 
 require_once 'include/db_connect.php'; 
 require_once 'include/flashdata.inc.php'; 
@@ -13,14 +11,12 @@ $titulo_pagina = "Acceso y anuncios recientes";
 $body_id = "loginPage"; 
 $menu_tipo = 'publico';
 
-// Si el usuario ya está logueado, se le redirige a la zona privada
 controlar_acceso_publico();
 
 $mysqli = conectar_bd();
 
-// -------------------------------------------------------------
-// 1. LÓGICA DE ÚLTIMOS 5 ANUNCIOS 
-// -------------------------------------------------------------
+// Lógica de los últimos anuncios
+
 $sql_anuncios = "
     SELECT 
         A.IdAnuncio, A.FPrincipal, A.Titulo, A.FRegistro, A.Ciudad, A.Precio, P.NomPais 
@@ -45,9 +41,7 @@ if ($stmt === false) {
     $stmt->close();
 }
 
-// -------------------------------------------------------------
-// 2. LÓGICA DEL ANUNCIO ESCOGIDO (FICHERO DE TEXTO)
-// -------------------------------------------------------------
+// Lógica del anuncio del día
 $fichero_seleccionados = __DIR__ . '/data/anuncios_seleccionados.txt';
 $anuncio_destacado = null;
 $experto_nombre = "";
@@ -87,15 +81,13 @@ if (file_exists($fichero_seleccionados)) {
     }
 }
 
-// -------------------------------------------------------------
-// 3. LÓGICA DEL CONSEJO (JSON) - ¡NUEVO!
-// -------------------------------------------------------------
+// Lógica del consejo del día
 $fichero_consejos = __DIR__ . '/data/consejos.json';
 $consejo_del_dia = null;
 
 if (file_exists($fichero_consejos)) {
     $json_content = file_get_contents($fichero_consejos);
-    $consejos = json_decode($json_content, true); // true para array asociativo
+    $consejos = json_decode($json_content, true); 
     
     if ($consejos && count($consejos) > 0) {
          // Elegir un consejo aleatorio
@@ -163,7 +155,7 @@ if (isset($_COOKIE['recordar_usuario']) && isset($_COOKIE['ultima_visita_real'])
         
         <?php if ($anuncio_destacado): ?>
         <section style="flex: 2; min-width: 300px; border: 2px solid #ff8c00; background-color: #fff8e1;">
-            <h2><span class="icono">stars</span> Anuncio seleccionado</h2>
+            <h2><span class="icono">stars</span> Anuncio del día</h2>
             <div style="display: flex; gap: 15px;">
                 <img src="<?= htmlspecialchars($anuncio_destacado['FPrincipal'] ?? 'img/default.jpg') ?>" 
                      alt="Foto destacada" 

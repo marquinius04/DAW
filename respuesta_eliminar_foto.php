@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_foto = (int)$_POST['id_foto'];
     $uid = $_SESSION['id_usuario'];
 
-    // 1. Verificar propiedad y OBTENER LA RUTA DEL FICHERO
+    // Verificar propiedad y obtener la ruta del fichero
     $sql = "SELECT F.Foto, F.Anuncio 
             FROM fotos F 
             JOIN anuncios A ON F.Anuncio = A.IdAnuncio 
@@ -25,13 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id_anuncio = $row['Anuncio'];
         $ruta_foto = $row['Foto'];
         
-        // 2. BORRADO FÍSICO (Requisito PDF)
-        // Comprobamos si existe y no es una ruta por defecto (por seguridad)
+        // Borrado físico
+        // Comprobamos si existe y no es una ruta por defecto 
         if (!empty($ruta_foto) && file_exists(__DIR__ . '/' . $ruta_foto)) {
             unlink(__DIR__ . '/' . $ruta_foto);
         }
         
-        // 3. Borrar registro de la BD
+        // Borrar registro de la BD
         $mysqli->query("DELETE FROM fotos WHERE IdFoto = $id_foto");
         
         set_flashdata('success', "Foto eliminada correctamente (archivo y datos).");

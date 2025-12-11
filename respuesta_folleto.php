@@ -26,14 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $es_color = ($_POST['impresion_color'] ?? 'blanco_negro') === 'color';
     $con_precio = isset($_POST['impresion_precio']); // Checkbox
 
-    // --- Validación básica ---
+    // Validación básica
     if ($id_anuncio <= 0 || empty($nombre) || empty($email) || empty($calle)) {
         set_flashdata('error', "Faltan datos obligatorios.");
         header("Location: folleto.php");
         exit();
     }
     
-    // --- Cálculo de costes ---
+    // Cálculo de costes 
     $costeFijo = 2;
     $precioUnidad = 0;
     
@@ -42,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $coste_total = ($precioUnidad * $num_copias) + $costeFijo;
 
-    // --- INSERTAR EN BD ---
     // Construimos la dirección completa en un string para el campo 'Direccion'
     $direccion_completa = "$calle, $numero, $cp, $localidad, $provincia";
     
@@ -84,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
     $mysqli->close();
 
-    // --- Mostrar Confirmación ---
+    // Mostrar confirmación 
     $titulo_pagina = "Solicitud Confirmada - PI";
     require_once 'include/head.php'; 
     ?>

@@ -8,12 +8,12 @@ controlar_acceso_privado();
 $mysqli = conectar_bd();
 $uid = $_SESSION['id_usuario'];
 
-// 1. Obtener ruta foto actual
+// Obtener ruta foto actual
 $res = $mysqli->query("SELECT Foto FROM usuarios WHERE IdUsuario = $uid");
 $row = $res->fetch_assoc();
 $foto_actual = $row['Foto'];
 
-// 2. Si no es la default, borrar archivo físico
+// Eliminar fichero físico si no es la imagen por defecto
 if ($foto_actual && $foto_actual !== 'img/default_user.jpg') {
     $ruta_fisica = __DIR__ . '/' . $foto_actual;
     if (file_exists($ruta_fisica)) {
@@ -21,7 +21,7 @@ if ($foto_actual && $foto_actual !== 'img/default_user.jpg') {
     }
 }
 
-// 3. Actualizar BD a la imagen por defecto
+// Actualizar BD a la imagen por defecto
 $sql = "UPDATE usuarios SET Foto = 'img/default_user.jpg' WHERE IdUsuario = ?";
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param("i", $uid);

@@ -10,14 +10,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_anuncio = (int)$_POST['id_anuncio'];
     $uid = $_SESSION['id_usuario'];
 
-    // 1. Verificar permisos
+    // Verificar permisos
     $check = $mysqli->prepare("SELECT IdAnuncio FROM anuncios WHERE IdAnuncio = ? AND Usuario = ?");
     $check->bind_param("ii", $id_anuncio, $uid);
     $check->execute();
     if ($check->get_result()->num_rows === 0) die("Error de permisos.");
     $check->close();
 
-    // 2. BORRADO FÍSICO DE FOTOS ASOCIADAS (Requisito PDF)
+    // Borrado físico de fotos asociadas
     $res_fotos = $mysqli->query("SELECT Foto FROM fotos WHERE Anuncio = $id_anuncio");
     while ($row = $res_fotos->fetch_assoc()) {
         $ruta = $row['Foto'];
@@ -35,12 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 3. Borrar registros en BD (Cascada lógica)
+    // Borrar registros en BD de fotos, mensajes y solicitudes
     $mysqli->query("DELETE FROM fotos WHERE Anuncio = $id_anuncio");
     $mysqli->query("DELETE FROM mensajes WHERE Anuncio = $id_anuncio");
-    $mysqli->query("DELETE FROM solicitudes WHERE Anuncio = $id_anuncio"); // Por si acaso hay solicitudes
+    $mysqli->query("DELETE FROM solicitudes WHERE Anuncio = $id_anuncio");
 
-    // 4. Borrar anuncio
+    // Borrar anuncio
     $stmt = $mysqli->prepare("DELETE FROM anuncios WHERE IdAnuncio = ?");
     $stmt->bind_param("i", $id_anuncio);
     
